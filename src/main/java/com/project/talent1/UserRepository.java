@@ -1,9 +1,8 @@
 package com.project.talent1;
 
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.repository.CrudRepository;
 
-import com.project.talent1.User;
-
-public interface UserRepository extends CrudRepository<User, Long>{
-
+public interface UserRepository extends CrudRepository<Users, Long>{
+    Users findById(long id);
 }
