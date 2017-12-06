@@ -5,7 +5,7 @@ require('../../scss/style.scss');
 
 const App = () => (
     <div>
-        <Login />
+        <Register />
     </div>
 );
 
