@@ -19,6 +19,7 @@ class Login extends Component {
                             >
                                 <ControlLabel>Email address</ControlLabel>
                                 <FormControl
+                                    inputRef={ref => { this.email = ref; }}
                                     type="email"
                                     placeholder="Enter your email address"
                                 />
@@ -29,6 +30,7 @@ class Login extends Component {
                             >
                                 <ControlLabel>Password</ControlLabel>
                                 <FormControl
+                                    inputRef={ref => { this.password = ref; }}
                                     type="password"
                                     placeholder="Enter your password"
                                 />
@@ -38,7 +40,7 @@ class Login extends Component {
                     </Modal.Body>
                     <Modal.Footer>
                         <Button>Cancel</Button>
-                        <Button bsStyle="primary" onClick={() => this.props.onLoginClick()}>Login</Button>
+                        <Button bsStyle="primary" onClick={() => this.props.onLoginClick(this.email.value, this.password.value)}>Login</Button>
                     </Modal.Footer>
                 </Modal.Dialog>
             </div>
@@ -52,8 +54,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onLoginClick: () => {
-            dispatch(LoginClicked())
+        onLoginClick: (email, password) => {
+            dispatch(LoginClicked(email, password))
         }
     }
 };

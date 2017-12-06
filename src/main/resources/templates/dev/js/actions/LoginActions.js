@@ -1,14 +1,14 @@
 import fetch from 'cross-fetch'
 
 const API = 'http://localhost:8080/api/';
-export const Login = () => {
+export const Login = (email, password) => {
     return dispatch => {
         dispatch(LogingIn());
         return fetch(API+'users/login', {
             method: "POST",
             body: JSON.stringify({
-                "email":"janrob422@gmail.com",
-                "password":"Azerty123"
+                "email": email,
+                "password": password
             }),
             headers: {
                 "Content-Type": "application/json"
