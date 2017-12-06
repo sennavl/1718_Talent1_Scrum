@@ -73,7 +73,7 @@ class Register extends Component {
                     </Modal.Body>
                     <Modal.Footer>
                         <Button>Cancel</Button>
-                        <Button>Login</Button>
+                        <Button onClick={() => this.props.history.push("/login")}>Login</Button>
                         <Button bsStyle="primary" onClick={() => this.props.onRegisterClick(this.firstname.value, this.lastname.value, this.email.value, this.date.value, this.password.value)}>Register</Button>
                     </Modal.Footer>
                 </Modal.Dialog>

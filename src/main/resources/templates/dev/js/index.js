@@ -7,6 +7,7 @@ import thunk from 'redux-thunk';
 import promise from 'redux-promise';
 import allReducers from './reducers';
 import App from './components/App';
+import { BrowserRouter } from 'react-router-dom'
 
 const store = createStore(
     allReducers,
@@ -18,7 +19,9 @@ const store = createStore(
 
 ReactDOM.render(
     <Provider store={store}>
-        <App />
+        <BrowserRouter>
+            <App />
+        </BrowserRouter>
     </Provider>,
     document.getElementById('root')
 );

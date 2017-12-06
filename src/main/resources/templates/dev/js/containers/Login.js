@@ -40,6 +40,7 @@ class Login extends Component {
                     </Modal.Body>
                     <Modal.Footer>
                         <Button>Cancel</Button>
+                        <Button onClick={() => this.props.history.push("/register")}>Register</Button>
                         <Button bsStyle="primary" onClick={() => this.props.onLoginClick(this.email.value, this.password.value)}>Login</Button>
                     </Modal.Footer>
                 </Modal.Dialog>
