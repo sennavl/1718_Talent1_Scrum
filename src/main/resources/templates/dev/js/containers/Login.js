@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {Modal, Button, FormGroup, form, ControlLabel, FormControl, HelpBlock} from  'react-bootstrap';
+import {Modal, Button, FormGroup, form, ControlLabel, FormControl} from  'react-bootstrap';
+import { Login as LoginClicked } from '../actions/LoginActions';
 
 class Login extends Component {
     render() {
@@ -37,7 +38,7 @@ class Login extends Component {
                     </Modal.Body>
                     <Modal.Footer>
                         <Button>Cancel</Button>
-                        <Button bsStyle="primary">Login</Button>
+                        <Button bsStyle="primary" onClick={() => this.props.onLoginClick()}>Login</Button>
                     </Modal.Footer>
                 </Modal.Dialog>
             </div>
@@ -49,8 +50,12 @@ const mapStateToProps = (state) => ({
     //user: state.activeUser
 });
 
-const mapDispatchToProps = (dispatch) => ({
-
-});
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onLoginClick: () => {
+            dispatch(LoginClicked())
+        }
+    }
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);
