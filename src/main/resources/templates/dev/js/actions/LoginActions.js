@@ -7,7 +7,7 @@ export const Login = () => {
         return fetch(API+'users/login', {
             method: "POST",
             body: JSON.stringify({
-                "email":"janrob42@gmail.com",
+                "email":"janrob422@gmail.com",
                 "password":"Azerty123"
             }),
             headers: {
@@ -15,6 +15,8 @@ export const Login = () => {
             },
             credentials: "same-origin"
         })
+            .then(response => response.json())
+            .then(json => dispatch(LoggedIn(json)))
     }
 };
 
