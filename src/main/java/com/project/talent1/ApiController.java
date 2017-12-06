@@ -1,9 +1,6 @@
 package com.project.talent1;
 
-import com.sun.javaws.exceptions.InvalidArgumentException;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.*;
 
