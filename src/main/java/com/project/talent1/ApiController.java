@@ -1,15 +1,9 @@
 package com.project.talent1;
 
-import com.sun.javaws.exceptions.InvalidArgumentException;
-import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.*;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-
 import javax.servlet.http.HttpServletResponse;
 
 @RequestMapping("/api")
