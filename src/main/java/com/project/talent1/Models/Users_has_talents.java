@@ -1,17 +1,17 @@
 package com.project.talent1.Models;
 
 public class Users_has_talents {
-  private Long user_id;
+  private Long person_id;
   private Long talent_id;
   private String description;
   private String hide;
 
-  public Long getUser_id() {
-    return user_id;
+  public Long getPerson_id() {
+    return person_id;
   }
 
-  public void setUser_id(Long user_id) {
-    this.user_id = user_id;
+  public void setPerson_id(Long person_id) {
+    this.person_id = person_id;
   }
 
   public Long getTalent_id() {

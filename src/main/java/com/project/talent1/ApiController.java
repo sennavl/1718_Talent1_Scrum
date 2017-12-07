@@ -50,12 +50,14 @@ public class ApiController {
 
     }
 
+    /*
     @RequestMapping(path = "/users/login",method = RequestMethod.POST)
     public Users login(@RequestBody Users inputUser, HttpServletResponse response) throws IOException {
         Users fullUser = users.findByEmail(inputUser.getEmail());
         fullUser.login(response,inputUser.getPassword());
         return fullUser;
     }
+    */
     /*============================================================================
         Talents
     ============================================================================*/

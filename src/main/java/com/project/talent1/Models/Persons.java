@@ -1,5 +1,4 @@
 package com.project.talent1.Models;
-
 public class Persons {
   private Long id;
   private String firstname;
