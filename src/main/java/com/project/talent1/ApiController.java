@@ -1,6 +1,9 @@
 package com.project.talent1;
 
+import com.project.talent1.Models.Talents;
 import com.project.talent1.Models.Users;
+import com.project.talent1.Repositories.TalentRepository;
+import com.project.talent1.Repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -15,25 +18,32 @@ import static javax.servlet.http.HttpServletResponse.*;
 @RestController
 public class ApiController {
     @Autowired
-    private UserRepository userRepository;
-
+    UserRepository users;
+    @Autowired
+    TalentRepository talents;
+    
+    @RequestMapping(method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
+    public String index() {
+        return "Hello World!";
+    }
+    /*============================================================================
+        Users
+    ============================================================================*/
     @GetMapping(path="/users")
     public @ResponseBody Iterable<Users> getAllUsers(){
-        return userRepository.findAll();
+        return users.findAll();
     }
 
     @GetMapping(path = "/users/{id}")
-    public @ResponseBody
-    Users getUser(@PathVariable long id){
-        return userRepository.findById(id);
+    public Users getUser(@PathVariable long id){
+        return users.findById(id);
     }
 
     @RequestMapping(path = "/users/register",method = RequestMethod.POST)
-    public @ResponseBody
-    Users registerUser(@RequestBody Users s, HttpServletResponse response) throws IOException {
+    public Users registerUser(@RequestBody Users s, HttpServletResponse response) throws IOException {
         try {
             s.setPassword(BCrypt.hashpw(s.getPassword(),BCrypt.gensalt()));
-            return userRepository.save(s);
+            return users.save(s);
         }catch (Exception e){
             response.sendError(SC_CONFLICT,e.getMessage());
             return null;
@@ -43,13 +53,28 @@ public class ApiController {
 
     @RequestMapping(path = "/users/login",method = RequestMethod.POST)
     public Users login(@RequestBody Users inputUser, HttpServletResponse response) throws IOException {
-        Users fullUser = userRepository.findByEmail(inputUser.getEmail());
+        Users fullUser = users.findByEmail(inputUser.getEmail());
         fullUser.login(response,inputUser.getPassword());
         return fullUser;
     }
-
-    @RequestMapping(method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public String index() {
-        return "Hello World!";
+    /*============================================================================
+        Talents
+    ============================================================================*/
+    @GetMapping(path = "/talents")
+    public Iterable<Talents> getAllTalents(){
+        return talents.findAll();
     }
+    @GetMapping(path = "/talents/{id}")
+    public Talents getTalent(@PathVariable long id){
+        return talents.findById(id);
+    }
+    /*============================================================================
+        Voters
+    ============================================================================*/
+
+    /*============================================================================
+        Votes
+    ============================================================================*/
+
+
 }

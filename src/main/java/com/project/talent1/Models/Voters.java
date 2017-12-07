@@ -5,7 +5,7 @@ import javax.persistence.Id;
 import javax.persistence.Entity;
 
 @Entity
-public class Voter {
+public class Voters {
   @Id
   private long id;
   private String firstname;
