@@ -1,5 +1,6 @@
 package com.project.talent1;
 
+
 import com.project.talent1.Repositories.TalentRepository;
 import com.project.talent1.Repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
