@@ -2,11 +2,13 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {Modal, Button, FormGroup, form, ControlLabel, FormControl} from  'react-bootstrap';
 import { Login as LoginClicked } from '../actions/LoginActions';
+import { Navigation } from '../components/Navigation';
 
 class Login extends Component {
     render() {
         return (
             <div className="static-modal">
+                <Navigation props={this.props.history} status={this.props.logStatus} />
                 <Modal.Dialog>
                     <Modal.Header>
                         <Modal.Title>Login</Modal.Title>
@@ -50,7 +52,7 @@ class Login extends Component {
 }
 
 const mapStateToProps = (state) => ({
-    //user: state.activeUser
+    logStatus: state.Auth.status
 });
 
 const mapDispatchToProps = (dispatch) => {
