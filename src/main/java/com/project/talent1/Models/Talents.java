@@ -1,6 +1,11 @@
 package com.project.talent1.Models;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
 public class Talents {
+  @Id
   private Long id;
   private String name;
   private Long matches;

@@ -4,6 +4,7 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -17,7 +18,9 @@ public class Users {
   private java.sql.Date birthday;
   private String password;
 
-
+  @OneToOne
+  @JoinColumn(name = "Person_id")
+  private Persons person;
 
   public Long getPerson_id() {
     return person_id;
