@@ -1,27 +1,18 @@
-package com.project.talent1;
+package com.project.talent1.Models;
 
-import javax.persistence.Id;
-
-import javax.persistence.Entity;
-
-@Entity
-public class Voter {
-  @Id
-  private long id;
+public class Persons {
+  private Long id;
   private String firstname;
   private String lastname;
   private String email;
-  private long usersId;
 
-
-  public long getId() {
+  public Long getId() {
     return id;
   }
 
-  public void setId(long id) {
+  public void setId(Long id) {
     this.id = id;
   }
-
 
   public String getFirstname() {
     return firstname;
@@ -31,7 +22,6 @@ public class Voter {
     this.firstname = firstname;
   }
 
-
   public String getLastname() {
     return lastname;
   }
@@ -40,7 +30,6 @@ public class Voter {
     this.lastname = lastname;
   }
 
-
   public String getEmail() {
     return email;
   }
@@ -48,14 +37,4 @@ public class Voter {
   public void setEmail(String email) {
     this.email = email;
   }
-
-
-  public long getUsersId() {
-    return usersId;
-  }
-
-  public void setUsersId(long usersId) {
-    this.usersId = usersId;
-  }
-
 }
