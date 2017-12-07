@@ -36,7 +36,7 @@ public class ApiController {
 
     @GetMapping(path = "/users/{id}")
     public Users getUser(@PathVariable long id){
-        return users.findById(id);
+        return users.findByPerson_id(id);
     }
 
     @RequestMapping(path = "/users/register",method = RequestMethod.POST)

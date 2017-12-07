@@ -2,19 +2,22 @@ package com.project.talent1.Models;
 
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static javax.servlet.http.HttpServletResponse.SC_CONFLICT;
 
+@Entity
 public class Users {
+  @Id
   private Long person_id;
   private java.sql.Date birthday;
   private String password;
 
-  @OneToOne
-  private Persons person;
+
 
   public Long getPerson_id() {
     return person_id;

@@ -1,10 +1,14 @@
 package com.project.talent1.Models;
 
 import org.apache.catalina.User;
-
 import javax.persistence.OneToOne;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
 public class Persons {
+  @Id
   private Long id;
   private String firstname;
   private String lastname;
