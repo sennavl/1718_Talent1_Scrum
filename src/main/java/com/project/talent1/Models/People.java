@@ -1,4 +1,4 @@
-package com.project.talent1;
+package com.project.talent1.Models;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 

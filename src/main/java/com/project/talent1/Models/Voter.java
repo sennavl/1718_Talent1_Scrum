@@ -1,18 +1,17 @@
-package com.project.talent1;
+package com.project.talent1.Models;
 
 import javax.persistence.Id;
 
 import javax.persistence.Entity;
 
 @Entity
-public class Users {
+public class Voter {
   @Id
   private long id;
   private String firstname;
   private String lastname;
   private String email;
-  private java.sql.Date birthday;
-  private String password;
+  private long usersId;
 
 
   public long getId() {
@@ -51,21 +50,12 @@ public class Users {
   }
 
 
-  public java.sql.Date getBirthday() {
-    return birthday;
+  public long getUsersId() {
+    return usersId;
   }
 
-  public void setBirthday(java.sql.Date birthday) {
-    this.birthday = birthday;
-  }
-
-
-  public String getPassword() {
-    return password;
-  }
-
-  public void setPassword(String password) {
-    this.password = password;
+  public void setUsersId(long usersId) {
+    this.usersId = usersId;
   }
 
 }

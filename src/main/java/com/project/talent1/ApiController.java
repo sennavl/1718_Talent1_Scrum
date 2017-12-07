@@ -1,5 +1,6 @@
 package com.project.talent1;
 
+import com.project.talent1.Models.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCrypt;
