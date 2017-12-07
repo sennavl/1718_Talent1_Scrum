@@ -1,9 +1,17 @@
 package com.project.talent1.Models;
+
+import org.apache.catalina.User;
+
+import javax.persistence.OneToOne;
+
 public class Persons {
   private Long id;
   private String firstname;
   private String lastname;
   private String email;
+
+  @OneToOne
+  private Users user;
 
   public Long getId() {
     return id;
