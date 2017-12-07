@@ -5,7 +5,7 @@ import javax.persistence.Id;
 
 @Entity
 public class People {
-    @Id
+  @Id
   private long id;
   private String name;
   private long age;

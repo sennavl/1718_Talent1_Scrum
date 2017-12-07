@@ -1,8 +1,15 @@
 package com.project.talent1.Models;
 
+import org.springframework.security.crypto.bcrypt.BCrypt;
+
 import javax.persistence.Id;
 
 import javax.persistence.Entity;
+import javax.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
+
+import static javax.servlet.http.HttpServletResponse.SC_CONFLICT;
 
 @Entity
 public class Users {
@@ -68,4 +75,13 @@ public class Users {
     this.password = password;
   }
 
+  public void login(HttpServletResponse response,String password) throws IOException {
+    try{
+      if(!BCrypt.checkpw(password,this.getPassword())) {
+        response.sendError(SC_CONFLICT, "Wrong password");
+      }
+    }catch (NullPointerException e){
+      response.sendError(SC_CONFLICT,"Users does not exist");
+    }
+  }
 }

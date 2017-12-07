@@ -6,6 +6,9 @@ import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+import static javax.servlet.http.HttpServletResponse.*;
 
 @RequestMapping("/api")
 @CrossOrigin(origins = "localhost")
@@ -20,38 +23,29 @@ public class ApiController {
     }
 
     @GetMapping(path = "/users/{id}")
-    public @ResponseBody Users getUser(@PathVariable long id){
+    public @ResponseBody
+    Users getUser(@PathVariable long id){
         return userRepository.findById(id);
     }
 
     @RequestMapping(path = "/users/register",method = RequestMethod.POST)
-    public @ResponseBody Users registerUser(@RequestBody Users s,HttpServletResponse response){
+    public @ResponseBody
+    Users registerUser(@RequestBody Users s, HttpServletResponse response) throws IOException {
         try {
             s.setPassword(BCrypt.hashpw(s.getPassword(),BCrypt.gensalt()));
             return userRepository.save(s);
         }catch (Exception e){
-            response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
+            response.sendError(SC_CONFLICT,e.getMessage());
             return null;
         }
 
     }
 
     @RequestMapping(path = "/users/login",method = RequestMethod.POST)
-    public Users login(@RequestBody Users u,HttpServletResponse response) {
-        Users s = userRepository.findByEmail(u.getEmail());
-        try{
-            if(BCrypt.checkpw(u.getPassword(),s.getPassword())){
-                return s;
-            }
-            else{
-                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                return null;
-            }
-        }catch (NullPointerException e){
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            return null;
-        }
-
+    public Users login(@RequestBody Users inputUser, HttpServletResponse response) throws IOException {
+        Users fullUser = userRepository.findByEmail(inputUser.getEmail());
+        fullUser.login(response,inputUser.getPassword());
+        return fullUser;
     }
 
     @RequestMapping(method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
