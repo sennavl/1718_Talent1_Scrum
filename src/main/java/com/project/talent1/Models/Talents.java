@@ -1,25 +1,17 @@
 package com.project.talent1.Models;
 
-import javax.persistence.Id;
-
-import javax.persistence.Entity;
-
-@Entity
 public class Talents {
-  @Id
-  private long id;
+  private Long id;
   private String name;
-  private long matches;
+  private Long matches;
 
-
-  public long getId() {
+  public Long getId() {
     return id;
   }
 
-  public void setId(long id) {
+  public void setId(Long id) {
     this.id = id;
   }
-
 
   public String getName() {
     return name;
@@ -29,13 +21,11 @@ public class Talents {
     this.name = name;
   }
 
-
-  public long getMatches() {
+  public Long getMatches() {
     return matches;
   }
 
-  public void setMatches(long matches) {
+  public void setMatches(Long matches) {
     this.matches = matches;
   }
-
 }

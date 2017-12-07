@@ -1,7 +1,5 @@
 package com.project.talent1;
 
-import com.project.talent1.Models.Talents;
-import com.project.talent1.Models.Users;
 import com.project.talent1.Repositories.TalentRepository;
 import com.project.talent1.Repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +8,7 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import com.project.talent1.Models.*;
 
 import static javax.servlet.http.HttpServletResponse.*;
 
@@ -21,7 +20,7 @@ public class ApiController {
     UserRepository users;
     @Autowired
     TalentRepository talents;
-    
+
     @RequestMapping(method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
     public String index() {
         return "Hello World!";

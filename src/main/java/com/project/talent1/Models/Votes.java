@@ -1,28 +1,20 @@
 package com.project.talent1.Models;
 
-import javax.persistence.Id;
-
-import javax.persistence.Entity;
-
-@Entity
 public class Votes {
-  @Id
-  private long id;
+  private Long id;
   private String text;
   private String approved;
-  private long usersHasTalentsUserId;
-  private long usersHasTalentsTalentId;
-  private long voterId;
+  private Long users_has_talents_user_id;
+  private Long users_has_talents_talent_id;
+  private Long person_id;
 
-
-  public long getId() {
+  public Long getId() {
     return id;
   }
 
-  public void setId(long id) {
+  public void setId(Long id) {
     this.id = id;
   }
-
 
   public String getText() {
     return text;
@@ -32,7 +24,6 @@ public class Votes {
     this.text = text;
   }
 
-
   public String getApproved() {
     return approved;
   }
@@ -41,31 +32,27 @@ public class Votes {
     this.approved = approved;
   }
 
-
-  public long getUsersHasTalentsUserId() {
-    return usersHasTalentsUserId;
+  public Long getUsers_has_talents_user_id() {
+    return users_has_talents_user_id;
   }
 
-  public void setUsersHasTalentsUserId(long usersHasTalentsUserId) {
-    this.usersHasTalentsUserId = usersHasTalentsUserId;
+  public void setUsers_has_talents_user_id(Long users_has_talents_user_id) {
+    this.users_has_talents_user_id = users_has_talents_user_id;
   }
 
-
-  public long getUsersHasTalentsTalentId() {
-    return usersHasTalentsTalentId;
+  public Long getUsers_has_talents_talent_id() {
+    return users_has_talents_talent_id;
   }
 
-  public void setUsersHasTalentsTalentId(long usersHasTalentsTalentId) {
-    this.usersHasTalentsTalentId = usersHasTalentsTalentId;
+  public void setUsers_has_talents_talent_id(Long users_has_talents_talent_id) {
+    this.users_has_talents_talent_id = users_has_talents_talent_id;
   }
 
-
-  public long getVoterId() {
-    return voterId;
+  public Long getPerson_id() {
+    return person_id;
   }
 
-  public void setVoterId(long voterId) {
-    this.voterId = voterId;
+  public void setPerson_id(Long person_id) {
+    this.person_id = person_id;
   }
-
 }
