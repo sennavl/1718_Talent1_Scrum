@@ -2,16 +2,14 @@ package com.project.talent1.Models;
 
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static javax.servlet.http.HttpServletResponse.SC_CONFLICT;
 
 @Entity
+@Table(name = "users")
 public class Users {
   @Id
   private Long person_id;
@@ -19,8 +17,8 @@ public class Users {
   private String password;
 
   @OneToOne
-  @JoinColumn(name = "Person_id")
-  private Persons person;
+  @JoinColumn(name = "person_id")
+  public Persons person;
 
   public Long getPerson_id() {
     return person_id;

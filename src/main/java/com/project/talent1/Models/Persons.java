@@ -1,6 +1,8 @@
 package com.project.talent1.Models;
 
 import org.apache.catalina.User;
+
+import javax.persistence.JoinTable;
 import javax.persistence.OneToOne;
 
 import javax.persistence.Entity;
@@ -13,9 +15,6 @@ public class Persons {
   private String firstname;
   private String lastname;
   private String email;
-
-  @OneToOne
-  private Users user;
 
   public Long getId() {
     return id;

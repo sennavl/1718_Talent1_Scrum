@@ -1,6 +1,9 @@
 package com.project.talent1;
 
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.talent1.Repositories.PersonRepository;
 import com.project.talent1.Repositories.TalentRepository;
 import com.project.talent1.Repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +24,8 @@ public class ApiController {
     UserRepository users;
     @Autowired
     TalentRepository talents;
+    @Autowired
+    PersonRepository persons;
 
     @RequestMapping(method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
     public String index() {
@@ -40,10 +45,23 @@ public class ApiController {
     }
 
     @RequestMapping(path = "/users/register",method = RequestMethod.POST)
-    public Users registerUser(@RequestBody Users s, HttpServletResponse response) throws IOException {
+    public Users registerUser(@RequestBody String json, HttpServletResponse response) throws IOException {
         try {
-            s.setPassword(BCrypt.hashpw(s.getPassword(),BCrypt.gensalt()));
-            return users.save(s);
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode node = mapper.readTree(json);
+
+            Users user = mapper.convertValue(node.get("user"), Users.class);
+            Persons person = mapper.convertValue(node.get("person"), Persons.class);
+            user.setPassword(BCrypt.hashpw(user.getPassword(),BCrypt.gensalt()));
+
+            person.setId(Long.parseLong("0"));
+            persons.save(person);
+            person=persons.findByEmail(person.getEmail());
+            user.setPerson_id(person.getId());
+            users.save(user);
+            person.setId(person.getId());
+
+            return user;
         }catch (Exception e){
             response.sendError(SC_CONFLICT,e.getMessage());
             return null;
