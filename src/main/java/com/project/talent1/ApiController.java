@@ -9,10 +9,13 @@ import com.project.talent1.Repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.crypto.dsig.keyinfo.KeyValue;
 import java.io.IOException;
 import com.project.talent1.Models.*;
+import org.springframework.web.context.request.WebRequest;
 
 import static javax.servlet.http.HttpServletResponse.*;
 
@@ -59,9 +62,8 @@ public class ApiController {
             person=persons.findByEmail(person.getEmail());
             user.setPerson_id(person.getId());
             users.save(user);
-            person.setId(person.getId());
 
-            return user;
+            return users.findByPerson_id(persons.findByEmail(person.getEmail()).getId());
         }catch (Exception e){
             response.sendError(SC_CONFLICT,e.getMessage());
             return null;
@@ -69,14 +71,21 @@ public class ApiController {
 
     }
 
-    /*
+
     @RequestMapping(path = "/users/login",method = RequestMethod.POST)
-    public Users login(@RequestBody Users inputUser, HttpServletResponse response) throws IOException {
-        Users fullUser = users.findByEmail(inputUser.getEmail());
-        fullUser.login(response,inputUser.getPassword());
-        return fullUser;
+    public Users login(@RequestBody String json, HttpServletResponse response) throws IOException {
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode node = mapper.readTree(json);
+        String email = mapper.convertValue(node.get("email"), String.class);
+        String password = mapper.convertValue(node.get("password"), String.class);
+
+        Users user = users.findByPerson_id(persons.findByEmail(email).getId());
+        user.login(response,password);
+
+        return user;
     }
-    */
+
     /*============================================================================
         Talents
     ============================================================================*/
