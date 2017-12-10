@@ -2,11 +2,14 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {Modal, Button, FormGroup, form, ControlLabel, FormControl, HelpBlock} from  'react-bootstrap';
 import { Register as RegisterClicked } from '../actions/RegisterActions';
+import { Navigation } from '../components/Navigation';
+
 
 class Register extends Component {
     render() {
         return (
             <div className="static-modal" style={{marginTop: '50px'}}>
+                <Navigation props={this.props.history} status={this.props.logStatus} />
                 <Modal.Dialog>
                     <Modal.Header>
                         <Modal.Title>Register</Modal.Title>
