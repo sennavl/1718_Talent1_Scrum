@@ -9,7 +9,6 @@ import java.util.List;
 public interface TalentRepository extends CrudRepository<Talents,Long> {
     Talents findById(long id);
 
-    @Query(nativeQuery = true, value = "SELECT * FROM talents ORDER BY matches DESC")
     List<Talents> findAll();
 
     @Query(nativeQuery = true, value = "SELECT TOP 20 * FROM talents ORDER BY matches DESC")
