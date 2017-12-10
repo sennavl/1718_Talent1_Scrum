@@ -6,16 +6,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.talent1.Repositories.PersonRepository;
 import com.project.talent1.Repositories.TalentRepository;
 import com.project.talent1.Repositories.UserRepository;
+import com.project.talent1.Repositories.UsersHasTalentsRepository;
+import com.project.talent1.Utils.JsonHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCrypt;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.crypto.dsig.keyinfo.KeyValue;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.project.talent1.Models.*;
-import org.springframework.web.context.request.WebRequest;
 
 import static javax.servlet.http.HttpServletResponse.*;
 
@@ -29,6 +31,8 @@ public class ApiController {
     TalentRepository talents;
     @Autowired
     PersonRepository persons;
+    @Autowired
+    UsersHasTalentsRepository usersHasTalentsRepository;
 
     @RequestMapping(method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
     public String index() {
@@ -50,11 +54,8 @@ public class ApiController {
     @RequestMapping(path = "/users/register",method = RequestMethod.POST)
     public Users registerUser(@RequestBody String json, HttpServletResponse response) throws IOException {
         try {
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readTree(json);
-
-            Users user = mapper.convertValue(node.get("user"), Users.class);
-            Persons person = mapper.convertValue(node.get("person"), Persons.class);
+            Users user = JsonHelper.getUserOutJson(json);
+            Persons person = JsonHelper.getPersonOutJson(json);
             user.setPassword(BCrypt.hashpw(user.getPassword(),BCrypt.gensalt()));
 
             persons.save(person);
@@ -72,11 +73,8 @@ public class ApiController {
 
     @RequestMapping(path = "/users/login",method = RequestMethod.POST)
     public Users login(@RequestBody String json, HttpServletResponse response) throws IOException {
-
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode node = mapper.readTree(json);
-        String email = mapper.convertValue(node.get("email"), String.class);
-        String password = mapper.convertValue(node.get("password"), String.class);
+        String password = JsonHelper.getStringOutJson("password",json);
+        String email = JsonHelper.getStringOutJson("email",json);
 
         Users user = users.findByPerson_id(persons.findByEmail(email).getId());
         user.login(response,password);
@@ -107,6 +105,34 @@ public class ApiController {
             return null;
         }
 
+    }
+
+    @GetMapping(path = "/users/{id}/talents")
+    public Iterable<Talents> getAllTalentsOfUser(@PathVariable long id){
+        Iterable<Users_has_talents> items= usersHasTalentsRepository.findAllByPersonId(id);
+        List<Talents> ouput = new ArrayList<Talents>();
+        for (Users_has_talents u: items) {
+            if(u.getHide().equals("0")){
+                ouput.add(talents.findById(u.getTalentId()));
+            }
+        }
+        return ouput;
+    }
+
+    @RequestMapping(path = "/users/{id}/talents/add")
+    public Iterable<Talents> addUserTalent(@RequestBody String json,@PathVariable long id) throws IOException {
+        Talents t = JsonHelper.getTalentOutJson(json);
+
+
+        Talents talent = talents.findByName(t.getName());
+        if(t!=null){
+            Users_has_talents entry = new Users_has_talents();
+            entry.setPersonId(id);
+            entry.setTalentId(t.getId());
+        }else{
+
+        }
+        return getAllTalentsOfUser(id);
     }
     /*============================================================================
         Voters

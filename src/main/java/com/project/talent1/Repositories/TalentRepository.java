@@ -15,4 +15,5 @@ public interface TalentRepository extends CrudRepository<Talents,Long> {
     List<Talents> findTop20();
 
     Talents findByNameContaining(String name);
+    Talents findByName(String name);
 }

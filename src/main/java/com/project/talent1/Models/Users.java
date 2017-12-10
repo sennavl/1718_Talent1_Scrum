@@ -18,8 +18,6 @@ public class Users {
   private java.sql.Date birthday;
   private String password;
 
-  private List<Users_has_talents> userTalents;
-
   @OneToOne
   @JoinColumn(name = "person_id")
   public Persons person;
@@ -56,14 +54,5 @@ public class Users {
     } catch (NullPointerException e) {
       response.sendError(SC_CONFLICT, "Users does not exist");
     }
-  }
-
-  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-  public List<Users_has_talents> getUserTalents() {
-    return userTalents;
-  }
-
-  public void setUserTalents(List<Users_has_talents> userTalents) {
-    this.userTalents = userTalents;
   }
 }

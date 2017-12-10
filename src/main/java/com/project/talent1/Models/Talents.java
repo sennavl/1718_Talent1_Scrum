@@ -11,8 +11,6 @@ public class Talents {
   private String name;
   private Long matches;
 
-  private List<Users_has_talents> userTalents;
-
   public Long getId() {
     return id;
   }
@@ -35,14 +33,5 @@ public class Talents {
 
   public void setMatches(Long matches) {
     this.matches = matches;
-  }
-
-  @OneToMany(mappedBy = "talent", cascade = CascadeType.ALL, orphanRemoval = true)
-  public List<Users_has_talents> getUserTalents() {
-    return userTalents;
-  }
-
-  public void setUserTalents(List<Users_has_talents> userTalents) {
-    this.userTalents = userTalents;
   }
 }
