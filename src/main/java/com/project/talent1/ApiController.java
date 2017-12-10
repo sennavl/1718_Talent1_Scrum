@@ -108,6 +108,26 @@ public class ApiController {
         }
 
     }
+
+    /*
+    @RequestMapping(path = "/user/{user_id}/talent/{talent_id}/description/{description}",method = RequestMethod.POST)
+    public void addTalentToUser(long user_id, long talent_id, String description){
+        Users u = users.findByPerson_id(user_id);
+        Talents t = talents.findById(talent_id);
+
+        Users_has_talents ut = new Users_has_talents();
+
+        ut.setTalent(t);
+        ut.setUser(u);
+        ut.setHide("0");
+        ut.setDescription(description);
+
+        u.getUserTalents().add(ut);
+
+        users.save(u);
+        talents.save(t);
+    }
+    */
     /*============================================================================
         Voters
     ============================================================================*/
