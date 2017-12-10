@@ -2,15 +2,12 @@ package com.project.talent1.Models;
 
 import org.apache.catalina.User;
 
-import javax.persistence.JoinTable;
-import javax.persistence.OneToOne;
-
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Persons {
   @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
   private String firstname;
   private String lastname;

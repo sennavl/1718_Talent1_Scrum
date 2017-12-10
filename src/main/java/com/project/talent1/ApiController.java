@@ -57,7 +57,6 @@ public class ApiController {
             Persons person = mapper.convertValue(node.get("person"), Persons.class);
             user.setPassword(BCrypt.hashpw(user.getPassword(),BCrypt.gensalt()));
 
-            person.setId(Long.parseLong("0"));
             persons.save(person);
             person=persons.findByEmail(person.getEmail());
             user.setPerson_id(person.getId());
@@ -70,7 +69,6 @@ public class ApiController {
         }
 
     }
-
 
     @RequestMapping(path = "/users/login",method = RequestMethod.POST)
     public Users login(@RequestBody String json, HttpServletResponse response) throws IOException {
@@ -96,6 +94,19 @@ public class ApiController {
     @GetMapping(path = "/talents/{id}")
     public Talents getTalent(@PathVariable long id){
         return talents.findById(id);
+    }
+
+    @RequestMapping(path = "/talents/add")
+    public Talents addTalent(@RequestBody Talents t, HttpServletResponse response) throws IOException {
+        if(talents.findByNameContaining(t.getName())==null){
+            t.setMatches(Long.parseLong("0"));
+            talents.save(t);
+            return t;
+        }else {
+            response.sendError(404,"Already exists");
+            return null;
+        }
+
     }
     /*============================================================================
         Voters

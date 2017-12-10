@@ -11,4 +11,6 @@ public interface TalentRepository extends CrudRepository<Talents,Long> {
 
     @Query(nativeQuery = true, value = "SELECT TOP 20 * FROM talents ORDER BY matches DESC")
     List<Talents> findTop20();
+
+    Talents findByNameContaining(String name);
 }
