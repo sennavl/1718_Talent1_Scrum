@@ -112,7 +112,7 @@ public class ApiController {
         Iterable<Users_has_talents> items= usersHasTalentsRepository.findAllByPersonId(id);
         List<Talents> ouput = new ArrayList<Talents>();
         for (Users_has_talents u: items) {
-            if(u.getHide().equals("0")){
+            if(u.getHide()==(0)){
                 ouput.add(talents.findById(u.getTalentId()));
             }
         }
@@ -121,17 +121,19 @@ public class ApiController {
 
     @RequestMapping(path = "/users/{id}/talents/add")
     public Iterable<Talents> addUserTalent(@RequestBody String json,@PathVariable long id) throws IOException {
-        Talents t = JsonHelper.getTalentOutJson(json);
+        Users_has_talents userTalent = JsonHelper.getUserTalentOutJson(json);
+        if(userTalent.getTalentId()==0){
+            Talents t = JsonHelper.getTalentOutJson(json);
 
-
-        Talents talent = talents.findByName(t.getName());
-        if(t!=null){
-            Users_has_talents entry = new Users_has_talents();
-            entry.setPersonId(id);
-            entry.setTalentId(t.getId());
+            //TODO: Toevoegen van Talent
         }else{
-
+            userTalent.setPersonId(id);
+            usersHasTalentsRepository.save(userTalent);
+            Talents t = talents.findById(userTalent.getTalentId());
+            t.setMatches(t.getMatches()+1);
+            talents.save(t);
         }
+
         return getAllTalentsOfUser(id);
     }
     /*============================================================================
@@ -141,6 +143,9 @@ public class ApiController {
     /*============================================================================
         Votes
     ============================================================================*/
-
+    @GetMapping(path = "/test")
+    public Iterable<Users_has_talents> getUsersTalents(){
+        return usersHasTalentsRepository.findAll();
+    }
 
 }

@@ -9,7 +9,7 @@ public class Users_has_talents {
   private long personId;
   private long talentId;
   private String description;
-  private String hide;
+  private int hide;
 
 
   public long getPersonId() {
@@ -39,11 +39,11 @@ public class Users_has_talents {
   }
 
 
-  public String getHide() {
+  public int getHide() {
     return hide;
   }
 
-  public void setHide(String hide) {
+  public void setHide(int hide) {
     this.hide = hide;
   }
 
