@@ -5,6 +5,7 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import javax.persistence.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Set;
 
 import static javax.servlet.http.HttpServletResponse.SC_CONFLICT;
 
@@ -15,6 +16,8 @@ public class Users {
   private Long person_id;
   private java.sql.Date birthday;
   private String password;
+
+  private Set<Users_has_talents> userTalents;
 
   @OneToOne
   @JoinColumn(name = "person_id")
@@ -52,5 +55,14 @@ public class Users {
     } catch (NullPointerException e) {
       response.sendError(SC_CONFLICT, "Users does not exist");
     }
+  }
+
+  @OneToMany(mappedBy = "Users", cascade = CascadeType.ALL, orphanRemoval = true)
+  public Set<Users_has_talents> getUserTalents() {
+    return userTalents;
+  }
+
+  public void setUserTalents(Set<Users_has_talents> userTalents) {
+    this.userTalents = userTalents;
   }
 }
