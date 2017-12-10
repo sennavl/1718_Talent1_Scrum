@@ -4,8 +4,8 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "users_has_talents")
-public class UsersTalents implements Serializable {
+@Table(name = "user_has_talents")
+public class Users_has_talents implements Serializable {
   private Users user;
   private Talents talent;
   private String description;

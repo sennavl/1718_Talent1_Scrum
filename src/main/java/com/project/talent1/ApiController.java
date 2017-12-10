@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.talent1.Repositories.PersonRepository;
 import com.project.talent1.Repositories.TalentRepository;
 import com.project.talent1.Repositories.UserRepository;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -108,24 +107,6 @@ public class ApiController {
             return null;
         }
 
-    }
-
-    @RequestMapping(path = "/user/{user_id}/talent/{talent_id}/description/{description}",method = RequestMethod.POST)
-    public void addTalentToUser(long user_id, long talent_id, String description){
-        Users u = users.findByPerson_id(user_id);
-        Talents t = talents.findById(talent_id);
-
-        UsersTalents ut = new UsersTalents();
-
-        ut.setTalent(t);
-        ut.setUser(u);
-        ut.setHide("0");
-        ut.setDescription(description);
-
-        u.getUserTalents().add(ut);
-
-        users.save(u);
-        talents.save(t);
     }
     /*============================================================================
         Voters

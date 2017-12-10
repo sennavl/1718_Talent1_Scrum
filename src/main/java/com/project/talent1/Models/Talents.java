@@ -1,10 +1,9 @@
 package com.project.talent1.Models;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.List;
 
 @Entity
-@Table(name = "talents")
 public class Talents {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -12,7 +11,7 @@ public class Talents {
   private String name;
   private Long matches;
 
-  private Set<UsersTalents> userTalents;
+  private List<Users_has_talents> userTalents;
 
   public Long getId() {
     return id;
@@ -38,12 +37,12 @@ public class Talents {
     this.matches = matches;
   }
 
-  @OneToMany(mappedBy = "talents", cascade = CascadeType.ALL, orphanRemoval = true)
-  public Set<UsersTalents> getUserTalents() {
+  @OneToMany(mappedBy = "talent", cascade = CascadeType.ALL, orphanRemoval = true)
+  public List<Users_has_talents> getUserTalents() {
     return userTalents;
   }
 
-  public void setUserTalents(Set<UsersTalents> userTalents) {
+  public void setUserTalents(List<Users_has_talents> userTalents) {
     this.userTalents = userTalents;
   }
 }
