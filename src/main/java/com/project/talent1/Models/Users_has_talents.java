@@ -1,25 +1,35 @@
 package com.project.talent1.Models;
 
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
 public class Users_has_talents {
-  private Long person_id;
-  private Long talent_id;
+  private Users user;
+  private Talents talent;
   private String description;
   private String hide;
 
-  public Long getPerson_id() {
-    return person_id;
+  @Id
+  @ManyToOne
+  @JoinColumn(name = "person_id")
+  public Users getUser() {
+    return user;
   }
 
-  public void setPerson_id(Long person_id) {
-    this.person_id = person_id;
+  public void setUser(Users user) {
+    this.user = user;
   }
 
-  public Long getTalent_id() {
-    return talent_id;
+  @Id
+  @ManyToOne
+  @JoinColumn(name = "talent_id")
+  public Talents getTalent() {
+    return talent;
   }
 
-  public void setTalent_id(Long talent_id) {
-    this.talent_id = talent_id;
+  public void setTalent(Talents talent) {
+    this.talent = talent;
   }
 
   public String getDescription() {
