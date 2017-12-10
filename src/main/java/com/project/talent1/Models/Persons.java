@@ -1,27 +1,28 @@
-package com.project.talent1;
+package com.project.talent1.Models;
 
-import javax.persistence.Id;
+import org.apache.catalina.User;
+
+import javax.persistence.JoinTable;
+import javax.persistence.OneToOne;
 
 import javax.persistence.Entity;
+import javax.persistence.Id;
 
 @Entity
-public class Voter {
+public class Persons {
   @Id
-  private long id;
+  private Long id;
   private String firstname;
   private String lastname;
   private String email;
-  private long usersId;
 
-
-  public long getId() {
+  public Long getId() {
     return id;
   }
 
-  public void setId(long id) {
+  public void setId(Long id) {
     this.id = id;
   }
-
 
   public String getFirstname() {
     return firstname;
@@ -31,7 +32,6 @@ public class Voter {
     this.firstname = firstname;
   }
 
-
   public String getLastname() {
     return lastname;
   }
@@ -40,7 +40,6 @@ public class Voter {
     this.lastname = lastname;
   }
 
-
   public String getEmail() {
     return email;
   }
@@ -48,14 +47,4 @@ public class Voter {
   public void setEmail(String email) {
     this.email = email;
   }
-
-
-  public long getUsersId() {
-    return usersId;
-  }
-
-  public void setUsersId(long usersId) {
-    this.usersId = usersId;
-  }
-
 }
