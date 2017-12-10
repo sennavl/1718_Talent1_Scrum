@@ -1,10 +1,11 @@
 package com.project.talent1.Models;
 
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
+import java.io.Serializable;
 
-public class Users_has_talents {
+@Entity
+@Table(name = "users_has_talents")
+public class UsersTalents implements Serializable {
   private Users user;
   private Talents talent;
   private String description;

@@ -4,6 +4,7 @@ import javax.persistence.*;
 import java.util.Set;
 
 @Entity
+@Table(name = "talents")
 public class Talents {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -11,7 +12,7 @@ public class Talents {
   private String name;
   private Long matches;
 
-  private Set<Users_has_talents> userTalents;
+  private Set<UsersTalents> userTalents;
 
   public Long getId() {
     return id;
@@ -37,12 +38,12 @@ public class Talents {
     this.matches = matches;
   }
 
-  @OneToMany(mappedBy = "Talents", cascade = CascadeType.ALL, orphanRemoval = true)
-  public Set<Users_has_talents> getUserTalents() {
+  @OneToMany(mappedBy = "talents", cascade = CascadeType.ALL, orphanRemoval = true)
+  public Set<UsersTalents> getUserTalents() {
     return userTalents;
   }
 
-  public void setUserTalents(Set<Users_has_talents> userTalents) {
+  public void setUserTalents(Set<UsersTalents> userTalents) {
     this.userTalents = userTalents;
   }
 }

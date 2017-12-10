@@ -5,6 +5,7 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import javax.persistence.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Set;
 
 import static javax.servlet.http.HttpServletResponse.SC_CONFLICT;
@@ -17,7 +18,11 @@ public class Users {
   private java.sql.Date birthday;
   private String password;
 
-  private Set<Users_has_talents> userTalents;
+  private Set<UsersTalents> userTalents;
+
+  public Users() {
+    userTalents = new HashSet<>();
+  }
 
   @OneToOne
   @JoinColumn(name = "person_id")
@@ -57,12 +62,12 @@ public class Users {
     }
   }
 
-  @OneToMany(mappedBy = "Users", cascade = CascadeType.ALL, orphanRemoval = true)
-  public Set<Users_has_talents> getUserTalents() {
+  @OneToMany(mappedBy = "users", cascade = CascadeType.ALL, orphanRemoval = true)
+  public Set<UsersTalents> getUserTalents() {
     return userTalents;
   }
 
-  public void setUserTalents(Set<Users_has_talents> userTalents) {
+  public void setUserTalents(Set<UsersTalents> userTalents) {
     this.userTalents = userTalents;
   }
 }
