@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.talent1.Repositories.PersonRepository;
 import com.project.talent1.Repositories.TalentRepository;
 import com.project.talent1.Repositories.UserRepository;
+import com.project.talent1.Repositories.Users_has_talentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -26,6 +27,8 @@ public class ApiController {
     TalentRepository talents;
     @Autowired
     PersonRepository persons;
+    @Autowired
+    Users_has_talentRepository userTalents;
 
     @RequestMapping(method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
     public String index() {
@@ -87,6 +90,19 @@ public class ApiController {
     @GetMapping(path = "/talents/{id}")
     public Talents getTalent(@PathVariable long id){
         return talents.findById(id);
+    }
+
+    @RequestMapping(path = "/user/{user_id}/talent/{talent_id}",method = RequestMethod.POST)
+    public void addTalentToUser(long user_id, long talent_id){
+        try {
+            Users_has_talents ut = new Users_has_talents();
+
+            ut.setPerson_id(user_id);
+            ut.setTalent_id(talent_id);
+
+            userTalents.save(ut);
+        }catch (Exception e){
+        }
     }
     /*============================================================================
         Voters
