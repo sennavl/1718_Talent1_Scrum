@@ -24,7 +24,7 @@ public class Users_has_talents {
   @Id
   @ManyToOne
   @JoinColumn(name = "talent_id")
-  public Talents getPublisher() {
+  public Talents getTalent() {
     return talent;
   }
 
