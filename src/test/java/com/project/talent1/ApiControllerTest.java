@@ -1,7 +1,9 @@
 package com.project.talent1;
 
+import com.project.talent1.Models.Persons;
 import com.project.talent1.Models.Users;
 import com.project.talent1.Repositories.UserRepository;
+import com.project.talent1.Utils.JsonHelper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -66,6 +68,22 @@ public class ApiControllerTest {
     @Test
     public void getOneUser() throws Exception{
         mockMvc.perform(get("/api/users/4"))
+                .andExpect(content().contentType(contentType))
+                .andExpect(status().isOk());
+    }
+
+
+
+    @Test
+    public void logUserIn() throws Exception{
+        String email = "janrobert422@gmail.com";
+        String password = "Azerty123";
+
+        String jsonTest = JsonHelper.loginCredentialsToJson(email, password);
+
+        mockMvc.perform(post("/api/users/login/")
+                .content(jsonTest)
+                .contentType(contentType))
                 .andExpect(content().contentType(contentType))
                 .andExpect(status().isOk());
     }
