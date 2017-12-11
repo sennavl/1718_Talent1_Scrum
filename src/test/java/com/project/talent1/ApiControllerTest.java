@@ -2,6 +2,7 @@ package com.project.talent1;
 
 import com.project.talent1.Models.Persons;
 import com.project.talent1.Models.Users;
+import com.project.talent1.Repositories.PersonRepository;
 import com.project.talent1.Repositories.UserRepository;
 import com.project.talent1.Utils.JsonHelper;
 import org.junit.Before;
@@ -52,6 +53,8 @@ public class ApiControllerTest {
     private WebApplicationContext webApplicationContext;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private PersonRepository personRepository;
 
     @Before
     public void setup() throws Exception {
@@ -72,17 +75,41 @@ public class ApiControllerTest {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    public void registerUser() throws Exception{
+        Users u = new Users();
+        u.setPassword("Azerty123");
+        u.setBirthday(Date.valueOf(LocalDate.parse("1997-06-01")));
 
+        Persons p = new Persons();
+        p.setEmail("senna@mail.be");
+        p.setFirstname("Senna");
+        p.setLastname("Van Londersele");
+
+        String jsonRegistration = JsonHelper.registrationCredentialsToJson(u, p);
+
+        mockMvc.perform(post("/api/users/register/")
+                .content(jsonRegistration)
+                .contentType(contentType))
+                .andExpect(content().contentType(contentType))
+                .andExpect(status().isOk());
+
+        Persons pDel = personRepository.findByEmail("senna@mail.be");
+        Users uDel = userRepository.findByPerson_id(pDel.getId());
+
+        userRepository.delete(uDel);
+        personRepository.delete(pDel);
+    }
 
     @Test
     public void logUserIn() throws Exception{
         String email = "janrobert422@gmail.com";
         String password = "Azerty123";
 
-        String jsonTest = JsonHelper.loginCredentialsToJson(email, password);
+        String jsonLogin = JsonHelper.loginCredentialsToJson(email, password);
 
         mockMvc.perform(post("/api/users/login/")
-                .content(jsonTest)
+                .content(jsonLogin)
                 .contentType(contentType))
                 .andExpect(content().contentType(contentType))
                 .andExpect(status().isOk());
