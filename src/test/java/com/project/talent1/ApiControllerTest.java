@@ -1,9 +1,13 @@
 package com.project.talent1;
 
 import com.project.talent1.Models.Persons;
+import com.project.talent1.Models.Talents;
 import com.project.talent1.Models.Users;
+import com.project.talent1.Models.Users_has_talents;
 import com.project.talent1.Repositories.PersonRepository;
+import com.project.talent1.Repositories.TalentRepository;
 import com.project.talent1.Repositories.UserRepository;
+import com.project.talent1.Repositories.UsersHasTalentsRepository;
 import com.project.talent1.Utils.JsonHelper;
 import org.junit.Before;
 import org.junit.Test;
@@ -55,11 +59,19 @@ public class ApiControllerTest {
     private UserRepository userRepository;
     @Autowired
     private PersonRepository personRepository;
+    @Autowired
+    private TalentRepository talentRepository;
+    @Autowired
+    UsersHasTalentsRepository usersHasTalentsRepository;
 
     @Before
     public void setup() throws Exception {
         this.mockMvc = webAppContextSetup(webApplicationContext).build();
     }
+
+    /*============================================================================
+        Users
+    ============================================================================*/
 
     @Test
     public void getAllUsers() throws Exception{
@@ -113,5 +125,67 @@ public class ApiControllerTest {
                 .contentType(contentType))
                 .andExpect(content().contentType(contentType))
                 .andExpect(status().isOk());
+    }
+
+    /*============================================================================
+        Talents
+    ============================================================================*/
+
+    @Test
+    public void getAllTalents() throws Exception{
+        mockMvc.perform(get("/api/talents"))
+                .andExpect(content().contentType(contentType))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void getOneTalent() throws Exception{
+        mockMvc.perform(get("/api/talents/1"))
+                .andExpect(content().contentType(contentType))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void addTalent() throws Exception{
+        String name = "Leider";
+
+        String jsonTalent = JsonHelper.talentToJson(name);
+
+        mockMvc.perform(post("/api/talents/add")
+                .content(jsonTalent)
+                .contentType(contentType))
+                .andExpect(content().contentType(contentType))
+                .andExpect(status().isOk());
+
+        Talents tDel = talentRepository.findByName("Leider");
+
+        talentRepository.delete(tDel);
+    }
+
+    @Test
+    public void getAllTalentsOfUser() throws Exception{
+        mockMvc.perform(get("/api/users/4/talents"))
+                .andExpect(content().contentType(contentType))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void addTalentToUser() throws Exception{
+        Users_has_talents userTalents = new Users_has_talents();
+        userTalents.setTalentId(2);
+        userTalents.setDescription("Dit klopt");
+        userTalents.setHide(0);
+
+        String jsonUserTalent = JsonHelper.userTalentToJson(userTalents);
+
+        mockMvc.perform(post("/api/users/9/talents/add")
+                .content(jsonUserTalent)
+                .contentType(contentType))
+                .andExpect(content().contentType(contentType))
+                .andExpect(status().isOk());
+
+        Iterable<Users_has_talents> utDel = usersHasTalentsRepository.findAllByPersonId(9);
+
+        usersHasTalentsRepository.delete(utDel);
     }
 }
