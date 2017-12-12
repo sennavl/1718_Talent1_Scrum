@@ -65,7 +65,7 @@ public class ApiControllerTest {
     UsersHasTalentsRepository usersHasTalentsRepository;
 
     @Before
-    public void setup() throws Exception {
+    public void setup(){
         this.mockMvc = webAppContextSetup(webApplicationContext).build();
     }
 
@@ -98,7 +98,7 @@ public class ApiControllerTest {
         p.setFirstname("Senna");
         p.setLastname("Van Londersele");
 
-        String jsonRegistration = JsonHelper.registrationCredentialsToJson(u, p);
+        String jsonRegistration = TestHelper.registrationCredentialsToJson(u, p);
 
         mockMvc.perform(post("/api/users/register/")
                 .content(jsonRegistration)
@@ -118,7 +118,7 @@ public class ApiControllerTest {
         String email = "janrobert422@gmail.com";
         String password = "Azerty123";
 
-        String jsonLogin = JsonHelper.loginCredentialsToJson(email, password);
+        String jsonLogin = TestHelper.loginCredentialsToJson(email, password);
 
         mockMvc.perform(post("/api/users/login/")
                 .content(jsonLogin)
@@ -149,7 +149,7 @@ public class ApiControllerTest {
     public void addTalent() throws Exception{
         String name = "Leider";
 
-        String jsonTalent = JsonHelper.talentToJson(name);
+        String jsonTalent = TestHelper.talentToJson(name);
 
         mockMvc.perform(post("/api/talents/add")
                 .content(jsonTalent)
@@ -176,7 +176,7 @@ public class ApiControllerTest {
         userTalents.setDescription("Dit klopt");
         userTalents.setHide(0);
 
-        String jsonUserTalent = JsonHelper.userTalentToJson(userTalents);
+        String jsonUserTalent = TestHelper.userTalentToJson(userTalents);
 
         mockMvc.perform(post("/api/users/9/talents/add")
                 .content(jsonUserTalent)
