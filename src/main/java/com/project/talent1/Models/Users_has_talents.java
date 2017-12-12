@@ -1,24 +1,23 @@
-package com.project.talent1;
-
-import javax.persistence.Id;
+package com.project.talent1.Models;
 
 import javax.persistence.Entity;
+import javax.persistence.Id;
 
 @Entity
-public class UsersHasTalents {
+public class Users_has_talents {
   @Id
-  private long userId;
+  private long personId;
   private long talentId;
   private String description;
-  private String hide;
+  private int hide;
 
 
-  public long getUserId() {
-    return userId;
+  public long getPersonId() {
+    return personId;
   }
 
-  public void setUserId(long userId) {
-    this.userId = userId;
+  public void setPersonId(long personId) {
+    this.personId = personId;
   }
 
 
@@ -40,11 +39,11 @@ public class UsersHasTalents {
   }
 
 
-  public String getHide() {
+  public int getHide() {
     return hide;
   }
 
-  public void setHide(String hide) {
+  public void setHide(int hide) {
     this.hide = hide;
   }
 

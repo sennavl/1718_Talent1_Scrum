@@ -10,16 +10,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @SpringBootApplication
 public class Talent1Application {
 
-	@Bean
-	public WebMvcConfigurer corsConfigurer() {
-		return new WebMvcConfigurerAdapter() {
-			@Override
-			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/**").allowedOrigins("*");
-			}
-		};
-	}
-
 	public static void main(String[] args) {
 		SpringApplication.run(Talent1Application.class, args);
 	}
