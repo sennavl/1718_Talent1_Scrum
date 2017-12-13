@@ -16,7 +16,4 @@ public interface TalentRepository extends CrudRepository<Talents,Long> {
 
     Talents findByNameContaining(String name);
     Talents findByName(String name);
-
-    @Query(nativeQuery = true,value = "UPDATE talents SET talents.matches = matches+1 WHERE id=?#{[0]}")
-    void addMatch(long id);
 }
