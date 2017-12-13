@@ -139,6 +139,13 @@ public class ApiControllerTest {
     }
 
     @Test
+    public void getTop20Talents() throws Exception{
+        mockMvc.perform(get("/api/talents/top20"))
+                .andExpect(content().contentType(contentType))
+                .andExpect(status().isOk());
+    }
+
+    @Test
     public void getOneTalent() throws Exception{
         mockMvc.perform(get("/api/talents/1"))
                 .andExpect(content().contentType(contentType))
@@ -147,7 +154,7 @@ public class ApiControllerTest {
 
     @Test
     public void addTalent() throws Exception{
-        String name = "Leider";
+        String name = "Talent";
 
         String jsonTalent = TestHelper.talentToJson(name);
 
@@ -157,7 +164,7 @@ public class ApiControllerTest {
                 .andExpect(content().contentType(contentType))
                 .andExpect(status().isOk());
 
-        Talents tDel = talentRepository.findByName("Leider");
+        Talents tDel = talentRepository.findByName("Talent");
 
         talentRepository.delete(tDel);
     }
