@@ -15,8 +15,11 @@ class TalentRegister extends Component {
             );
         }
 
+
+
         return (
             <div>
+
                 <Navigation history={this.props.history} status={this.props.logStatus} />
                 <div className="col-md-6 col-md-offset-3" >
                     <Panel header="Wat zijn uw talenten?" bsStyle="primary">
@@ -27,6 +30,9 @@ class TalentRegister extends Component {
                         <Button bsStyle="success" onClick={() => this.props.onPostAllTalents(this.props.chosenTalents, this.props.userId)} style={{marginLeft: '5px'}}>Bevestig</Button>
                     </div>
                 </div>
+                {
+                    this.props.logStatus !== "LOGGED_IN" ? this.props.history.push("/login") : ''
+                }
             </div>
         );
     }

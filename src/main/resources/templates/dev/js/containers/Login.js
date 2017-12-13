@@ -44,6 +44,9 @@ class Login extends Component {
                         <Button>Cancel</Button>
                         <Button onClick={() => this.props.history.push("/register")}>Register</Button>
                         <Button bsStyle="primary" onClick={() => this.props.onLoginClick(this.email.value, this.password.value)}>Login</Button>
+                        {
+                            this.props.logStatus === "LOGGED_IN" ? this.props.history.push("/talentregistration") : ''
+                        }
                     </Modal.Footer>
                 </Modal.Dialog>
             </div>

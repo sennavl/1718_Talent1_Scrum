@@ -10,8 +10,6 @@ export const Navigation = (props, status) => (
             <Navbar.Toggle />
         </Navbar.Header>
         <Navbar.Collapse>
-            {                console.log(props.history)
-            }
             {
                 status != 'LOGGED_IN' ?
                     <Nav pullRight>

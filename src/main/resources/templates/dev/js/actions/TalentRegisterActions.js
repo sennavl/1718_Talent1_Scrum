@@ -46,20 +46,23 @@ export const chooseTalent = (talent, key) => {
 
 export const postAllTalents = (talents, userId) => {
   return dispatch => {
+      dispatch(postingTalent());
       talents.map((talent, index) => {
           if (index != 0) { dispatch(doPostTalent(talent, userId))};
-      });
-      return {
-          type: 'POSTING_TALENTS'
-      }
-
+      })
   }
+};
+
+const postingTalent = () => {
+    return {
+        type: 'POSTING_TALENTS'
+    }
 };
 
 const doPostTalent = (talent, userId) => {
     return dispatch => {
         //dispatch(LogingIn());
-        return fetch(API+'users/4/talents/add', {
+        return fetch(API+'users/' + userId + '/talents/add', {
             method: "POST",
             body: JSON.stringify({
                 userTalent: {
