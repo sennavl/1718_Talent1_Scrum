@@ -8,7 +8,7 @@ class Login extends Component {
     render() {
         return (
             <div className="static-modal">
-                <Navigation props={this.props.history} status={this.props.logStatus} />
+                <Navigation history={this.props.history} status={this.props.logStatus} />
                 <Modal.Dialog>
                     <Modal.Header>
                         <Modal.Title>Login</Modal.Title>

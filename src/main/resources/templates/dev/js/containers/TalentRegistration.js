@@ -17,7 +17,7 @@ class TalentRegister extends Component {
 
         return (
             <div>
-                <Navigation props={this.props.history} status={this.props.logStatus} />
+                <Navigation history={this.props.history} status={this.props.logStatus} />
                 <div className="col-md-6 col-md-offset-3" >
                     <Panel header="Wat zijn uw talenten?" bsStyle="primary">
                         {list}
