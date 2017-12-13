@@ -88,6 +88,11 @@ public class ApiController {
         return talents.findAll();
     }
 
+    @GetMapping(path = "/talents/top20")
+    public Iterable<Talents> getTop20Talents(){
+        return talents.findTop20();
+    }
+
     @GetMapping(path = "/talents/{id}")
     public Talents getTalent(@PathVariable long id){
         return talents.findById(id);
