@@ -1,36 +1,34 @@
 package com.project.talent1.Models;
 
+import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
+@Entity
 public class Users_has_talents {
-  private Users user;
-  private Talents talent;
+  @Id
+  private long personId;
+  private long talentId;
   private String description;
-  private String hide;
+  private int hide;
 
-  @Id
-  @ManyToOne
-  @JoinColumn(name = "person_id")
-  public Users getUser() {
-    return user;
+
+  public long getPersonId() {
+    return personId;
   }
 
-  public void setUser(Users user) {
-    this.user = user;
+  public void setPersonId(long personId) {
+    this.personId = personId;
   }
 
-  @Id
-  @ManyToOne
-  @JoinColumn(name = "talent_id")
-  public Talents getTalent() {
-    return talent;
+
+  public long getTalentId() {
+    return talentId;
   }
 
-  public void setTalent(Talents talent) {
-    this.talent = talent;
+  public void setTalentId(long talentId) {
+    this.talentId = talentId;
   }
+
 
   public String getDescription() {
     return description;
@@ -40,11 +38,13 @@ public class Users_has_talents {
     this.description = description;
   }
 
-  public String getHide() {
+
+  public int getHide() {
     return hide;
   }
 
-  public void setHide(String hide) {
+  public void setHide(int hide) {
     this.hide = hide;
   }
+
 }

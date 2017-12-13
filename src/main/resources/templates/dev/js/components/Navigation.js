@@ -13,12 +13,12 @@ export const Navigation = (props, status) => (
             {
                 status != 'LOGGED_IN' ?
                     <Nav pullRight>
-                        <NavItem onClick={() => props.this.push("/login")}>Login</NavItem>
-                        <NavItem onClick={() => props.this.push("/register")}>Register</NavItem>
+                        <NavItem onClick={() => props.history.push("/login")}>Login</NavItem>
+                        <NavItem onClick={() => props.history.push("/register")}>Register</NavItem>
                     </Nav>
                     :
                     <Nav pullRight>
-                        <NavItem onClick={() => props.this.push("/profile")}>Profiel</NavItem>
+                        <NavItem onClick={() => props.history.push("/profile")}>Profiel</NavItem>
                     </Nav>
             }
 

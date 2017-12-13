@@ -1,12 +1,15 @@
 import React, {Component} from 'react';
 import {ButtonGroup, DropdownButton, MenuItem} from  'react-bootstrap';
 
-export const TRDropdown = (props, status) => (
+export const TRDropdown = (props) => (
     <div style={{margin: '5px'}}>
         <ButtonGroup justified>
-            <DropdownButton title="Kies een talent" id="dropdown-size-medium">
-                <MenuItem  eventKey="1">Een of ander talent</MenuItem>
-                <MenuItem  eventKey="2">Voeg zelf een talent toe</MenuItem>
+            <DropdownButton title={props.chosenTalents[props.index] === undefined ? "Kies een talent" : props.chosenTalents[props.index].value} id="dropdown-size-medium" onSelect={(evt) => props.onChooseTalent(evt, props.index)}>
+                {
+                    props.talents.map((talent, index) => {
+                        return <MenuItem  key={index} eventKey={[talent.id, talent.name]} value={props.chosenTalents[index]}>{talent.name}</MenuItem>
+                    })
+                }
             </DropdownButton>
         </ButtonGroup>
     </div>

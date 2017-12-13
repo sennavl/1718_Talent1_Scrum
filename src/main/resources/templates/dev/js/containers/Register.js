@@ -9,7 +9,7 @@ class Register extends Component {
     render() {
         return (
             <div className="static-modal" style={{marginTop: '50px'}}>
-                <Navigation props={this.props.history} status={this.props.logStatus} />
+                <Navigation history={this.props.history} status={this.props.logStatus} />
                 <Modal.Dialog>
                     <Modal.Header>
                         <Modal.Title>Register</Modal.Title>

@@ -9,6 +9,9 @@ import allReducers from './reducers';
 import App from './components/App';
 import { BrowserRouter } from 'react-router-dom'
 
+import { FetchTalents } from './actions/TalentRegisterActions';
+
+
 const store = createStore(
     allReducers,
     compose(
@@ -16,6 +19,8 @@ const store = createStore(
         window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
     )
 );
+
+store.dispatch(FetchTalents());
 
 ReactDOM.render(
     <Provider store={store}>
