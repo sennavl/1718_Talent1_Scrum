@@ -1,2 +1,6 @@
 language: java
 app: 1718_Talent1_Scrum
+services:
+  - mysql
+before_install:
+  - mysql -u root --password="" < test/travis.sql
