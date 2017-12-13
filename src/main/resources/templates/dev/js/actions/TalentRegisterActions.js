@@ -62,9 +62,11 @@ const doPostTalent = (talent, userId) => {
         return fetch(API+'users/4/talents/add', {
             method: "POST",
             body: JSON.stringify({
-                "talentId": talent.id,
-                "description":"Ik vind dit bij me passen",
-                "hide":"0"
+                userTalent: {
+                    "talentId": talent.id,
+                    "description":"Ik vind dit bij me passen",
+                    "hide":"0"
+                },
             }),
             headers: {
                 "Content-Type": "application/json"
