@@ -22,7 +22,7 @@ import com.project.talent1.Models.*;
 import static javax.servlet.http.HttpServletResponse.*;
 
 @RequestMapping("/api")
-@CrossOrigin(origins = "localhost")
+@CrossOrigin(origins = "*")
 @RestController
 public class ApiController {
     @Autowired

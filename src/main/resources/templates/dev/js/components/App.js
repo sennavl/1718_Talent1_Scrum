@@ -9,6 +9,7 @@ require('../../scss/style.scss');
 
 
 const App = () => (
+
     <div>
         <Switch>
             <Route exact path='/register' component={Register}/>

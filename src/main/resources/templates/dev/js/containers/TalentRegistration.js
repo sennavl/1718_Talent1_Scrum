@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import { Panel, Button } from  'react-bootstrap';
-import { AddTalentClicked } from '../actions/TalentRegisterActions';
+import { AddTalentClicked, chooseTalent } from '../actions/TalentRegisterActions';
 import { Navigation } from '../components/Navigation';
 import { TRDropdown } from '../components/TalentRegistration/TRDropdown';
 
@@ -11,9 +11,10 @@ class TalentRegister extends Component {
         var list = [];
         for (var i = 1; i <= this.props.talentCount; i++) {
             list.push(
-                <TRDropdown key={i}/>
+                <TRDropdown key={i} index={i} chosenTalents={this.props.chosenTalents} talents={this.props.talents} onChooseTalent={(talent, key) => this.props.onChooseTalent(talent, key)}/>
             );
         }
+
         return (
             <div>
                 <Navigation props={this.props.history} status={this.props.logStatus} />
@@ -35,14 +36,18 @@ class TalentRegister extends Component {
 
 const mapStateToProps = (state) => ({
     logStatus: state.Auth.status,
-    talentCount: state.TalentRegister.talentCount
-
+    talentCount: state.TalentRegister.talentCount,
+    talents: state.TalentRegister.talents,
+    chosenTalents: state.TalentRegister.chosenTalents
 });
 
 const mapDispatchToProps = (dispatch) => {
     return {
          onAddTalentClick: (talentCount) => {
              dispatch(AddTalentClicked(talentCount))
+        },
+        onChooseTalent: (talent, key) => {
+             dispatch(chooseTalent(talent, key))
         }
     }
 };
