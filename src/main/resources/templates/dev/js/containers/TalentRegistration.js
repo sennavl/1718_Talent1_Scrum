@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import { Panel, Button } from  'react-bootstrap';
-import { AddTalentClicked, chooseTalent } from '../actions/TalentRegisterActions';
+import { AddTalentClicked, chooseTalent, postAllTalents } from '../actions/TalentRegisterActions';
 import { Navigation } from '../components/Navigation';
 import { TRDropdown } from '../components/TalentRegistration/TRDropdown';
 
@@ -24,7 +24,7 @@ class TalentRegister extends Component {
                     </Panel>
                     <div className="pull-right">
                         <Button bsStyle="primary" onClick={() => this.props.onAddTalentClick(this.props.talentCount)}>+ Talent</Button>
-                        <Button bsStyle="success" style={{marginLeft: '5px'}}>Bevestig</Button>
+                        <Button bsStyle="success" onClick={() => this.props.onPostAllTalents(this.props.chosenTalents, this.props.userId)} style={{marginLeft: '5px'}}>Bevestig</Button>
                     </div>
                 </div>
             </div>
@@ -38,7 +38,8 @@ const mapStateToProps = (state) => ({
     logStatus: state.Auth.status,
     talentCount: state.TalentRegister.talentCount,
     talents: state.TalentRegister.talents,
-    chosenTalents: state.TalentRegister.chosenTalents
+    chosenTalents: state.TalentRegister.chosenTalents,
+    userId: state.Auth.id
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -48,6 +49,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         onChooseTalent: (talent, key) => {
              dispatch(chooseTalent(talent, key))
+        },
+        onPostAllTalents: (talents, userId) => {
+             dispatch(postAllTalents(talents, userId))
         }
     }
 };

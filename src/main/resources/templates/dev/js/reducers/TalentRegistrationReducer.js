@@ -1,6 +1,6 @@
 
 const initialState = {
-    talentCount: 3,
+    talentCount: 1,
     talents: [],
     chosenTalents: [{0:'init'}]
 };
@@ -19,14 +19,20 @@ export default function (state = initialState, action) {
             if (typeof state.chosenTalents[action.key] === 'undefined') {
                 return Object.assign({}, state, {
 
-                    chosenTalents: state.chosenTalents.concat(action.talent)
+                    chosenTalents: state.chosenTalents.concat({
+                        id: action.talent[0],
+                        value: action.talent[1]
+                    })
                 });
             } else {
                 return Object.assign({}, state, {
                     chosenTalents: state.chosenTalents.map(
                         (tal, index) => {
                             if (index === action.key) {
-                                return action.talent
+                                return {
+                                    id: action.talent[0],
+                                    value: action.talent[1]
+                                }
                             } else {
                                 return tal
                             }

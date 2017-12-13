@@ -43,3 +43,35 @@ export const chooseTalent = (talent, key) => {
         key
     }
 };
+
+export const postAllTalents = (talents, userId) => {
+  return dispatch => {
+      talents.map((talent, index) => {
+          if (index != 0) { dispatch(doPostTalent(talent, userId))};
+      });
+      return {
+          type: 'POSTING_TALENTS'
+      }
+
+  }
+};
+
+const doPostTalent = (talent, userId) => {
+    return dispatch => {
+        //dispatch(LogingIn());
+        return fetch(API+'users/4/talents/add', {
+            method: "POST",
+            body: JSON.stringify({
+                "talentId": talent.id,
+                "description":"Ik vind dit bij me passen",
+                "hide":"0"
+            }),
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "same-origin"
+        })
+            .then(response => response.json())
+            //.then(json => dispatch(LoggedIn(json)))
+    }
+};
