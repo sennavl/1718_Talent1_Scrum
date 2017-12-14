@@ -1,12 +1,17 @@
 package com.project.talent1.Models;
 
+import com.project.talent1.Utils.UserTalentsMTM;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 
 @Entity
+@IdClass(UserTalentsMTM.class)
 public class Users_has_talents {
   @Id
   private long personId;
+  @Id
   private long talentId;
   private String description;
   private int hide;
