@@ -11,12 +11,9 @@ public interface TalentRepository extends CrudRepository<Talents,Long> {
 
     List<Talents> findAll();
 
-    @Query(nativeQuery = true, value = "SELECT TOP 20 * FROM talents ORDER BY matches DESC")
+    @Query(nativeQuery = true, value = "SELECT * FROM talents ORDER BY matches DESC LIMIT 20;")
     List<Talents> findTop20();
 
     Talents findByNameContaining(String name);
     Talents findByName(String name);
-
-    @Query(nativeQuery = true,value = "UPDATE talents SET talents.matches = matches+1 WHERE id=?#{[0]}")
-    void addMatch(long id);
 }

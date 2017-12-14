@@ -1,8 +1,6 @@
 package com.project.talent1;
 
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.talent1.Repositories.PersonRepository;
 import com.project.talent1.Repositories.TalentRepository;
 import com.project.talent1.Repositories.UserRepository;
@@ -89,22 +87,27 @@ public class ApiController {
     public Iterable<Talents> getAllTalents(){
         return talents.findAll();
     }
+
+    @GetMapping(path = "/talents/top20")
+    public Iterable<Talents> getTop20Talents(){
+        return talents.findTop20();
+    }
+
     @GetMapping(path = "/talents/{id}")
     public Talents getTalent(@PathVariable long id){
         return talents.findById(id);
     }
 
     @RequestMapping(path = "/talents/add")
-    public Talents addTalent(@RequestBody Talents t, HttpServletResponse response) throws IOException {
-        if(talents.findByNameContaining(t.getName())==null){
+    public Talents addTalent(@RequestBody Talents t) throws IOException {
+        Talents fetchedTalent = talentExistsAndFetch(t.getName());
+        if(fetchedTalent==null){
             t.setMatches(Long.parseLong("0"));
             talents.save(t);
-            return t;
+            return talents.findByName(t.getName());
         }else {
-            response.sendError(404,"Already exists");
-            return null;
+            return fetchedTalent;
         }
-
     }
 
     @GetMapping(path = "/users/{id}/talents")
@@ -122,19 +125,32 @@ public class ApiController {
     @RequestMapping(path = "/users/{id}/talents/add")
     public Iterable<Talents> addUserTalent(@RequestBody String json,@PathVariable long id) throws IOException {
         Users_has_talents userTalent = JsonHelper.getUserTalentOutJson(json);
+        Talents t;
         if(userTalent.getTalentId()==0){
-            Talents t = JsonHelper.getTalentOutJson(json);
+            t = JsonHelper.getTalentOutJson(json);
 
-            //TODO: Toevoegen van Talent
-        }else{
-            userTalent.setPersonId(id);
-            usersHasTalentsRepository.save(userTalent);
-            Talents t = talents.findById(userTalent.getTalentId());
-            t.setMatches(t.getMatches()+1);
-            talents.save(t);
+            t=addTalent(t);
         }
+        userTalent.setPersonId(id);
+        usersHasTalentsRepository.save(userTalent);
+        t = talents.findById(userTalent.getTalentId());
+        t.setMatches(t.getMatches()+1);
+        talents.save(t);
 
         return getAllTalentsOfUser(id);
+    }
+
+    public Talents talentExistsAndFetch(String talent){
+        Talents searchTalent=talents.findByNameContaining(talent);
+        if(searchTalent==null){
+            return talents.findByNameContaining(talent);
+        }
+        for (Talents t:talents.findAll()) {
+            if(talent.contains(t.getName())){
+                return t;
+            }
+        }
+        return null;
     }
     /*============================================================================
         Voters
