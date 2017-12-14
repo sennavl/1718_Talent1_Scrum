@@ -72,7 +72,7 @@ public class ApiController {
     }
 
     @RequestMapping(path = "/users/login",method = RequestMethod.POST)
-    public Users login(@RequestBody String json, HttpServletResponse response) throws IOException {
+    public Long login(@RequestBody String json, HttpServletResponse response) throws IOException {
         String password = JsonHelper.getStringOutJson("password",json);
         String email = JsonHelper.getStringOutJson("email",json);
 
@@ -84,7 +84,7 @@ public class ApiController {
         userCookie.setMaxAge(30*60);
         response.addCookie(userCookie);
 
-        return user;
+        return user.getPerson_id();
     }
 
     /*============================================================================
