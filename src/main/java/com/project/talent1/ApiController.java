@@ -145,7 +145,7 @@ public class ApiController {
             t.setMatches(t.getMatches()+1);
             talents.save(t);
         }
-        
+
         return getAllTalentsOfUser(id);
     }
 
@@ -168,9 +168,10 @@ public class ApiController {
     /*============================================================================
         Votes
     ============================================================================*/
-    @GetMapping(path = "/test")
-    public Iterable<Users_has_talents> getUsersTalents(){
-        return usersHasTalentsRepository.findAll();
+    @RequestMapping(path = "/users/{id}/suggest/")
+    public void addSuggestion(@RequestBody String json,@PathVariable long id){
+
     }
+
 
 }
