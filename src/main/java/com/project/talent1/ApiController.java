@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -76,6 +78,11 @@ public class ApiController {
 
         Users user = users.findByPerson_id(persons.findByEmail(email).getId());
         user.login(response,password);
+
+        Cookie userCookie = new Cookie("user", user.getPerson_id().toString());
+        //setting cookie to expiry in 30 mins
+        userCookie.setMaxAge(30*60);
+        response.addCookie(userCookie);
 
         return user;
     }
