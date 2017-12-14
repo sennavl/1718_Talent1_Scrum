@@ -2,7 +2,8 @@
 const initialState = {
     talentCount: 1,
     talents: [],
-    chosenTalents: [{0:'init'}]
+    chosenTalents: [{0:'init'}],
+    talentRegStatus: ''
 };
 
 export default function (state = initialState, action) {
@@ -41,6 +42,14 @@ export default function (state = initialState, action) {
 
                 });
             }
+        case 'EDIT':
+            return Object.assign({}, state, {
+                status: 'EDIT'
+            });
+        case 'ADDED_TALENT':
+            return Object.assign({}, state, {
+                status: 'ADDED_TALENT'
+            });
         default:
             return state
     }

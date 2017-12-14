@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import { Panel, Button } from  'react-bootstrap';
-import { AddTalentClicked, chooseTalent, postAllTalents } from '../actions/TalentRegisterActions';
+import { Panel, Button, form, FormGroup, FormControl } from  'react-bootstrap';
+import { AddTalentClicked, chooseTalent, postAllTalents, submitTalentClick, submitNewTalent } from '../actions/TalentRegisterActions';
 import { Navigation } from '../components/Navigation';
 import { TRDropdown } from '../components/TalentRegistration/TRDropdown';
 
@@ -24,10 +24,26 @@ class TalentRegister extends Component {
                 <div className="col-md-6 col-md-offset-3" >
                     <Panel header="Wat zijn uw talenten?" bsStyle="primary">
                         {list}
+                        {this.props.talentRegStatus === 'EDIT' ?
+                            <form>
+                                <FormGroup
+                                    controlId="formTalent"
+                                >
+                                    <FormControl
+                                        inputRef={ref => { this.talent = ref; }}
+                                        type="text"
+                                        placeholder="Voeg een talent toe"
+                                    />
+                                    <FormControl.Feedback />
+                                    <Button bsStyle="primary" onClick={() => this.props.onSubmitNewTalent(this.talent.value)}>Voeg toe</Button>
+                                </FormGroup>
+                            </form> : ''
+                        }
                     </Panel>
                     <div className="pull-right">
-                        <Button bsStyle="primary" onClick={() => this.props.onAddTalentClick(this.props.talentCount)}>+ Talent</Button>
-                        <Button bsStyle="success" onClick={() => this.props.onPostAllTalents(this.props.chosenTalents, this.props.userId)} style={{marginLeft: '5px'}}>Bevestig</Button>
+                        <Button bsStyle="secondary" onClick={() => this.props.onSubmitTalentClick()}>Voeg toe</Button>
+                        <Button bsStyle="primary" onClick={() => this.props.onAddTalentClick(this.props.talentCount)} style={{marginLeft: '5px', marginRight: '5px'}}>+ Talent</Button>
+                        <Button bsStyle="success" onClick={() => this.props.onPostAllTalents(this.props.chosenTalents, this.props.userId)}>Bevestig</Button>
                     </div>
                 </div>
                 {
@@ -45,7 +61,9 @@ const mapStateToProps = (state) => ({
     talentCount: state.TalentRegister.talentCount,
     talents: state.TalentRegister.talents,
     chosenTalents: state.TalentRegister.chosenTalents,
-    userId: state.Auth.id
+    userId: state.Auth.id,
+    submitTalent: state.TalentRegister.submitTalent,
+    talentRegStatus: state.TalentRegister.status
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -58,6 +76,12 @@ const mapDispatchToProps = (dispatch) => {
         },
         onPostAllTalents: (talents, userId) => {
              dispatch(postAllTalents(talents, userId))
+        },
+        onSubmitTalentClick: () => {
+             dispatch(submitTalentClick())
+        },
+        onSubmitNewTalent: (talent) => {
+             dispatch(submitNewTalent(talent))
         }
     }
 };

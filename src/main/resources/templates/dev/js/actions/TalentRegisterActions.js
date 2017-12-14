@@ -80,3 +80,33 @@ const doPostTalent = (talent, userId) => {
             //.then(json => dispatch(LoggedIn(json)))
     }
 };
+
+export const submitTalentClick = () => {
+    return {
+        type: 'EDIT'
+    }
+};
+
+ const endSubmitTalent = () => {
+    return {
+        type: 'ADDED_TALENT'
+    }
+};
+
+export const submitNewTalent = (talent) => {
+    return dispatch => {
+        //dispatch(LogingIn());
+        return fetch(API+'talents/add', {
+            method: "POST",
+            body: JSON.stringify({
+                "name": talent,
+            }),
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "same-origin"
+        })
+            .then(response => response.json())
+        .then(json => dispatch(FetchTalents()), dispatch(endSubmitTalent()))
+    }
+};
