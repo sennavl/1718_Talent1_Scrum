@@ -7,8 +7,6 @@ import com.project.talent1.Models.Persons;
 import com.project.talent1.Models.Talents;
 import com.project.talent1.Models.Users;
 import com.project.talent1.Models.Users_has_talents;
-import net.minidev.json.JSONArray;
-import net.minidev.json.JSONObject;
 
 import java.io.IOException;
 
