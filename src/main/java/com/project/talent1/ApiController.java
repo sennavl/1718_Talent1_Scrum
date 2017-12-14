@@ -1,10 +1,7 @@
 package com.project.talent1;
 
 
-import com.project.talent1.Repositories.PersonRepository;
-import com.project.talent1.Repositories.TalentRepository;
-import com.project.talent1.Repositories.UserRepository;
-import com.project.talent1.Repositories.UsersHasTalentsRepository;
+import com.project.talent1.Repositories.*;
 import com.project.talent1.Utils.JsonHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -33,6 +30,8 @@ public class ApiController {
     PersonRepository persons;
     @Autowired
     UsersHasTalentsRepository usersHasTalentsRepository;
+    @Autowired
+    VotesRepository votes;
 
     @RequestMapping(method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
     public String index() {
@@ -168,9 +167,10 @@ public class ApiController {
     /*============================================================================
         Votes
     ============================================================================*/
-    @RequestMapping(path = "/users/{id}/suggest/")
-    public void addSuggestion(@RequestBody String json,@PathVariable long id){
-
+    @RequestMapping(path = "/users/suggest")
+    public void addSuggestion(@RequestBody Votes vote){
+        vote.setId((long)0);
+        votes.save(vote);
     }
 
 

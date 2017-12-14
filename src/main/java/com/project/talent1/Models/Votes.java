@@ -11,7 +11,7 @@ public class Votes {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
   private String text;
-  private String approved;
+  private int approved;
   private Long person_id;
   private Long users_has_talents_person_id;
   private Long users_has_talents_talent_id;
@@ -32,11 +32,11 @@ public class Votes {
     this.text = text;
   }
 
-  public String getApproved() {
+  public int getApproved() {
     return approved;
   }
 
-  public void setApproved(String approved) {
+  public void setApproved(int approved) {
     this.approved = approved;
   }
 
