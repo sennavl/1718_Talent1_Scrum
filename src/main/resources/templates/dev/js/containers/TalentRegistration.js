@@ -41,7 +41,7 @@ class TalentRegister extends Component {
                         }
                     </Panel>
                     <div className="pull-right">
-                        <Button bsStyle="secondary" onClick={() => this.props.onSubmitTalentClick()}>Voeg toe</Button>
+                        <Button bsStyle="default" onClick={() => this.props.onSubmitTalentClick()}>Voeg toe</Button>
                         <Button bsStyle="primary" onClick={() => this.props.onAddTalentClick(this.props.talentCount)} style={{marginLeft: '5px', marginRight: '5px'}}>+ Talent</Button>
                         <Button bsStyle="success" onClick={() => this.props.onPostAllTalents(this.props.chosenTalents, this.props.userId)}>Bevestig</Button>
                     </div>

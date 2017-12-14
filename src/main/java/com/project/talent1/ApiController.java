@@ -138,12 +138,14 @@ public class ApiController {
 
             t=addTalent(t);
         }
-        userTalent.setPersonId(id);
-        usersHasTalentsRepository.save(userTalent);
-        t = talents.findById(userTalent.getTalentId());
-        t.setMatches(t.getMatches()+1);
-        talents.save(t);
-
+        if(talents.findById(userTalent.getTalentId())!=null){
+            userTalent.setPersonId(id);
+            usersHasTalentsRepository.save(userTalent);
+            t = talents.findById(userTalent.getTalentId());
+            t.setMatches(t.getMatches()+1);
+            talents.save(t);
+        }
+        
         return getAllTalentsOfUser(id);
     }
 
