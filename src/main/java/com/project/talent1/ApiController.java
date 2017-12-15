@@ -3,6 +3,7 @@ package com.project.talent1;
 
 import com.project.talent1.Repositories.*;
 import com.project.talent1.Utils.JsonHelper;
+import jdk.nashorn.internal.runtime.JSONFunctions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -171,6 +172,20 @@ public class ApiController {
     public void addSuggestion(@RequestBody Votes vote){
         vote.setId((long)0);
         votes.save(vote);
+    }
+    @RequestMapping(path = "/users/processSugestion")
+    public void reactToSuggestion(@RequestBody String json) throws IOException {
+        long voteId= Long.parseLong(JsonHelper.getStringOutJson("voteId",json));
+        boolean accepted= Boolean.parseBoolean(JsonHelper.getStringOutJson("accepted",json));
+        Votes vote = votes.findById(voteId);
+        if(vote!=null){
+            if(accepted){
+                boolean hide= Boolean.parseBoolean(JsonHelper.getStringOutJson("hide",json));
+                vote.AcceptVote(votes,usersHasTalentsRepository,hide);
+            }else{
+                vote.RefuseVote(votes);
+            }
+        }
     }
 
 

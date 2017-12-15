@@ -1,5 +1,8 @@
 package com.project.talent1.Models;
 
+import com.project.talent1.Repositories.UsersHasTalentsRepository;
+import com.project.talent1.Repositories.VotesRepository;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -62,5 +65,18 @@ public class Votes {
 
   public void setUsers_has_talents_talent_id(Long users_has_talents_talent_id) {
     this.users_has_talents_talent_id = users_has_talents_talent_id;
+  }
+
+  public void AcceptVote(VotesRepository votesRepo, UsersHasTalentsRepository userTalentRepo,boolean hide){
+    Users_has_talents userTalent=new Users_has_talents();
+    userTalent.setTalentId(getUsers_has_talents_talent_id());
+    userTalent.setDescription(getText());
+    userTalent.setHide((hide) ? 1 : 0);
+    userTalent.setPersonId(getUsers_has_talents_person_id());
+    userTalentRepo.save(userTalent);
+    votesRepo.delete(getId());
+  }
+  public void RefuseVote(VotesRepository votesRepo){
+    votesRepo.delete(getId());
   }
 }

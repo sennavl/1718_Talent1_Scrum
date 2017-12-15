@@ -36,6 +36,5 @@ public class JsonHelper {
         JsonNode node = mapper.readTree(json);
         return mapper.convertValue(node.get(name), String.class);
     }
-    //Test methods
     
 }
