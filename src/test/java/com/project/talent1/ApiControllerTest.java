@@ -1,13 +1,7 @@
 package com.project.talent1;
 
-import com.project.talent1.Models.Persons;
-import com.project.talent1.Models.Talents;
-import com.project.talent1.Models.Users;
-import com.project.talent1.Models.Users_has_talents;
-import com.project.talent1.Repositories.PersonRepository;
-import com.project.talent1.Repositories.TalentRepository;
-import com.project.talent1.Repositories.UserRepository;
-import com.project.talent1.Repositories.UsersHasTalentsRepository;
+import com.project.talent1.Models.*;
+import com.project.talent1.Repositories.*;
 import com.project.talent1.Utils.JsonHelper;
 import org.junit.After;
 import org.junit.Before;
@@ -63,11 +57,14 @@ public class ApiControllerTest {
     @Autowired
     private TalentRepository talentRepository;
     @Autowired
-    UsersHasTalentsRepository usersHasTalentsRepository;
+    private UsersHasTalentsRepository usersHasTalentsRepository;
+    @Autowired
+    private VotesRepository voteRepository;
 
     private Persons person;
     private Users user;
     private long personId;
+    private long personId2;
 
     private Talents talent;
     private long talentId;
@@ -84,6 +81,11 @@ public class ApiControllerTest {
 
         this.user = userRepository.save(new Users(personId, Date.valueOf(LocalDate.parse("1997-06-01")), BCrypt.hashpw("Azerty123", BCrypt.gensalt())));
 
+        this.person = personRepository.save(new Persons("Peter", "Peeters", "peterp@mail.be"));
+        this.personId2 = personRepository.findByEmail("peterp@mail.be").getId();
+
+        this.user = userRepository.save(new Users(personId2, Date.valueOf(LocalDate.parse("1990-05-04")), BCrypt.hashpw("Azerty123", BCrypt.gensalt())));
+
         this.talent = talentRepository.save(new Talents("getalenteerd", 0L));
         this.talentId = talentRepository.findByName("getalenteerd").getId();
 
@@ -96,6 +98,8 @@ public class ApiControllerTest {
         usersHasTalentsRepository.delete(utDel);
         userRepository.delete(personId);
         personRepository.delete(personId);
+        userRepository.delete(personId2);
+        personRepository.delete(personId2);
         talentRepository.delete(talentId);
     }
 
@@ -223,5 +227,28 @@ public class ApiControllerTest {
                 .contentType(contentType))
                 .andExpect(content().contentType(contentType))
                 .andExpect(status().isOk());
+    }
+
+    /*============================================================================
+        Votes
+    ============================================================================*/
+
+    @Test
+    public void addSuggestion() throws Exception{
+        Votes vote = new Votes();
+        vote.setText("Dat is inderdaad waar");
+        vote.setPerson_id(personId);
+        vote.setUsers_has_talents_person_id(personId2);
+        vote.setUsers_has_talents_talent_id(talentId);
+
+        String jsonVote = TestHelper.voteToJson(vote);
+
+        mockMvc.perform(post("/api/users/suggest")
+                .content(jsonVote)
+                .contentType(contentType))
+                .andExpect(status().isOk());
+
+        long talentId = voteRepository.findByText("Dat is inderdaad waar").getId();
+        voteRepository.delete(talentId);
     }
 }
