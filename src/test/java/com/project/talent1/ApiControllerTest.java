@@ -2,7 +2,6 @@ package com.project.talent1;
 
 import com.project.talent1.Models.*;
 import com.project.talent1.Repositories.*;
-import com.project.talent1.Utils.JsonHelper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,28 +9,16 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.mock.http.MockHttpOutputMessage;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.nio.charset.Charset;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.sql.Date;
-import java.util.Calendar;
-import java.util.List;
-
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.*;
@@ -69,7 +56,13 @@ public class ApiControllerTest {
     private Talents talent;
     private long talentId;
 
+    private Talents talent2;
+    private long talentId2;
+
     private Users_has_talents userTalent;
+
+    private Votes vote;
+    private long voteId;
 
     @Before
     public void setup(){
@@ -89,11 +82,18 @@ public class ApiControllerTest {
         this.talent = talentRepository.save(new Talents("getalenteerd", 0L));
         this.talentId = talentRepository.findByName("getalenteerd").getId();
 
+        this.talent2 = talentRepository.save(new Talents("test", 0L));
+        this.talentId2 = talentRepository.findByName("test").getId();
+
         this.userTalent = usersHasTalentsRepository.save(new Users_has_talents(personId, talentId, "Dit is mijn talent", 0));
+
+        this.vote = voteRepository.save(new Votes("Dit is de reden", personId2, personId, talentId2));
+        this.voteId = voteRepository.findByText("Dit is de reden").getId();
     }
 
     @After
     public void after(){
+        voteRepository.delete(voteId);
         Iterable<Users_has_talents> utDel = usersHasTalentsRepository.findAllByPersonId(personId);
         usersHasTalentsRepository.delete(utDel);
         userRepository.delete(personId);
@@ -101,6 +101,7 @@ public class ApiControllerTest {
         userRepository.delete(personId2);
         personRepository.delete(personId2);
         talentRepository.delete(talentId);
+        talentRepository.delete(talentId2);
     }
 
     /*============================================================================
@@ -250,5 +251,26 @@ public class ApiControllerTest {
 
         long talentId = voteRepository.findByText("Dat is inderdaad waar").getId();
         voteRepository.delete(talentId);
+    }
+
+    @Test
+    public void acceptSuggestion() throws Exception{
+
+        String jsonReaction = TestHelper.reactionToSuggestionToJson(voteId, true, false);
+
+        mockMvc.perform(post("/api/users/processSugestion")
+                .content(jsonReaction)
+                .contentType(contentType))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void refuseSuggestion() throws Exception{
+        String jsonReaction = TestHelper.reactionToSuggestionToJson(voteId, false);
+
+        mockMvc.perform(post("/api/users/processSugestion")
+                .content(jsonReaction)
+                .contentType(contentType))
+                .andExpect(status().isOk());
     }
 }

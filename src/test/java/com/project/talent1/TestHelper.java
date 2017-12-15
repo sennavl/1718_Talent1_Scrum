@@ -69,4 +69,21 @@ public class TestHelper {
 
         return json.toString();
     }
+    public static String reactionToSuggestionToJson(long voteId, boolean accepted){
+        JSONObject json = new JSONObject();
+
+        json.put("voteId", voteId);
+        json.put("accepted", accepted);
+
+        return json.toString();
+    }
+    public static String reactionToSuggestionToJson(long voteId, boolean accepted, boolean hide){
+        JSONObject json = new JSONObject();
+
+        json.put("voteId", voteId);
+        json.put("accepted", accepted);
+        json.put("hide", hide);
+
+        return json.toString();
+    }
 }

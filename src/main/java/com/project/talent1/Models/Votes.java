@@ -19,6 +19,17 @@ public class Votes {
   private Long users_has_talents_person_id;
   private Long users_has_talents_talent_id;
 
+  public Votes(){
+
+  }
+
+  public Votes(String text, long person_id, long users_has_talents_person_id, long users_has_talents_talent_id){
+    this.text = text;
+    this.person_id = person_id;
+    this.users_has_talents_person_id = users_has_talents_person_id;
+    this.users_has_talents_talent_id = users_has_talents_talent_id;
+  }
+
   public Long getId() {
     return id;
   }
