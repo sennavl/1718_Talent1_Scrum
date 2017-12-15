@@ -82,8 +82,8 @@ public class ApiControllerTest {
         this.talent = talentRepository.save(new Talents("getalenteerd", 0L));
         this.talentId = talentRepository.findByName("getalenteerd").getId();
 
-        this.talent2 = talentRepository.save(new Talents("test", 0L));
-        this.talentId2 = talentRepository.findByName("test").getId();
+        this.talent = talentRepository.save(new Talents("andereNaam", 0L));
+        this.talentId2 = talentRepository.findByName("andereNaam").getId();
 
         this.userTalent = usersHasTalentsRepository.save(new Users_has_talents(personId, talentId, "Dit is mijn talent", 0));
 
