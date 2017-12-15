@@ -48,20 +48,13 @@ public class ApiControllerTest {
     @Autowired
     private VotesRepository voteRepository;
 
-    private Persons person;
-    private Users user;
     private long personId;
     private long personId2;
 
-    private Talents talent;
     private long talentId;
 
-    private Talents talent2;
     private long talentId2;
 
-    private Users_has_talents userTalent;
-
-    private Votes vote;
     private long voteId;
 
     @Before
@@ -69,39 +62,43 @@ public class ApiControllerTest {
 
         this.mockMvc = webAppContextSetup(webApplicationContext).build();
 
-        this.person = personRepository.save(new Persons("Senna", "Van Londersele", "senna@mail.be"));
+        personRepository.save(new Persons("Senna", "Van Londersele", "senna@mail.be"));
         this.personId = personRepository.findByEmail("senna@mail.be").getId();
 
-        this.user = userRepository.save(new Users(personId, Date.valueOf(LocalDate.parse("1997-06-01")), BCrypt.hashpw("Azerty123", BCrypt.gensalt())));
+        userRepository.save(new Users(personId, Date.valueOf(LocalDate.parse("1997-06-01")), BCrypt.hashpw("Azerty123", BCrypt.gensalt())));
 
-        this.person = personRepository.save(new Persons("Peter", "Peeters", "peterp@mail.be"));
+        personRepository.save(new Persons("Peter", "Peeters", "peterp@mail.be"));
         this.personId2 = personRepository.findByEmail("peterp@mail.be").getId();
 
-        this.user = userRepository.save(new Users(personId2, Date.valueOf(LocalDate.parse("1990-05-04")), BCrypt.hashpw("Azerty123", BCrypt.gensalt())));
+        userRepository.save(new Users(personId2, Date.valueOf(LocalDate.parse("1990-05-04")), BCrypt.hashpw("Azerty123", BCrypt.gensalt())));
 
-        this.talent = talentRepository.save(new Talents("getalenteerd", 0L));
+        talentRepository.save(new Talents("getalenteerd", 0L));
         this.talentId = talentRepository.findByName("getalenteerd").getId();
 
-        this.talent = talentRepository.save(new Talents("andereNaam", 0L));
+        usersHasTalentsRepository.save(new Users_has_talents(personId, talentId, "Dit is mijn talent", 0));
+
+        talentRepository.save(new Talents("andereNaam", 0L));
         this.talentId2 = talentRepository.findByName("andereNaam").getId();
 
-        this.userTalent = usersHasTalentsRepository.save(new Users_has_talents(personId, talentId, "Dit is mijn talent", 0));
-
-        this.vote = voteRepository.save(new Votes("Dit is de reden", personId2, personId, talentId2));
+        voteRepository.save(new Votes("Dit is de reden", personId2, personId, talentId2));
         this.voteId = voteRepository.findByText("Dit is de reden").getId();
     }
 
     @After
     public void after(){
-        voteRepository.delete(voteId);
+        try {
+            voteRepository.delete(voteId);
+        }catch(Exception e){
+            System.out.println("Error deleting vote: \n" + e.getMessage());
+        }
         Iterable<Users_has_talents> utDel = usersHasTalentsRepository.findAllByPersonId(personId);
         usersHasTalentsRepository.delete(utDel);
         userRepository.delete(personId);
         personRepository.delete(personId);
         userRepository.delete(personId2);
         personRepository.delete(personId2);
-        talentRepository.delete(talentId);
         talentRepository.delete(talentId2);
+        talentRepository.delete(talentId);
     }
 
     /*============================================================================
