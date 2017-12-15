@@ -131,8 +131,9 @@ public class ApiControllerTest {
         p.setFirstname("Senna");
         p.setLastname("Van Londersele");
 
-        String jsonRegistration = TestHelper.registrationCredentialsToJson(u, p);
+        //String jsonRegistration = TestHelper.registrationCredentialsToJson(u, p);
 
+        String jsonRegistration = "Dit zou moeten falen";
         mockMvc.perform(post("/api/users/register/")
                 .content(jsonRegistration)
                 .contentType(contentType))
