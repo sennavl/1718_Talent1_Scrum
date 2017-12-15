@@ -7,6 +7,10 @@ import thunk from 'redux-thunk';
 import promise from 'redux-promise';
 import allReducers from './reducers';
 import App from './components/App';
+import { BrowserRouter } from 'react-router-dom'
+
+import { FetchTalents } from './actions/TalentRegisterActions';
+
 
 const store = createStore(
     allReducers,
@@ -16,9 +20,13 @@ const store = createStore(
     )
 );
 
+store.dispatch(FetchTalents());
+
 ReactDOM.render(
     <Provider store={store}>
-        <App />
+        <BrowserRouter>
+            <App />
+        </BrowserRouter>
     </Provider>,
     document.getElementById('root')
 );
