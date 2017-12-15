@@ -1,15 +1,15 @@
 package com.project.talent1;
 
 
-import com.project.talent1.Repositories.PersonRepository;
-import com.project.talent1.Repositories.TalentRepository;
-import com.project.talent1.Repositories.UserRepository;
-import com.project.talent1.Repositories.UsersHasTalentsRepository;
+import com.project.talent1.Repositories.*;
 import com.project.talent1.Utils.JsonHelper;
+import jdk.nashorn.internal.runtime.JSONFunctions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ import com.project.talent1.Models.*;
 import static javax.servlet.http.HttpServletResponse.*;
 
 @RequestMapping("/api")
-@CrossOrigin(origins = "localhost")
+@CrossOrigin(origins = "*")
 @RestController
 public class ApiController {
     @Autowired
@@ -31,6 +31,8 @@ public class ApiController {
     PersonRepository persons;
     @Autowired
     UsersHasTalentsRepository usersHasTalentsRepository;
+    @Autowired
+    VotesRepository votes;
 
     @RequestMapping(method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
     public String index() {
@@ -70,14 +72,19 @@ public class ApiController {
     }
 
     @RequestMapping(path = "/users/login",method = RequestMethod.POST)
-    public Users login(@RequestBody String json, HttpServletResponse response) throws IOException {
+    public Long login(@RequestBody String json, HttpServletResponse response) throws IOException {
         String password = JsonHelper.getStringOutJson("password",json);
         String email = JsonHelper.getStringOutJson("email",json);
 
         Users user = users.findByPerson_id(persons.findByEmail(email).getId());
         user.login(response,password);
 
-        return user;
+        Cookie userCookie = new Cookie("user", user.getPerson_id().toString());
+        //setting cookie to expiry in 30 mins
+        userCookie.setMaxAge(30*60);
+        response.addCookie(userCookie);
+
+        return user.getPerson_id();
     }
 
     /*============================================================================
@@ -86,6 +93,11 @@ public class ApiController {
     @GetMapping(path = "/talents")
     public Iterable<Talents> getAllTalents(){
         return talents.findAll();
+    }
+
+    @GetMapping(path = "/talents/top20")
+    public Iterable<Talents> getTop20Talents(){
+        return talents.findTop20();
     }
 
     @GetMapping(path = "/talents/{id}")
@@ -126,11 +138,13 @@ public class ApiController {
 
             t=addTalent(t);
         }
-        userTalent.setPersonId(id);
-        usersHasTalentsRepository.save(userTalent);
-        t = talents.findById(userTalent.getTalentId());
-        t.setMatches(t.getMatches()+1);
-        talents.save(t);
+        if(talents.findById(userTalent.getTalentId())!=null){
+            userTalent.setPersonId(id);
+            usersHasTalentsRepository.save(userTalent);
+            t = talents.findById(userTalent.getTalentId());
+            t.setMatches(t.getMatches()+1);
+            talents.save(t);
+        }
 
         return getAllTalentsOfUser(id);
     }
@@ -154,9 +168,25 @@ public class ApiController {
     /*============================================================================
         Votes
     ============================================================================*/
-    @GetMapping(path = "/test")
-    public Iterable<Users_has_talents> getUsersTalents(){
-        return usersHasTalentsRepository.findAll();
+    @RequestMapping(path = "/users/suggest")
+    public void addSuggestion(@RequestBody Votes vote){
+        vote.setId((long)0);
+        votes.save(vote);
     }
+    @RequestMapping(path = "/users/processSugestion")
+    public void reactToSuggestion(@RequestBody String json) throws IOException {
+        long voteId= Long.parseLong(JsonHelper.getStringOutJson("voteId",json));
+        boolean accepted= Boolean.parseBoolean(JsonHelper.getStringOutJson("accepted",json));
+        Votes vote = votes.findById(voteId);
+        if(vote!=null){
+            if(accepted){
+                boolean hide= Boolean.parseBoolean(JsonHelper.getStringOutJson("hide",json));
+                vote.AcceptVote(votes,usersHasTalentsRepository,hide);
+            }else{
+                vote.RefuseVote(votes);
+            }
+        }
+    }
+
 
 }

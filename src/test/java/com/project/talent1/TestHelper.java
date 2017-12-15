@@ -3,6 +3,7 @@ package com.project.talent1;
 import com.project.talent1.Models.Persons;
 import com.project.talent1.Models.Users;
 import com.project.talent1.Models.Users_has_talents;
+import com.project.talent1.Models.Votes;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 
@@ -57,5 +58,32 @@ public class TestHelper {
         json.put("userTalent", arrayUserTalents);
 
         return json.toString().replace("[", "").replace("]", "");
+    }
+    public static String voteToJson(Votes vote){
+        JSONObject json = new JSONObject();
+
+        json.put("text", vote.getText());
+        json.put("person_id", vote.getPerson_id());
+        json.put("users_has_talents_talent_id", vote.getUsers_has_talents_talent_id());
+        json.put("users_has_talents_person_id", vote.getUsers_has_talents_person_id());
+
+        return json.toString();
+    }
+    public static String reactionToSuggestionToJson(long voteId, boolean accepted){
+        JSONObject json = new JSONObject();
+
+        json.put("voteId", voteId);
+        json.put("accepted", accepted);
+
+        return json.toString();
+    }
+    public static String reactionToSuggestionToJson(long voteId, boolean accepted, boolean hide){
+        JSONObject json = new JSONObject();
+
+        json.put("voteId", voteId);
+        json.put("accepted", accepted);
+        json.put("hide", hide);
+
+        return json.toString();
     }
 }

@@ -22,6 +22,16 @@ public class Users {
   @JoinColumn(name = "person_id")
   public Persons person;
 
+  public Users(long personId, java.sql.Date birthday, String password){
+    this.person_id = personId;
+    this.birthday = birthday;
+    this.password = password;
+  }
+
+  public Users(){
+
+  }
+
   public Long getPerson_id() {
     return person_id;
   }

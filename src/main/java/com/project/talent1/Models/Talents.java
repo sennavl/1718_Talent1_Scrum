@@ -11,6 +11,15 @@ public class Talents {
   private String name;
   private Long matches;
 
+  public Talents(){
+
+  }
+
+  public Talents(String name, Long matches){
+    this.name = name;
+    this.matches = matches;
+  }
+
   public Long getId() {
     return id;
   }
