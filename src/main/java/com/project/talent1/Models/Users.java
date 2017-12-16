@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Set;
 
 import static javax.servlet.http.HttpServletResponse.SC_CONFLICT;
+import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
+import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
 @Entity
 @Table(name = "users")
@@ -59,10 +61,10 @@ public class Users {
   public void login(HttpServletResponse response, String password) throws IOException {
     try {
       if (!BCrypt.checkpw(password, this.getPassword())) {
-        response.sendError(SC_CONFLICT, "Wrong password");
+        response.sendError(SC_UNAUTHORIZED, "Wrong password");
       }
     } catch (NullPointerException e) {
-      response.sendError(SC_CONFLICT, "Users does not exist");
+      response.sendError(SC_NOT_FOUND, "Users does not exist");
     }
   }
 }
