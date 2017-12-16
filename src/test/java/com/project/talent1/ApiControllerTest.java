@@ -183,7 +183,7 @@ public class ApiControllerTest {
                 .content(jsonLogin)
                 .contentType(contentType))
                 .andExpect(content().contentType(contentType))
-                .andExpect(status().isConflict());
+                .andExpect(status().isUnauthorized());
     }
 
     /**@Test

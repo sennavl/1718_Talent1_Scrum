@@ -3,10 +3,8 @@ package com.project.talent1;
 
 import com.project.talent1.Repositories.*;
 import com.project.talent1.Utils.JsonHelper;
-import jdk.nashorn.internal.runtime.JSONFunctions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,6 +32,8 @@ public class ApiController {
     UsersHasTalentsRepository usersHasTalentsRepository;
     @Autowired
     VotesRepository votes;
+    @Autowired
+    EndorsementRepository endorsements;
 
     /*============================================================================
         Users
@@ -171,7 +171,7 @@ public class ApiController {
     ============================================================================*/
     @RequestMapping(path = "/users/suggest")
     public void addSuggestion(@RequestBody Votes vote){
-        vote.setId((long)0);
+        vote.setId(0L);
         votes.save(vote);
     }
     @RequestMapping(path = "/users/processSugestion")
@@ -187,6 +187,28 @@ public class ApiController {
                 vote.RefuseVote(votes);
             }
         }
+    }
+
+    /*============================================================================
+        Endorsements
+    ============================================================================*/
+    @RequestMapping(path = "/users/endorsement/add")
+    public void addEndorsement(@RequestBody Endorsements endorsement){
+        endorsement.setId(0L);
+        endorsements.save(endorsement);
+    }
+
+    // voorbeeld voor in postman: http://localhost:8080/api/users/4/talents/2/endorsements/
+    // vraag de endorsements op die voor een bepaald talent van een bepaalde user gebeurd zijn
+    @GetMapping(path = "/users/{person_id}/talents/{talent_id}/endorsements")
+    public Iterable<Endorsements> getAllEndorsementsOfUserTalent(@PathVariable long person_id, @PathVariable long talent_id){
+        List<Endorsements> endorsementsUserTalent = endorsements.findEndorsementsForUserTalent((int)person_id, (int)talent_id);
+        return endorsementsUserTalent;
+    }
+
+    @GetMapping(path="/endorsements")
+    public @ResponseBody Iterable<Endorsements> getAllEndorsements(){
+        return endorsements.findAll();
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
