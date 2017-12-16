@@ -117,7 +117,18 @@ public class ApiControllerTest {
         mockMvc.perform(get("/api/users/" + personId))
                 .andExpect(content().contentType(contentType))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.person_id", is(toIntExact(personId))));
+                .andExpect(jsonPath("$.person_id", is(toIntExact(personId))))
+                .andExpect(jsonPath("$.birthday", is("1997-06-01")))
+                .andExpect(jsonPath("$.person.id", is(toIntExact(personId))))
+                .andExpect(jsonPath("$.person.firstname", is("Senna")))
+                .andExpect(jsonPath("$.person.lastname", is("Van Londersele")))
+                .andExpect(jsonPath("$.person.email", is("senna@mail.be")));
+    }
+
+    @Test
+    public void getNonExistingUser() throws Exception{
+        mockMvc.perform(get("/api/users/0"))
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -131,9 +142,8 @@ public class ApiControllerTest {
         p.setFirstname("Senna");
         p.setLastname("Van Londersele");
 
-        //String jsonRegistration = TestHelper.registrationCredentialsToJson(u, p);
+        String jsonRegistration = TestHelper.registrationCredentialsToJson(u, p);
 
-        String jsonRegistration = "Dit zou moeten falen";
         mockMvc.perform(post("/api/users/register/")
                 .content(jsonRegistration)
                 .contentType(contentType))
@@ -160,6 +170,20 @@ public class ApiControllerTest {
                 .contentType(contentType))
                 .andExpect(content().contentType(contentType))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void logUserInWithWrongPassword() throws Exception{
+        String email = "senna@mail.be";
+        String password = "Qwerty123";
+
+        String jsonLogin = TestHelper.loginCredentialsToJson(email, password);
+
+        mockMvc.perform(post("/api/users/login/")
+                .content(jsonLogin)
+                .contentType(contentType))
+                .andExpect(content().contentType(contentType))
+                .andExpect(status().isConflict());
     }
 
     /*============================================================================

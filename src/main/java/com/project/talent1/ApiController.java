@@ -5,6 +5,7 @@ import com.project.talent1.Repositories.*;
 import com.project.talent1.Utils.JsonHelper;
 import jdk.nashorn.internal.runtime.JSONFunctions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.*;
@@ -34,10 +35,6 @@ public class ApiController {
     @Autowired
     VotesRepository votes;
 
-    @RequestMapping(method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public String index() {
-        return "Hello World!";
-    }
     /*============================================================================
         Users
     ============================================================================*/
@@ -48,7 +45,11 @@ public class ApiController {
 
     @GetMapping(path = "/users/{id}")
     public Users getUser(@PathVariable long id){
-        return users.findByPerson_id(id);
+        Users user = users.findByPerson_id(id);
+        if(user == null){
+            throw new UserNotFoundException(id);
+        }
+        return user;
     }
 
     @RequestMapping(path = "/users/register",method = RequestMethod.POST)
@@ -188,5 +189,11 @@ public class ApiController {
         }
     }
 
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    class UserNotFoundException extends RuntimeException {
 
+        public UserNotFoundException(long userId) {
+            super("could not find user '" + userId + "'.");
+        }
+    }
 }
