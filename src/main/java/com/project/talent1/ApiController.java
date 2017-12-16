@@ -206,6 +206,13 @@ public class ApiController {
         return endorsementsUserTalent;
     }
 
+    // voorbeeld voor in postman: http://localhost:8080/api/users/4/talents/2/endorsements/count/
+    @GetMapping(path = "/users/{person_id}/talents/{talent_id}/endorsements/count")
+    public int getNumberOfEndorsementsOfUserTalent(@PathVariable long person_id, @PathVariable long talent_id){
+        int endorsementsCount = endorsements.findAmountOfEndorsementsForUserTalent((int)person_id, (int)talent_id);
+        return endorsementsCount;
+    }
+
     @GetMapping(path="/endorsements")
     public @ResponseBody Iterable<Endorsements> getAllEndorsements(){
         return endorsements.findAll();
