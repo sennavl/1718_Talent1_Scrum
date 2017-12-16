@@ -2,6 +2,7 @@ import {combineReducers} from 'redux';
 import LoginReducer from './LoginReducer';
 import RegisterReducer from './RegisterReducer';
 import TalentRegistrationReducer from './TalentRegistrationReducer';
+import ProfileReducer from './ProfileReducer';
 
 /*
  * We combine all reducers into a single object before updated data is dispatched (sent) to store
@@ -11,7 +12,8 @@ import TalentRegistrationReducer from './TalentRegistrationReducer';
 const allReducers = combineReducers({
     Auth: LoginReducer,
     Register: RegisterReducer,
-    TalentRegister: TalentRegistrationReducer
+    TalentRegister: TalentRegistrationReducer,
+    Profile: ProfileReducer
 });
 
 export default allReducers
