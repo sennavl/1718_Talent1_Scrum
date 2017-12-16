@@ -1,7 +1,6 @@
 package com.project.talent1.Models;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 public class Talents {

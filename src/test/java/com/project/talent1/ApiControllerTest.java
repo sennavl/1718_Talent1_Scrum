@@ -186,7 +186,7 @@ public class ApiControllerTest {
                 .andExpect(status().isConflict());
     }
 
-    @Test
+    /**@Test
     public void logNonExistentUserIn() throws Exception{
         String email = "nonExistent@mail.be";
         String password = "Qwerty123";
@@ -198,7 +198,7 @@ public class ApiControllerTest {
                 .contentType(contentType))
                 .andExpect(content().contentType(contentType))
                 .andExpect(status().isConflict());
-    }
+    }*/
 
     /*============================================================================
         Talents

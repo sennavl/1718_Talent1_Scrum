@@ -1,7 +1,5 @@
 package com.project.talent1.Models;
 
-import org.apache.catalina.User;
-
 import javax.persistence.*;
 
 @Entity
