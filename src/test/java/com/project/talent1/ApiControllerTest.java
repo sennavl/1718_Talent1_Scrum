@@ -186,6 +186,20 @@ public class ApiControllerTest {
                 .andExpect(status().isConflict());
     }
 
+    @Test
+    public void logNonExistentUserIn() throws Exception{
+        String email = "nonExistent@mail.be";
+        String password = "Qwerty123";
+
+        String jsonLogin = TestHelper.loginCredentialsToJson(email, password);
+
+        mockMvc.perform(post("/api/users/login/")
+                .content(jsonLogin)
+                .contentType(contentType))
+                .andExpect(content().contentType(contentType))
+                .andExpect(status().isConflict());
+    }
+
     /*============================================================================
         Talents
     ============================================================================*/
@@ -201,14 +215,18 @@ public class ApiControllerTest {
     public void getTop20Talents() throws Exception{
         mockMvc.perform(get("/api/talents/top20"))
                 .andExpect(content().contentType(contentType))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(20)));
     }
 
     @Test
     public void getOneTalent() throws Exception{
         mockMvc.perform(get("/api/talents/" + this.talentId))
                 .andExpect(content().contentType(contentType))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(toIntExact(talentId))))
+                .andExpect(jsonPath("$.name", is("getalenteerd")))
+                .andExpect(jsonPath("$.matches", is(0)));
     }
 
     @Test
@@ -222,7 +240,8 @@ public class ApiControllerTest {
                 .contentType(contentType))
                 .andExpect(content().contentType(contentType))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name", is("Talent")));
+                .andExpect(jsonPath("$.name", is("Talent")))
+                .andExpect(jsonPath("$.matches", is(0)));
 
         Talents tDel = talentRepository.findByName("Talent");
 
@@ -233,7 +252,8 @@ public class ApiControllerTest {
     public void getAllTalentsOfUser() throws Exception{
         mockMvc.perform(get("/api/users/" + this.personId + "/talents"))
                 .andExpect(content().contentType(contentType))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)));
     }
 
     @Test
