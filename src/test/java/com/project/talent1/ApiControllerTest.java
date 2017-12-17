@@ -321,6 +321,24 @@ public class ApiControllerTest {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    public void deleteTalentFromUserNonExistentUser() throws Exception{
+        mockMvc.perform(delete("/api/users/" + 0 + "/talents/" + talentId + "/delete"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void deleteTalentFromUserNonExistentTalent() throws Exception{
+        mockMvc.perform(delete("/api/users/" + personId + "/talents/" + 0 + "/delete"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void deleteTalentFromUser() throws Exception{
+        mockMvc.perform(delete("/api/users/" + personId + "/talents/" + talentId + "/delete"))
+                .andExpect(status().isOk());
+    }
+
     /*============================================================================
         Votes
     ============================================================================*/
