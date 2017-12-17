@@ -77,5 +77,20 @@ public class Users {
         setPerson_id(person.getId());
         users.save(this);
     }
+
+    public void updateUser(UserRepository users) {
+        Users storedUser = users.findByPerson_id(person.getId());
+        setPerson_id(person.getId());
+        person.setEmail(storedUser.person.getEmail());
+        if(getPassword()==null){
+            setPassword(storedUser.getPassword());
+        }else{
+            setPassword(BCrypt.hashpw(getPassword(), BCrypt.gensalt()));
+        }
+        if(getBirthday()==null)setBirthday(storedUser.getBirthday());
+        if(person.getFirstname()==null)person.setFirstname(storedUser.person.getFirstname());
+        if(person.getLastname()==null)person.setLastname(storedUser.person.getLastname());
+        users.save(this);
+    }
 }
 
