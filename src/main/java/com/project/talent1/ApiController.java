@@ -1,19 +1,15 @@
 package com.project.talent1;
 
 
-import com.project.talent1.CustomExceptions.TalentNotFoundException;
 import com.project.talent1.CustomExceptions.UserNotFoundException;
 import com.project.talent1.Repositories.*;
 import com.project.talent1.Utils.JsonHelper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.StreamSupport;
 
@@ -90,6 +86,12 @@ public class ApiController {
         return user.getPerson_id();
     }
 
+    @RequestMapping(path = "/users/logout",method = RequestMethod.POST)
+    public void logOut(HttpServletResponse response){
+        Cookie userCookie = new Cookie("user", null);
+        userCookie.setMaxAge(0);
+        response.addCookie(userCookie);
+    }
     /*============================================================================
         Talents
     ============================================================================*/
@@ -110,7 +112,7 @@ public class ApiController {
 
     @RequestMapping(path = "/talents/add")
     public Talents addTalent(@RequestBody Talents t) throws IOException {
-        Talents fetchedTalent = talentExistsAndFetch(t.getName());
+        Talents fetchedTalent = checkIfTalentExistsAndFetch(t.getName());
         if(fetchedTalent==null){
             t.setMatches(Long.parseLong("0"));
             talents.save(t);
@@ -160,7 +162,7 @@ public class ApiController {
         return getAllTalentsOfUser(id);
     }
 
-    public Talents talentExistsAndFetch(String talent){
+    public Talents checkIfTalentExistsAndFetch(String talent){
         Talents searchTalent=talents.findByNameContaining(talent);
         if(searchTalent==null){
             return talents.findByNameContaining(talent);
@@ -172,9 +174,6 @@ public class ApiController {
         }
         return null;
     }
-    /*============================================================================
-        Voters
-    ============================================================================*/
 
     /*============================================================================
         Votes
@@ -212,15 +211,11 @@ public class ApiController {
         }
     }
 
-    // voorbeeld voor in postman: http://localhost:8080/api/users/4/talents/2/endorsements/
-    // vraag de endorsements op die voor een bepaald talent van een bepaalde user gebeurd zijn
     @GetMapping(path = "/users/{person_id}/talents/{talent_id}/endorsements")
     public Iterable<Endorsements> getAllEndorsementsOfUserTalent(@PathVariable long person_id, @PathVariable long talent_id){
-        List<Endorsements> endorsementsUserTalent = endorsements.findEndorsementsForUserTalent((int)person_id, (int)talent_id);
-        return endorsementsUserTalent;
+        return endorsements.findEndorsementsForUserTalent((int)person_id, (int)talent_id);
     }
 
-    // voorbeeld voor in postman: http://localhost:8080/api/users/4/talents/2/endorsements/count/
     @GetMapping(path = "/users/{person_id}/talents/{talent_id}/endorsements/count")
     public int getNumberOfEndorsementsOfUserTalent(@PathVariable long person_id, @PathVariable long talent_id){
         return endorsements.findAmountOfEndorsementsForUserTalent((int)person_id, (int)talent_id);
@@ -230,4 +225,5 @@ public class ApiController {
     public @ResponseBody Iterable<Endorsements> getAllEndorsements(){
         return endorsements.findAll();
     }
+
 }
