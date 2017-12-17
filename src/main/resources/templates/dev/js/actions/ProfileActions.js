@@ -7,33 +7,33 @@ export const EditClicked = () => {
         type: 'EDIT_CLICKED'
     }
 };
-
-export const Profile = (id) => {
+//logged in user gebruiken
+export const Profile = (id='933') => {
     return dispatch => {
         dispatch(FetchingUser());
 
-        return fetch(API+'users/4', {
-            method: "GET",
+        return fetch(API+'users/' + id, {
+            method: 'GET',
             headers: {
-                "Content-Type": "application/json"
+                'Content-Type': 'application/json'
             },
-            credentials: "localhost"
+            credentials: 'localhost'
         })
             .then(response => response.json())
             .then(json => dispatch(FetchedUser(json)))
-            .then(() => dispatch(FetchTalentsUser()))
+            .then(() => dispatch(FetchTalentsUser(id)))
         }
 };
 
-const FetchTalentsUser = () => {
+const FetchTalentsUser = (id) => {
     return dispatch => {
         dispatch(FetchingTalentsUser());
-        return fetch(API+'users/4/talents', {
-        method: "GET",
+        return fetch(API+'users/' + id + '/talents', {
+        method: 'GET',
         headers: {
-            "Content-Type": "application/json"
+            'Content-Type': 'application/json'
         },
-        credentials: "localhost"
+        credentials: 'localhost'
     })
         .then(response => response.json())
         .then(json => dispatch(FetchedTalentsUser(json)))
@@ -66,3 +66,39 @@ const FetchedTalentsUser = (json) => {
         json
     }
 }
+
+//logged in user gebruiken
+export const EndorseClicked = (description, loggedInuserId='933', profileUserId, talentId) =>{
+    return dispatch => {
+        return fetch(API+'endorsement/add', {
+        method: 'POST',
+        body: JSON.stringify({
+            'description': description,
+            'persons_id': 935,
+            'users_has_talents_person_id': profileUserId,
+            'users_has_talents_talent_id': talentId
+        }),
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        credentials: 'localhost'
+    })
+        .then(json => dispatch(endAddEndorsement(talentId)))
+
+    }
+};
+
+const endAddEndorsement = (endorsedTalentId) => {
+   return {
+       type: 'ADDED_ENDORSEMENT',
+       endorsedTalentId
+   }
+};
+
+export const ShowEndorseClicked = (talentName, talentId) => {
+   return {
+       type: 'SHOW_ENDORSE_CLICKED',
+       talentName,
+       talentId
+   }
+};

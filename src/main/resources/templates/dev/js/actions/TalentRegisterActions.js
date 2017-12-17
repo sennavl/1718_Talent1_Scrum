@@ -59,7 +59,7 @@ const postingTalent = () => {
     }
 };
 
-const doPostTalent = (talent, userId) => {
+const doPostTalent = (talent, userId=933) => {
     return dispatch => {
         //dispatch(LogingIn());
         return fetch(API+'users/' + userId + '/talents/add', {
