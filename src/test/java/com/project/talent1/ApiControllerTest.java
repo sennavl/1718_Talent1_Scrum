@@ -191,6 +191,9 @@ public class ApiControllerTest {
                 .contentType(contentType))
                 .andExpect(content().contentType(contentType))
                 .andExpect(status().isOk());
+
+        Persons pDel = personRepository.findByEmail("testperson@gmail.com");
+        personRepository.delete(pDel.getId());
     }
 
     @Test
@@ -366,7 +369,6 @@ public class ApiControllerTest {
         long endorsementId = endorsementRepository.findByIds((int)personId, (int)talentId, (int)personId2).getId();
         endorsementRepository.delete(endorsementId);
     }
-
 
     @Test
     public void getAllEndorsementsOfUserTalent() throws Exception{
