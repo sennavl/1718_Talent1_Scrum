@@ -153,6 +153,24 @@ public class ApiControllerTest {
     }
 
     @Test
+    public void registerUserMissingCredential() throws Exception{
+        Users u = new Users();
+        u.setPassword(BCrypt.hashpw("Azerty123", BCrypt.gensalt()));
+
+        Persons p = new Persons();
+        p.setEmail("senna2@mail.be");
+        p.setFirstname("Senna");
+        p.setLastname("Van Londersele");
+
+        String jsonRegistration = TestHelper.registrationCredentialsToJson(u, p);
+
+        mockMvc.perform(post("/api/users/register/")
+                .content(jsonRegistration)
+                .contentType(contentType))
+                .andExpect(status().isConflict());
+    }
+
+    @Test
     public void logUserIn() throws Exception{
         String email = "senna@mail.be";
         String password = "Azerty123";
@@ -179,9 +197,19 @@ public class ApiControllerTest {
                 .contentType(contentType))
                 .andExpect(content().contentType(contentType))
                 .andExpect(status().isOk());
+    }
 
-        Persons pDel = personRepository.findByEmail("testperson@gmail.com");
-        personRepository.delete(pDel.getId());
+    @Test
+    public void addPersonMissingCredential() throws Exception{
+        String email = "testperson@gmail.com";
+        String firstname = "TestPersonVN";
+
+        String jsonPerson = TestHelper.personToJson(email, firstname);
+
+        mockMvc.perform(post("/api/persons/add/")
+                .content(jsonPerson)
+                .contentType(contentType))
+                .andExpect(status().isConflict());
     }
 
     @Test
