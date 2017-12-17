@@ -1,7 +1,6 @@
 package com.project.talent1.Models;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 public class Talents {
@@ -10,6 +9,15 @@ public class Talents {
   private Long id;
   private String name;
   private Long matches;
+
+  public Talents(){
+
+  }
+
+  public Talents(String name, Long matches){
+    this.name = name;
+    this.matches = matches;
+  }
 
   public Long getId() {
     return id;

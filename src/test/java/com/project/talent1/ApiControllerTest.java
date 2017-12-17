@@ -1,42 +1,24 @@
 package com.project.talent1;
 
-import com.project.talent1.Models.Persons;
-import com.project.talent1.Models.Talents;
-import com.project.talent1.Models.Users;
-import com.project.talent1.Models.Users_has_talents;
-import com.project.talent1.Repositories.PersonRepository;
-import com.project.talent1.Repositories.TalentRepository;
-import com.project.talent1.Repositories.UserRepository;
-import com.project.talent1.Repositories.UsersHasTalentsRepository;
-import com.project.talent1.Utils.JsonHelper;
+import com.project.talent1.Models.*;
+import com.project.talent1.Repositories.*;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.mock.http.MockHttpOutputMessage;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.nio.charset.Charset;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.sql.Date;
-import java.util.Calendar;
-import java.util.List;
-
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.*;
@@ -62,11 +44,67 @@ public class ApiControllerTest {
     @Autowired
     private TalentRepository talentRepository;
     @Autowired
-    UsersHasTalentsRepository usersHasTalentsRepository;
+    private UsersHasTalentsRepository usersHasTalentsRepository;
+    @Autowired
+    private VotesRepository voteRepository;
+    @Autowired
+    private EndorsementRepository endorsementRepository;
+
+    private long personId;
+    private long personId2;
+
+    private long talentId;
+
+    private long talentId2;
+
+    private long voteId;
 
     @Before
     public void setup(){
+
         this.mockMvc = webAppContextSetup(webApplicationContext).build();
+
+        personRepository.save(new Persons("Senna", "Van Londersele", "senna@mail.be"));
+        this.personId = personRepository.findByEmail("senna@mail.be").getId();
+
+        userRepository.save(new Users(personId, Date.valueOf(LocalDate.parse("1997-06-01")), BCrypt.hashpw("Azerty123", BCrypt.gensalt())));
+
+        personRepository.save(new Persons("Peter", "Peeters", "peterp@mail.be"));
+        this.personId2 = personRepository.findByEmail("peterp@mail.be").getId();
+
+        userRepository.save(new Users(personId2, Date.valueOf(LocalDate.parse("1990-05-04")), BCrypt.hashpw("Azerty123", BCrypt.gensalt())));
+
+        talentRepository.save(new Talents("getalenteerd", 0L));
+        this.talentId = talentRepository.findByName("getalenteerd").getId();
+
+        usersHasTalentsRepository.save(new Users_has_talents(personId, talentId, "Dit is mijn talent", 0));
+
+        usersHasTalentsRepository.save(new Users_has_talents(personId2, talentId, "Dit is een van mijn talenten", 0));
+
+        talentRepository.save(new Talents("andereNaam", 0L));
+        this.talentId2 = talentRepository.findByName("andereNaam").getId();
+
+        voteRepository.save(new Votes("Dit is de reden", personId2, personId, talentId2));
+        this.voteId = voteRepository.findByText("Dit is de reden").getId();
+
+        endorsementRepository.save(new Endorsements("Ik ga ermee akkoord dat dat zo is", personId, personId2, talentId));
+    }
+
+    @After
+    public void after(){
+        endorsementRepository.deleteAll();
+        try {
+            voteRepository.delete(voteId);
+        }catch(Exception e){
+            System.out.println("Error deleting vote: \n" + e.getMessage());
+        }
+        usersHasTalentsRepository.deleteAll();
+        userRepository.delete(personId);
+        personRepository.delete(personId);
+        userRepository.delete(personId2);
+        personRepository.delete(personId2);
+        talentRepository.delete(talentId2);
+        talentRepository.delete(talentId);
     }
 
     /*============================================================================
@@ -82,19 +120,31 @@ public class ApiControllerTest {
 
     @Test
     public void getOneUser() throws Exception{
-        mockMvc.perform(get("/api/users/4"))
+        mockMvc.perform(get("/api/users/" + personId))
                 .andExpect(content().contentType(contentType))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.person_id", is(toIntExact(personId))))
+                .andExpect(jsonPath("$.birthday", is("1997-06-01")))
+                .andExpect(jsonPath("$.person.id", is(toIntExact(personId))))
+                .andExpect(jsonPath("$.person.firstname", is("Senna")))
+                .andExpect(jsonPath("$.person.lastname", is("Van Londersele")))
+                .andExpect(jsonPath("$.person.email", is("senna@mail.be")));
+    }
+
+    @Test
+    public void getNonExistingUser() throws Exception{
+        mockMvc.perform(get("/api/users/0"))
+                .andExpect(status().isNotFound());
     }
 
     @Test
     public void registerUser() throws Exception{
         Users u = new Users();
-        u.setPassword("Azerty123");
+        u.setPassword(BCrypt.hashpw("Azerty123", BCrypt.gensalt()));
         u.setBirthday(Date.valueOf(LocalDate.parse("1997-06-01")));
 
         Persons p = new Persons();
-        p.setEmail("senna@mail.be");
+        p.setEmail("senna2@mail.be");
         p.setFirstname("Senna");
         p.setLastname("Van Londersele");
 
@@ -104,9 +154,10 @@ public class ApiControllerTest {
                 .content(jsonRegistration)
                 .contentType(contentType))
                 .andExpect(content().contentType(contentType))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.birthday", is("1997-06-01")));
 
-        Persons pDel = personRepository.findByEmail("senna@mail.be");
+        Persons pDel = personRepository.findByEmail("senna2@mail.be");
         Users uDel = userRepository.findByPerson_id(pDel.getId());
 
         userRepository.delete(uDel);
@@ -115,7 +166,7 @@ public class ApiControllerTest {
 
     @Test
     public void logUserIn() throws Exception{
-        String email = "janrobert422@gmail.com";
+        String email = "senna@mail.be";
         String password = "Azerty123";
 
         String jsonLogin = TestHelper.loginCredentialsToJson(email, password);
@@ -126,6 +177,52 @@ public class ApiControllerTest {
                 .andExpect(content().contentType(contentType))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    public void addPerson() throws Exception{
+        String email = "testperson@gmail.com";
+        String firstname = "TestPersonVN";
+        String lastname = "TestPersonAN";
+
+        String jsonPerson = TestHelper.personToJson(email, firstname, lastname);
+
+        mockMvc.perform(post("/api/persons/add/")
+                .content(jsonPerson)
+                .contentType(contentType))
+                .andExpect(content().contentType(contentType))
+                .andExpect(status().isOk());
+
+        Persons pDel = personRepository.findByEmail("testperson@gmail.com");
+        personRepository.delete(pDel.getId());
+    }
+
+    @Test
+    public void logUserInWithWrongPassword() throws Exception{
+        String email = "senna@mail.be";
+        String password = "Qwerty123";
+
+        String jsonLogin = TestHelper.loginCredentialsToJson(email, password);
+
+        mockMvc.perform(post("/api/users/login/")
+                .content(jsonLogin)
+                .contentType(contentType))
+                .andExpect(content().contentType(contentType))
+                .andExpect(status().isUnauthorized());
+    }
+
+    /**@Test
+    public void logNonExistentUserIn() throws Exception{
+        String email = "nonExistent@mail.be";
+        String password = "Qwerty123";
+
+        String jsonLogin = TestHelper.loginCredentialsToJson(email, password);
+
+        mockMvc.perform(post("/api/users/login/")
+                .content(jsonLogin)
+                .contentType(contentType))
+                .andExpect(content().contentType(contentType))
+                .andExpect(status().isConflict());
+    }*/
 
     /*============================================================================
         Talents
@@ -142,14 +239,18 @@ public class ApiControllerTest {
     public void getTop20Talents() throws Exception{
         mockMvc.perform(get("/api/talents/top20"))
                 .andExpect(content().contentType(contentType))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(20)));
     }
 
     @Test
     public void getOneTalent() throws Exception{
-        mockMvc.perform(get("/api/talents/1"))
+        mockMvc.perform(get("/api/talents/" + this.talentId))
                 .andExpect(content().contentType(contentType))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(toIntExact(talentId))))
+                .andExpect(jsonPath("$.name", is("getalenteerd")))
+                .andExpect(jsonPath("$.matches", is(0)));
     }
 
     @Test
@@ -162,7 +263,9 @@ public class ApiControllerTest {
                 .content(jsonTalent)
                 .contentType(contentType))
                 .andExpect(content().contentType(contentType))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", is("Talent")))
+                .andExpect(jsonPath("$.matches", is(0)));
 
         Talents tDel = talentRepository.findByName("Talent");
 
@@ -171,9 +274,10 @@ public class ApiControllerTest {
 
     @Test
     public void getAllTalentsOfUser() throws Exception{
-        mockMvc.perform(get("/api/users/4/talents"))
+        mockMvc.perform(get("/api/users/" + this.personId + "/talents"))
                 .andExpect(content().contentType(contentType))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)));
     }
 
     @Test
@@ -185,14 +289,131 @@ public class ApiControllerTest {
 
         String jsonUserTalent = TestHelper.userTalentToJson(userTalents);
 
-        mockMvc.perform(post("/api/users/9/talents/add")
+        mockMvc.perform(post("/api/users/" + personId + "/talents/add")
                 .content(jsonUserTalent)
                 .contentType(contentType))
                 .andExpect(content().contentType(contentType))
                 .andExpect(status().isOk());
+    }
 
-        Iterable<Users_has_talents> utDel = usersHasTalentsRepository.findAllByPersonId(9);
+    /*============================================================================
+        Votes
+    ============================================================================*/
 
-        usersHasTalentsRepository.delete(utDel);
+    @Test
+    public void addSuggestion() throws Exception{
+        Votes vote = new Votes();
+        vote.setText("Dat is inderdaad waar");
+        vote.setPerson_id(personId);
+        vote.setUsers_has_talents_person_id(personId2);
+        vote.setUsers_has_talents_talent_id(talentId);
+
+        String jsonVote = TestHelper.voteToJson(vote);
+
+        mockMvc.perform(post("/api/users/suggest")
+                .content(jsonVote)
+                .contentType(contentType))
+                .andExpect(status().isOk());
+
+        long talentId = voteRepository.findByText("Dat is inderdaad waar").getId();
+        voteRepository.delete(talentId);
+    }
+
+    @Test
+    public void acceptSuggestion() throws Exception{
+
+        String jsonReaction = TestHelper.reactionToSuggestionToJson(voteId, true, false);
+
+        mockMvc.perform(post("/api/users/processSugestion")
+                .content(jsonReaction)
+                .contentType(contentType))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void refuseSuggestion() throws Exception{
+        String jsonReaction = TestHelper.reactionToSuggestionToJson(voteId, false);
+
+        mockMvc.perform(post("/api/users/processSugestion")
+                .content(jsonReaction)
+                .contentType(contentType))
+                .andExpect(status().isOk());
+    }
+
+    /*============================================================================
+        Endorsements
+    ============================================================================*/
+
+    @Test
+    public void getAllEndorsements() throws Exception{
+        mockMvc.perform(get("/api/endorsements"))
+                .andExpect(content().contentType(contentType))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void addEndorsement() throws Exception{
+        Endorsements endorsement = new Endorsements();
+        endorsement.setDescription("Dit talent past inderdaad bij deze persoon");
+        endorsement.setPersons_id(personId2);
+        endorsement.setUsers_has_talents_person_id(personId);
+        endorsement.setUsers_has_talents_talent_id(talentId);
+
+        String jsonEndorsement = TestHelper.endorsementToJson(endorsement);
+
+        mockMvc.perform(post("/api/endorsement/add")
+                .content(jsonEndorsement)
+                .contentType(contentType))
+                .andExpect(status().isOk());
+
+        long endorsementId = endorsementRepository.findByIds((int)personId, (int)talentId, (int)personId2).getId();
+        endorsementRepository.delete(endorsementId);
+    }
+
+    @Test
+    public void addIncompleteEndorsement() throws Exception{
+        Endorsements endorsement = new Endorsements();
+        endorsement.setDescription("Dit talent past inderdaad bij deze persoon");
+        endorsement.setPersons_id(personId2);
+        endorsement.setUsers_has_talents_person_id(personId);
+
+        String jsonEndorsement = TestHelper.endorsementToJson(endorsement);
+
+        mockMvc.perform(post("/api/endorsement/add")
+                .content(jsonEndorsement)
+                .contentType(contentType))
+                .andExpect(status().isExpectationFailed());
+    }
+
+    @Test
+    public void getAllEndorsementsOfUserTalent() throws Exception{
+        mockMvc.perform(get( "/api/users/" + this.personId2 + "/talents/" + this.talentId + "/endorsements/"))
+                .andExpect(content().contentType(contentType))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)));
+    }
+
+    @Test
+    public void getAllEndorsementsOfUserTalentEmpty() throws Exception{
+        mockMvc.perform(get( "/api/users/" + 777 + "/talents/" + 777 + "/endorsements/"))
+                .andExpect(content().contentType(contentType))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(0)));
+    }
+
+    @Test
+    public void getNumberOfEndorsementsOfUserTalent() throws Exception{
+        mockMvc.perform(get( "/api/users/" + this.personId2 + "/talents/" + this.talentId + "/endorsements/count"))
+                .andExpect(content().contentType(contentType))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", is(1)));
+    }
+
+    @Test
+    public void getNumberOfEndorsementsOfUserTalentEmpty() throws Exception{
+        mockMvc.perform(get( "/api/users/" + 777 + "/talents/" + 777 + "/endorsements/count"))
+                .andExpect(content().contentType(contentType))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", is(0)));
     }
 }

@@ -1,6 +1,6 @@
 package com.project.talent1.Models;
 
-import org.apache.catalina.User;
+import com.project.talent1.Repositories.PersonRepository;
 
 import javax.persistence.*;
 
@@ -12,6 +12,16 @@ public class Persons {
   private String firstname;
   private String lastname;
   private String email;
+
+  public Persons(String firstname, String lastname, String email){
+    this.firstname = firstname;
+    this.lastname = lastname;
+    this.email = email;
+  }
+
+  public Persons(){
+
+  }
 
   public Long getId() {
     return id;
@@ -43,5 +53,10 @@ public class Persons {
 
   public void setEmail(String email) {
     this.email = email;
+  }
+
+  public Persons register(PersonRepository persons) {
+    persons.save(this);
+    return persons.findByEmail(getEmail());
   }
 }
