@@ -200,10 +200,10 @@ public class ApiController {
         Votes
     ============================================================================*/
 
-    /**@GetMapping(path = "/users/{id}/suggestions")
-    public Iterable<Votes> getAllTalentsOfUser(@PathVariable long id) {
+    @GetMapping(path = "/users/{id}/suggestions")
+    public Iterable<Votes> getAllSuggestionsForUser(@PathVariable long id) {
         return votes.findSuggestionsForUser(id);
-    }*/
+    }
 
     @RequestMapping(path = "/users/suggest")
     public void addSuggestion(@RequestBody Votes vote) {
