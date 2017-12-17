@@ -1,5 +1,7 @@
 package com.project.talent1.Models;
 
+import com.project.talent1.Repositories.PersonRepository;
+
 import javax.persistence.*;
 
 @Entity
@@ -51,5 +53,10 @@ public class Persons {
 
   public void setEmail(String email) {
     this.email = email;
+  }
+
+  public Persons register(PersonRepository persons) {
+    persons.save(this);
+    return persons.findByEmail(getEmail());
   }
 }
