@@ -1,6 +1,7 @@
 package com.project.talent1;
 
 
+import com.project.talent1.CustomExceptions.TalentNotFoundException;
 import com.project.talent1.CustomExceptions.UserNotFoundException;
 import com.project.talent1.Repositories.*;
 import com.project.talent1.Utils.JsonHelper;
@@ -119,6 +120,21 @@ public class ApiController {
         }
     }
 
+    @RequestMapping(path = "/users/{user_id}/talents/{talent_id}/delete", method = RequestMethod.DELETE)
+    public void deleteTalent(@PathVariable int user_id, @PathVariable int talent_id) {
+        Users user = users.findByPerson_id(user_id);
+        if (user == null) {
+            throw new UserNotFoundException(user_id);
+        }
+        Talents talent = talents.findById(talent_id);
+        if (talent == null){
+            throw new TalentNotFoundException(talent_id);
+        }
+        endorsements.delete(endorsements.findEndorsementsForUserTalent(user_id, talent_id));
+        Users_has_talents userTalent = usersHasTalentsRepository.findByPersonIdTalentId(user_id, talent_id);
+        usersHasTalentsRepository.delete(userTalent);
+    }
+
     @GetMapping(path = "/users/{id}/talents")
     public Iterable<Talents> getAllTalentsOfUser(@PathVariable long id){
         Iterable<Users_has_talents> items= usersHasTalentsRepository.findAllByPersonId(id);
@@ -214,12 +230,4 @@ public class ApiController {
     public @ResponseBody Iterable<Endorsements> getAllEndorsements(){
         return endorsements.findAll();
     }
-
-
-    /*============================================================================
-        Status
-    ============================================================================*/
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    class UserNotFoundException extends RuntimeException {
-
 }
