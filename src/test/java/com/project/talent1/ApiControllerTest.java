@@ -240,13 +240,13 @@ public class ApiControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    /**@Test
+    @Test
     public void logoutUser() throws Exception{
         this.logUserIn();
 
         mockMvc.perform(post("/api/users/logout"))
-                .andExpect(cookie().doesNotExist("user"));
-    }*/
+                .andExpect(cookie().maxAge("user",0));
+    }
 
     /*============================================================================
         Talents
