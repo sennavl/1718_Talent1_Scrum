@@ -69,7 +69,18 @@ public class ApiController {
             response.sendError(SC_CONFLICT,e.getMessage());
             return null;
         }
-
+    }
+    
+    @RequestMapping(path = "/persons/add",method = RequestMethod.POST)
+    public Persons registerPerson(@RequestBody Persons person, HttpServletResponse response) throws IOException {
+        try {
+            persons.save(person);
+            person=persons.findByEmail(person.getEmail());
+            return person;
+        }catch (Exception e){
+            response.sendError(SC_CONFLICT,e.getMessage());
+            return null;
+        }
     }
 
     @RequestMapping(path = "/users/login",method = RequestMethod.POST)
