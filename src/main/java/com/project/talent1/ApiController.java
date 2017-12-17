@@ -1,6 +1,7 @@
 package com.project.talent1;
 
 
+import com.project.talent1.CustomExceptions.TalentNotFoundException;
 import com.project.talent1.CustomExceptions.UserNotFoundException;
 import com.project.talent1.Repositories.*;
 import com.project.talent1.Utils.JsonHelper;
