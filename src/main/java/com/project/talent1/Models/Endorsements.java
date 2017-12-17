@@ -15,6 +15,17 @@ public class Endorsements {
   private Long users_has_talents_person_id;
   private Long users_has_talents_talent_id;
 
+  public Endorsements(){
+
+  }
+
+  public Endorsements(String description, long persons_id, long users_has_talents_person_id, long users_has_talents_talent_id){
+    this.description = description;
+    this.persons_id = persons_id;
+    this.users_has_talents_person_id = users_has_talents_person_id;
+    this.users_has_talents_talent_id = users_has_talents_talent_id;
+  }
+
   public Long getId() {
     return id;
   }

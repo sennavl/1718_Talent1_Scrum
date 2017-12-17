@@ -47,6 +47,8 @@ public class ApiControllerTest {
     private UsersHasTalentsRepository usersHasTalentsRepository;
     @Autowired
     private VotesRepository voteRepository;
+    @Autowired
+    private EndorsementRepository endorsementRepository;
 
     private long personId;
     private long personId2;
@@ -77,22 +79,26 @@ public class ApiControllerTest {
 
         usersHasTalentsRepository.save(new Users_has_talents(personId, talentId, "Dit is mijn talent", 0));
 
+        usersHasTalentsRepository.save(new Users_has_talents(personId2, talentId, "Dit is een van mijn talenten", 0));
+
         talentRepository.save(new Talents("andereNaam", 0L));
         this.talentId2 = talentRepository.findByName("andereNaam").getId();
 
         voteRepository.save(new Votes("Dit is de reden", personId2, personId, talentId2));
         this.voteId = voteRepository.findByText("Dit is de reden").getId();
+
+        endorsementRepository.save(new Endorsements("Ik ga ermee akkoord dat dat zo is", personId, personId2, talentId));
     }
 
     @After
     public void after(){
+        endorsementRepository.deleteAll();
         try {
             voteRepository.delete(voteId);
         }catch(Exception e){
             System.out.println("Error deleting vote: \n" + e.getMessage());
         }
-        Iterable<Users_has_talents> utDel = usersHasTalentsRepository.findAllByPersonId(personId);
-        usersHasTalentsRepository.delete(utDel);
+        usersHasTalentsRepository.deleteAll();
         userRepository.delete(personId);
         personRepository.delete(personId);
         userRepository.delete(personId2);
@@ -340,5 +346,41 @@ public class ApiControllerTest {
         mockMvc.perform(get("/api/endorsements"))
                 .andExpect(content().contentType(contentType))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void addEndorsement() throws Exception{
+        Endorsements endorsement = new Endorsements();
+        endorsement.setDescription("Dit talent past inderdaad bij deze persoon");
+        endorsement.setPersons_id(personId2);
+        endorsement.setUsers_has_talents_person_id(personId);
+        endorsement.setUsers_has_talents_talent_id(talentId);
+
+        String jsonEndorsement = TestHelper.endorsementToJson(endorsement);
+
+        mockMvc.perform(post("/api/endorsement/add")
+                .content(jsonEndorsement)
+                .contentType(contentType))
+                .andExpect(status().isOk());
+
+        long endorsementId = endorsementRepository.findByIds((int)personId, (int)talentId, (int)personId2).getId();
+        endorsementRepository.delete(endorsementId);
+    }
+
+
+    @Test
+    public void getAllEndorsementsOfUserTalent() throws Exception{
+        mockMvc.perform(get( "/api/users/" + this.personId2 + "/talents/" + this.talentId + "/endorsements/"))
+                .andExpect(content().contentType(contentType))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)));
+    }
+
+    @Test
+    public void getNumberOfEndorsementsOfUserTalent() throws Exception{
+        mockMvc.perform(get( "/api/users/" + this.personId2 + "/talents/" + this.talentId + "/endorsements/count"))
+                .andExpect(content().contentType(contentType))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", is(1)));
     }
 }

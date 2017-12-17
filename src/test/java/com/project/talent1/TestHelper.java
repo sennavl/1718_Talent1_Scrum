@@ -1,9 +1,6 @@
 package com.project.talent1;
 
-import com.project.talent1.Models.Persons;
-import com.project.talent1.Models.Users;
-import com.project.talent1.Models.Users_has_talents;
-import com.project.talent1.Models.Votes;
+import com.project.talent1.Models.*;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 
@@ -93,5 +90,14 @@ public class TestHelper {
 
         return json.toString();
     }
+    public static String endorsementToJson(Endorsements endorsement){
+        JSONObject json = new JSONObject();
 
+        json.put("description", endorsement.getDescription());
+        json.put("persons_id", endorsement.getPersons_id());
+        json.put("users_has_talents_person_id", endorsement.getUsers_has_talents_person_id());
+        json.put("users_has_talents_talent_id", endorsement.getUsers_has_talents_talent_id());
+
+        return json.toString();
+    }
 }

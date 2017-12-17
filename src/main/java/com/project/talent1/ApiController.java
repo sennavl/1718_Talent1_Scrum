@@ -203,7 +203,7 @@ public class ApiController {
     /*============================================================================
         Endorsements
     ============================================================================*/
-    @RequestMapping(path = "/users/endorsement/add")
+    @RequestMapping(path = "/endorsement/add")
     public void addEndorsement(@RequestBody Endorsements endorsement){
         endorsement.setId(0L);
         endorsements.save(endorsement);
