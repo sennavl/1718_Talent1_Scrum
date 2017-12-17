@@ -37,7 +37,6 @@ public class Users_has_talents {
         this.personId = personId;
     }
 
-
     public long getTalentId() {
         return talentId;
     }
@@ -46,7 +45,6 @@ public class Users_has_talents {
         this.talentId = talentId;
     }
 
-
     public String getDescription() {
         return description;
     }
@@ -54,7 +52,6 @@ public class Users_has_talents {
     public void setDescription(String description) {
         this.description = description;
     }
-
 
     public int getHide() {
         return hide;
