@@ -1,6 +1,7 @@
 package com.project.talent1;
 
 
+import com.project.talent1.CustomExceptions.UserNotFoundException;
 import com.project.talent1.Repositories.*;
 import com.project.talent1.Utils.JsonHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +14,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.StreamSupport;
 
 import com.project.talent1.Models.*;
 
+import static java.util.stream.Collectors.toList;
 import static javax.servlet.http.HttpServletResponse.*;
 
 @RequestMapping("/api")
@@ -57,15 +60,7 @@ public class ApiController {
         try {
             Users user = JsonHelper.getUserOutJson(json);
             Persons person = JsonHelper.getPersonOutJson(json);
-            user.setPassword(BCrypt.hashpw(user.getPassword(),BCrypt.gensalt()));
-
-            persons.save(person);
-            person=persons.findByEmail(person.getEmail());
-            user.setPerson_id(person.getId());
-            user.person=person;
-            users.save(user);
-
-
+            user.register(response,person,users,persons);
             return getUser(user.getPerson_id());
         }catch (Exception e){
             response.sendError(SC_CONFLICT,e.getMessage());
@@ -76,9 +71,7 @@ public class ApiController {
     @RequestMapping(path = "/persons/add",method = RequestMethod.POST)
     public Persons registerPerson(@RequestBody Persons person, HttpServletResponse response) throws IOException {
         try {
-            persons.save(person);
-            person=persons.findByEmail(person.getEmail());
-            return person;
+            return person.register(persons);
         }catch (Exception e){
             response.sendError(SC_CONFLICT,e.getMessage());
             return null;
@@ -91,12 +84,7 @@ public class ApiController {
         String email = JsonHelper.getStringOutJson("email",json);
 
         Users user = users.findByPerson_id(persons.findByEmail(email).getId());
-        user.login(response,password);
-
-        Cookie userCookie = new Cookie("user", user.getPerson_id().toString());
-        //setting cookie to expiry in 30 mins
-        userCookie.setMaxAge(30*60);
-        response.addCookie(userCookie);
+        user.login(response,password,response);
 
         return user.getPerson_id();
     }
@@ -134,32 +122,25 @@ public class ApiController {
     @GetMapping(path = "/users/{id}/talents")
     public Iterable<Talents> getAllTalentsOfUser(@PathVariable long id){
         Iterable<Users_has_talents> items= usersHasTalentsRepository.findAllByPersonId(id);
-        List<Talents> ouput = new ArrayList<Talents>();
-        for (Users_has_talents u: items) {
-            if(u.getHide()==(0)){
-                ouput.add(talents.findById(u.getTalentId()));
-            }
-        }
+        List<Talents> ouput = StreamSupport.stream(items.spliterator(),false)
+                .filter(userTalent->userTalent.getHide()==0)
+                .map(usertalent->(talents.findById(usertalent.getTalentId())))
+                .collect(toList());
+
         return ouput;
     }
 
     @RequestMapping(path = "/users/{id}/talents/add")
     public Iterable<Talents> addUserTalent(@RequestBody String json,@PathVariable long id) throws IOException {
         Users_has_talents userTalent = JsonHelper.getUserTalentOutJson(json);
-        Talents t;
+        Talents t=null;
         if(userTalent.getTalentId()==0){
             t = JsonHelper.getTalentOutJson(json);
-
             t=addTalent(t);
         }
         if(talents.findById(userTalent.getTalentId())!=null){
-            userTalent.setPersonId(id);
-            usersHasTalentsRepository.save(userTalent);
-            t = talents.findById(userTalent.getTalentId());
-            t.setMatches(t.getMatches()+1);
-            talents.save(t);
+            userTalent.register(t,id,talents,usersHasTalentsRepository);
         }
-
         return getAllTalentsOfUser(id);
     }
 
@@ -222,8 +203,7 @@ public class ApiController {
     // voorbeeld voor in postman: http://localhost:8080/api/users/4/talents/2/endorsements/count/
     @GetMapping(path = "/users/{person_id}/talents/{talent_id}/endorsements/count")
     public int getNumberOfEndorsementsOfUserTalent(@PathVariable long person_id, @PathVariable long talent_id){
-        int endorsementsCount = endorsements.findAmountOfEndorsementsForUserTalent((int)person_id, (int)talent_id);
-        return endorsementsCount;
+        return endorsements.findAmountOfEndorsementsForUserTalent((int)person_id, (int)talent_id);
     }
 
     @GetMapping(path="/endorsements")
@@ -231,11 +211,5 @@ public class ApiController {
         return endorsements.findAll();
     }
 
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    class UserNotFoundException extends RuntimeException {
 
-        public UserNotFoundException(long userId) {
-            super("could not find user '" + userId + "'.");
-        }
-    }
 }
