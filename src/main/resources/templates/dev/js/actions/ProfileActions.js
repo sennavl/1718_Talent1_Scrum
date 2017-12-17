@@ -2,6 +2,12 @@ import fetch from 'cross-fetch'
 
 const API = 'http://localhost:8080/api/';
 
+export const EditClicked = () => {
+    return {
+        type: 'EDIT_CLICKED'
+    }
+};
+
 export const Profile = (id) => {
     return dispatch => {
         dispatch(FetchingUser());
@@ -59,4 +65,4 @@ const FetchedTalentsUser = (json) => {
         type: 'FETCHED_TALENTS_USER',
         json
     }
-};
+}
