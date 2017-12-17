@@ -80,11 +80,13 @@ public class ApiController {
     public Long login(@RequestBody String json, HttpServletResponse response) throws IOException {
         String password = JsonHelper.getStringOutJson("password", json);
         String email = JsonHelper.getStringOutJson("email", json);
-
-        Users user = users.findByPerson_id(persons.findByEmail(email).getId());
-        user.login(response, password, response);
-
-        return user.getPerson_id();
+        try {
+            Users user = users.findByPerson_id(persons.findByEmail(email).getId());
+            user.login(response, password, response);
+            return user.getPerson_id();
+        }catch (NullPointerException e){
+            throw new UserNotFoundException(email);
+        }
     }
 
     @RequestMapping(path = "/users/logout", method = RequestMethod.POST)
@@ -96,11 +98,11 @@ public class ApiController {
 
     @RequestMapping(path = "/users/update")
     public Users update(@RequestBody Users user, HttpServletResponse response) {
-        if (users.findByPerson_id(user.getPerson_id()) == null) {
+        if (users.findByPerson_id(user.person.getId()) == null) {
             throw new UserNotFoundException(user.getPerson_id());
         } else {
             try {
-                users.save(user);
+                user.updateUser(users);
                 return user;
             } catch (NullPointerException e) {
                 throw new NullPointerException("User details not filled in");
