@@ -62,9 +62,11 @@ public class ApiController {
             persons.save(person);
             person=persons.findByEmail(person.getEmail());
             user.setPerson_id(person.getId());
+            user.person=person;
             users.save(user);
 
-            return users.findByPerson_id(persons.findByEmail(person.getEmail()).getId());
+
+            return getUser(user.getPerson_id());
         }catch (Exception e){
             response.sendError(SC_CONFLICT,e.getMessage());
             return null;
