@@ -173,6 +173,21 @@ public class ApiControllerTest {
     }
 
     @Test
+    public void addPerson() throws Exception{
+        String email = "testperson@gmail.com";
+        String firstname = "TestPersonVN";
+        String lastname = "TestPersonAN";
+
+        String jsonPerson = TestHelper.personToJson(email, firstname, lastname);
+
+        mockMvc.perform(post("/api/persons/add/")
+                .content(jsonPerson)
+                .contentType(contentType))
+                .andExpect(content().contentType(contentType))
+                .andExpect(status().isOk());
+    }
+
+    @Test
     public void logUserInWithWrongPassword() throws Exception{
         String email = "senna@mail.be";
         String password = "Qwerty123";
@@ -313,6 +328,17 @@ public class ApiControllerTest {
         mockMvc.perform(post("/api/users/processSugestion")
                 .content(jsonReaction)
                 .contentType(contentType))
+                .andExpect(status().isOk());
+    }
+
+    /*============================================================================
+        Endorsements
+    ============================================================================*/
+
+    @Test
+    public void getAllEndorsements() throws Exception{
+        mockMvc.perform(get("/api/endorsements"))
+                .andExpect(content().contentType(contentType))
                 .andExpect(status().isOk());
     }
 }

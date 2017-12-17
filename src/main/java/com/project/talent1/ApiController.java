@@ -70,7 +70,7 @@ public class ApiController {
             return null;
         }
     }
-    
+
     @RequestMapping(path = "/persons/add",method = RequestMethod.POST)
     public Persons registerPerson(@RequestBody Persons person, HttpServletResponse response) throws IOException {
         try {

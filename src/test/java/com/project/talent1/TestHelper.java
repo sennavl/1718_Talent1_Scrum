@@ -14,6 +14,13 @@ public class TestHelper {
         json.put("password", password);
         return json.toString();
     }
+    public static String personToJson(String email, String firstname, String lastname){
+        JSONObject json = new JSONObject();
+        json.put("email", email);
+        json.put("firstname", firstname);
+        json.put("lastname", lastname);
+        return json.toString();
+    }
     public static String registrationCredentialsToJson(Users u, Persons p){
         JSONObject json = new JSONObject();
 
@@ -86,4 +93,5 @@ public class TestHelper {
 
         return json.toString();
     }
+
 }
