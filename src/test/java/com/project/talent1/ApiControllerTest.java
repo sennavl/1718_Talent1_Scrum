@@ -181,7 +181,8 @@ public class ApiControllerTest {
                 .content(jsonLogin)
                 .contentType(contentType))
                 .andExpect(content().contentType(contentType))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(cookie().exists("user"));
     }
 
     @Test
@@ -226,7 +227,7 @@ public class ApiControllerTest {
                 .andExpect(status().isUnauthorized());
     }
 
-    /**@Test
+    @Test
     public void logNonExistentUserIn() throws Exception{
         String email = "nonExistent@mail.be";
         String password = "Qwerty123";
@@ -236,8 +237,15 @@ public class ApiControllerTest {
         mockMvc.perform(post("/api/users/login/")
                 .content(jsonLogin)
                 .contentType(contentType))
-                .andExpect(content().contentType(contentType))
-                .andExpect(status().isConflict());
+                .andExpect(status().isNotFound());
+    }
+
+    /**@Test
+    public void logoutUser() throws Exception{
+        this.logUserIn();
+
+        mockMvc.perform(post("/api/users/logout"))
+                .andExpect(cookie().doesNotExist("user"));
     }*/
 
     /*============================================================================

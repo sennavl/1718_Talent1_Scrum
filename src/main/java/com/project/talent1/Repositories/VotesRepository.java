@@ -7,4 +7,6 @@ public interface VotesRepository extends CrudRepository<Votes,Long>{
     Votes findById(long id);
 
     Votes findByText(String text);
+
+    //Iterable<Votes> findSuggestionsForUser
 }

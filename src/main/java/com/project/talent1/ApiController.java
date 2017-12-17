@@ -13,6 +13,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.StreamSupport;
 
 import static java.util.stream.Collectors.toList;
@@ -91,7 +92,7 @@ public class ApiController {
     }
 
     @RequestMapping(path = "/users/logout", method = RequestMethod.POST)
-    public void logOut(HttpServletResponse response) {
+    public void logOut(HttpServletResponse response) throws InterruptedException {
         Cookie userCookie = new Cookie("user", null);
         userCookie.setMaxAge(0);
         response.addCookie(userCookie);
@@ -198,6 +199,12 @@ public class ApiController {
     /*============================================================================
         Votes
     ============================================================================*/
+
+    /**@GetMapping(path = "/users/{id}/suggestions")
+    public Iterable<Votes> getAllTalentsOfUser(@PathVariable long id) {
+        return votes.findSuggestionsForUser(id);
+    }*/
+
     @RequestMapping(path = "/users/suggest")
     public void addSuggestion(@RequestBody Votes vote) {
         vote.setId(0L);
