@@ -96,7 +96,7 @@ public class TestHelper {
         json.put("description", endorsement.getDescription());
         json.put("persons_id", endorsement.getPersons_id());
         json.put("users_has_talents_person_id", endorsement.getUsers_has_talents_person_id());
-        json.put("users_has_talents_talent_id", endorsement.getUsers_has_talents_talent_id());
+        if(endorsement.getUsers_has_talents_person_id()!=null) json.put("users_has_talents_talent_id", endorsement.getUsers_has_talents_talent_id());
 
         return json.toString();
     }

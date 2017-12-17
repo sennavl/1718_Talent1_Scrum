@@ -371,6 +371,21 @@ public class ApiControllerTest {
     }
 
     @Test
+    public void addIncompleteEndorsement() throws Exception{
+        Endorsements endorsement = new Endorsements();
+        endorsement.setDescription("Dit talent past inderdaad bij deze persoon");
+        endorsement.setPersons_id(personId2);
+        endorsement.setUsers_has_talents_person_id(personId);
+
+        String jsonEndorsement = TestHelper.endorsementToJson(endorsement);
+
+        mockMvc.perform(post("/api/endorsement/add")
+                .content(jsonEndorsement)
+                .contentType(contentType))
+                .andExpect(status().isExpectationFailed());
+    }
+
+    @Test
     public void getAllEndorsementsOfUserTalent() throws Exception{
         mockMvc.perform(get( "/api/users/" + this.personId2 + "/talents/" + this.talentId + "/endorsements/"))
                 .andExpect(content().contentType(contentType))
@@ -379,10 +394,26 @@ public class ApiControllerTest {
     }
 
     @Test
+    public void getAllEndorsementsOfUserTalentEmpty() throws Exception{
+        mockMvc.perform(get( "/api/users/" + 777 + "/talents/" + 777 + "/endorsements/"))
+                .andExpect(content().contentType(contentType))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(0)));
+    }
+
+    @Test
     public void getNumberOfEndorsementsOfUserTalent() throws Exception{
         mockMvc.perform(get( "/api/users/" + this.personId2 + "/talents/" + this.talentId + "/endorsements/count"))
                 .andExpect(content().contentType(contentType))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", is(1)));
+    }
+
+    @Test
+    public void getNumberOfEndorsementsOfUserTalentEmpty() throws Exception{
+        mockMvc.perform(get( "/api/users/" + 777 + "/talents/" + 777 + "/endorsements/count"))
+                .andExpect(content().contentType(contentType))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", is(0)));
     }
 }

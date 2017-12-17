@@ -204,15 +204,19 @@ public class ApiController {
         Endorsements
     ============================================================================*/
     @RequestMapping(path = "/endorsement/add")
-    public void addEndorsement(@RequestBody Endorsements endorsement){
-        endorsement.setId(0L);
-        endorsements.save(endorsement);
+    public void addEndorsement(@RequestBody Endorsements endorsement, HttpServletResponse response) throws IOException {
+        try{
+            endorsement.setId(0L);
+            endorsements.save(endorsement);
+        }catch(Exception e){
+            response.sendError(SC_EXPECTATION_FAILED,e.getMessage());
+        }
     }
 
     // voorbeeld voor in postman: http://localhost:8080/api/users/4/talents/2/endorsements/
     // vraag de endorsements op die voor een bepaald talent van een bepaalde user gebeurd zijn
     @GetMapping(path = "/users/{person_id}/talents/{talent_id}/endorsements")
-    public Iterable<Endorsements> getAllEndorsementsOfUserTalent(@PathVariable long person_id, @PathVariable long talent_id){
+    public Iterable<Endorsements> getAllEndorsementsOfUserTalent(@PathVariable long person_id, @PathVariable long talent_id) {
         List<Endorsements> endorsementsUserTalent = endorsements.findEndorsementsForUserTalent((int)person_id, (int)talent_id);
         return endorsementsUserTalent;
     }
@@ -229,6 +233,10 @@ public class ApiController {
         return endorsements.findAll();
     }
 
+
+    /*============================================================================
+        Status
+    ============================================================================*/
     @ResponseStatus(HttpStatus.NOT_FOUND)
     class UserNotFoundException extends RuntimeException {
 
