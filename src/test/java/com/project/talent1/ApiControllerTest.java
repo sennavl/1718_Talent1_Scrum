@@ -93,18 +93,11 @@ public class ApiControllerTest {
     @After
     public void after(){
         endorsementRepository.deleteAll();
-        try {
-            voteRepository.delete(voteId);
-        }catch(Exception e){
-            System.out.println("Error deleting vote: \n" + e.getMessage());
-        }
+        voteRepository.deleteAll();
         usersHasTalentsRepository.deleteAll();
-        userRepository.delete(personId);
-        personRepository.delete(personId);
-        userRepository.delete(personId2);
-        personRepository.delete(personId2);
-        talentRepository.delete(talentId2);
-        talentRepository.delete(talentId);
+        userRepository.deleteAll();
+        personRepository.deleteAll();
+        talentRepository.deleteAll();
     }
 
     /*============================================================================
@@ -115,7 +108,8 @@ public class ApiControllerTest {
     public void getAllUsers() throws Exception{
         mockMvc.perform(get("/api/users"))
                 .andExpect(content().contentType(contentType))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)));
     }
 
     @Test
@@ -156,12 +150,6 @@ public class ApiControllerTest {
                 .andExpect(content().contentType(contentType))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.birthday", is("1997-06-01")));
-
-        Persons pDel = personRepository.findByEmail("senna2@mail.be");
-        Users uDel = userRepository.findByPerson_id(pDel.getId());
-
-        userRepository.delete(uDel);
-        personRepository.delete(pDel);
     }
 
     @Test
@@ -232,11 +220,16 @@ public class ApiControllerTest {
     public void getAllTalents() throws Exception{
         mockMvc.perform(get("/api/talents"))
                 .andExpect(content().contentType(contentType))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)));
     }
 
     @Test
     public void getTop20Talents() throws Exception{
+        for(int i = 0; i < 25; i++){
+            talentRepository.save(new Talents("tal" + i + "ent", 0L));
+        }
+
         mockMvc.perform(get("/api/talents/top20"))
                 .andExpect(content().contentType(contentType))
                 .andExpect(status().isOk())
@@ -266,10 +259,6 @@ public class ApiControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", is("Talent")))
                 .andExpect(jsonPath("$.matches", is(0)));
-
-        Talents tDel = talentRepository.findByName("Talent");
-
-        talentRepository.delete(tDel);
     }
 
     @Test
@@ -314,9 +303,6 @@ public class ApiControllerTest {
                 .content(jsonVote)
                 .contentType(contentType))
                 .andExpect(status().isOk());
-
-        long talentId = voteRepository.findByText("Dat is inderdaad waar").getId();
-        voteRepository.delete(talentId);
     }
 
     @Test
@@ -365,9 +351,6 @@ public class ApiControllerTest {
                 .content(jsonEndorsement)
                 .contentType(contentType))
                 .andExpect(status().isOk());
-
-        long endorsementId = endorsementRepository.findByIds((int)personId, (int)talentId, (int)personId2).getId();
-        endorsementRepository.delete(endorsementId);
     }
 
     @Test
@@ -395,7 +378,7 @@ public class ApiControllerTest {
 
     @Test
     public void getAllEndorsementsOfUserTalentEmpty() throws Exception{
-        mockMvc.perform(get( "/api/users/" + 777 + "/talents/" + 777 + "/endorsements/"))
+        mockMvc.perform(get( "/api/users/" + 0 + "/talents/" + 0 + "/endorsements/"))
                 .andExpect(content().contentType(contentType))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(0)));
@@ -411,7 +394,7 @@ public class ApiControllerTest {
 
     @Test
     public void getNumberOfEndorsementsOfUserTalentEmpty() throws Exception{
-        mockMvc.perform(get( "/api/users/" + 777 + "/talents/" + 777 + "/endorsements/count"))
+        mockMvc.perform(get( "/api/users/" + 0 + "/talents/" + 0 + "/endorsements/count"))
                 .andExpect(content().contentType(contentType))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", is(0)));
