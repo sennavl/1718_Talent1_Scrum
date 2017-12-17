@@ -200,8 +200,7 @@ public class ApiController {
     // vraag de endorsements op die voor een bepaald talent van een bepaalde user gebeurd zijn
     @GetMapping(path = "/users/{person_id}/talents/{talent_id}/endorsements")
     public Iterable<Endorsements> getAllEndorsementsOfUserTalent(@PathVariable long person_id, @PathVariable long talent_id){
-        List<Endorsements> endorsementsUserTalent = endorsements.findEndorsementsForUserTalent((int)person_id, (int)talent_id);
-        return endorsementsUserTalent;
+        return endorsements.findEndorsementsForUserTalent((int)person_id, (int)talent_id);
     }
 
     // voorbeeld voor in postman: http://localhost:8080/api/users/4/talents/2/endorsements/count/
@@ -214,12 +213,5 @@ public class ApiController {
     public @ResponseBody Iterable<Endorsements> getAllEndorsements(){
         return endorsements.findAll();
     }
-
-
-    /*============================================================================
-        Status
-    ============================================================================*/
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    class UserNotFoundException extends RuntimeException {
 
 }
