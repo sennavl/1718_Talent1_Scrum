@@ -326,6 +326,14 @@ public class ApiControllerTest {
     ============================================================================*/
 
     @Test
+    public void getSuggestionsForUser() throws Exception{
+        mockMvc.perform(get("/api/users/" + this.personId + "/suggestions"))
+                .andExpect(content().contentType(contentType))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)));
+    }
+
+    @Test
     public void addSuggestion() throws Exception{
         Votes vote = new Votes();
         vote.setText("Dat is inderdaad waar");
