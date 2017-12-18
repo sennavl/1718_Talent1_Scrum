@@ -1,6 +1,7 @@
 package com.project.talent1;
 
 
+import com.project.talent1.CustomExceptions.PersonNotFoundException;
 import com.project.talent1.CustomExceptions.TalentNotFoundException;
 import com.project.talent1.CustomExceptions.UserNotFoundException;
 import com.project.talent1.Models.*;
@@ -78,6 +79,15 @@ public class ApiController {
         }
     }
 
+    @GetMapping(path = "/persons/{id}")
+    public Persons getPerson(@PathVariable long id) {
+        Persons person = persons.findById(id);
+        if (person == null) {
+            throw new PersonNotFoundException(id);
+        }
+        return person;
+    }
+
     @RequestMapping(path = "/users/login", method = RequestMethod.POST)
     public Long login(@RequestBody String json, HttpServletResponse response) throws IOException {
         String password = JsonHelper.getStringOutJson("password", json);
@@ -143,7 +153,7 @@ public class ApiController {
         }
     }
 
-    @RequestMapping(path = "/users/{user_id}/talents/{talent_id}/delete", method = RequestMethod.DELETE)
+        @RequestMapping(path = "/users/{user_id}/talents/{talent_id}/delete", method = RequestMethod.DELETE)
     public void deleteTalent(@PathVariable int user_id, @PathVariable int talent_id) {
         Users user = users.findByPerson_id(user_id);
         if (user == null) {

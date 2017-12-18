@@ -126,6 +126,17 @@ public class ApiControllerTest {
     }
 
     @Test
+    public void getOnePerson() throws Exception{
+        mockMvc.perform(get("/api/persons/" + personId))
+                .andExpect(content().contentType(contentType))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(toIntExact(personId))))
+                .andExpect(jsonPath("$.firstname", is("Senna")))
+                .andExpect(jsonPath("$.lastname", is("Van Londersele")))
+                .andExpect(jsonPath("$.email", is("senna@mail.be")));
+    }
+
+    @Test
     public void getNonExistingUser() throws Exception{
         mockMvc.perform(get("/api/users/0"))
                 .andExpect(status().isNotFound());
