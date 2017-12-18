@@ -178,6 +178,7 @@ public class ApiController {
 
         return ouput;
     }
+
     @GetMapping(path = "/users/{id}/talentEndorsements")
     public Iterable<TalentAndEndorsement> getAllTalentsOfUserWithEndorsements(@PathVariable long id) {
         Iterable<Users_has_talents> items = usersHasTalentsRepository.findAllByPersonId(id);
