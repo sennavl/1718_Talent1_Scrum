@@ -5,4 +5,5 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface PersonRepository extends CrudRepository<Persons,Long>{
     Persons findByEmail(String email);
+    Persons findById(long id);
 }

@@ -18,6 +18,12 @@ public class TestHelper {
         json.put("lastname", lastname);
         return json.toString();
     }
+    public static String personToJson(String email, String firstname){
+        JSONObject json = new JSONObject();
+        json.put("email", email);
+        json.put("firstname", firstname);
+        return json.toString();
+    }
     public static String registrationCredentialsToJson(Users u, Persons p){
         JSONObject json = new JSONObject();
 
@@ -32,7 +38,7 @@ public class TestHelper {
 
         JSONArray arrayUser = new JSONArray();
         JSONObject itemUser = new JSONObject();
-        itemUser.put("birthday", u.getBirthday().toString());
+        if(u.getBirthday()!= null) itemUser.put("birthday", u.getBirthday().toString());
         itemUser.put("password", u.getPassword());
         arrayUser.add(itemUser);
 
