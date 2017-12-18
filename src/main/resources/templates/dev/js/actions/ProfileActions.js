@@ -1,5 +1,6 @@
 import fetch from 'cross-fetch'
 
+const useridtemp = '2290'
 const API = 'http://localhost:8080/api/';
 
 export const EditClicked = () => {
@@ -8,7 +9,7 @@ export const EditClicked = () => {
     }
 };
 //logged in user gebruiken
-export const Profile = (id='933') => {
+export const Profile = (id=useridtemp) => {
     return dispatch => {
         dispatch(FetchingUser());
 
@@ -68,13 +69,13 @@ const FetchedTalentsUser = (json) => {
 }
 
 //logged in user gebruiken
-export const EndorseClicked = (description, loggedInuserId='933', profileUserId, talentId) =>{
+export const EndorseClicked = (description, loggedInuserId=useridtemp, profileUserId, talentId) =>{
     return dispatch => {
         return fetch(API+'endorsement/add', {
         method: 'POST',
         body: JSON.stringify({
             'description': description,
-            'persons_id': 935,
+            'persons_id': 2291,
             'users_has_talents_person_id': profileUserId,
             'users_has_talents_talent_id': talentId
         }),
@@ -102,7 +103,7 @@ export const ShowEndorseClicked = (talentName, talentId) => {
    }
 };
 
-export const ShowEndorsementsClicked = (profileUserId=933, talentId, talentName) =>{
+export const ShowEndorsementsClicked = (profileUserId=useridtemp, talentId, talentName) =>{
     return dispatch => {
         dispatch(FetchingEndorsementsTalent());
         return fetch(API+'users/' + profileUserId + '/talents/' + talentId.toString() + '/endorsements', {

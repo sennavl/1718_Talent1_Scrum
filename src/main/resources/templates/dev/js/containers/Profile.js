@@ -57,12 +57,12 @@ class Profile extends Component {
                                   <Modal.Body>
                                       <FormGroup controlId='formControlsTextarea'>
                                         <ControlLabel>Comment</ControlLabel>
-                                        <FormControl componentClass='textarea' placeholder='textarea' rows='6' inputRef={ref => { this.textarea = ref; }}/>
+                                        <FormControl componentClass='textarea' placeholder='Comments about this talent' rows='6' inputRef={ref => { this.textarea = ref; }}/>
                                       </FormGroup>
                                   </Modal.Body>
                                   <Modal.Footer>
                                       <Button bsStyle='danger' onClick={() => this.props.ShowEndorseClick()}>Cancel</Button>
-                                      <Button bsStyle='success' onClick={() => this.props.onEndorseClick(this.textarea.value, this.props.loggedInuserId, this.props.profileUserId, this.props.endorsingTalent.id)}>Endorse</Button>
+                                      <Button bsStyle='success' onClick={() => this.props.onEndorseClick($this.textarea.value, this.props.loggedInuserId, this.props.profileUserId, this.props.endorsingTalent.id)}>Endorse</Button>
                                   </Modal.Footer> : ''
                                 </Modal>
                             </div>
@@ -114,14 +114,12 @@ const mapStateToProps = (state) => ({
     userTalents: state.Profile.talents,
     profileUserId:state.Profile.profileUserId,
     loggedInuserId: state.Auth.id,
-    description: 'TEST',
     editStatus: state.Profile.editStatus,
     endorsedTalentIDs: state.Profile.endorsedTalentIDs,
     modalShow: state.Profile.modalShow,
     modalStatus: state.Profile.modalStatus,
     endorsingTalent: state.Profile.endorsingTalent,
     endorsementsTalent: state.Profile.endorsementsTalent
-    //chosenTalents: [{'id':1,'name':'motiverend','matches':7},{'id':2,'name':'motiverender','matches':36},{'id':8,'name':'technische leider','matches':5},{'id':10,'name':'creatieveling','matches':3},{'id':14,'name':'zelfvertrouwen','matches':3},{'id':19,'name':'probleemanalyse','matches':25},{'id':38,'name':'testicle2','matches':1},{'id':41,'name':'Fietsen','matches':1}]
 });
 
 const mapDispatchToProps = (dispatch) => {

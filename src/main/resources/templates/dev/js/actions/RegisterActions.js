@@ -7,11 +7,15 @@ export const Register = (firstname, lastname, email, date, password) => {
         return fetch(API+'users/register', {
             method: "POST",
             body: JSON.stringify({
-                "firstname": firstname,
-                "lastname": lastname,
-                "email": email,
-                "birthday": date,
-                "password": password
+                "person" : {
+            		"firstname": firstname,
+            		"lastname": lastname,
+            		"email": email
+            	},
+            	"user":{
+            		"birthday": date,
+            		"password": password	
+            	}
             }),
             headers: {
                 "Content-Type": "application/json"
