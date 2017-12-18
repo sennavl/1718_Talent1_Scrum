@@ -84,6 +84,7 @@ public class Votes {
     userTalent.setDescription(getText());
     userTalent.setHide((hide) ? 1 : 0);
     userTalent.setPersonId(getUsers_has_talents_person_id());
+    userTalent.setEndorsements_count(0L);
     userTalentRepo.save(userTalent);
     votesRepo.delete(getId());
   }

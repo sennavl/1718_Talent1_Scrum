@@ -77,9 +77,9 @@ public class ApiControllerTest {
         talentRepository.save(new Talents("getalenteerd", 0L));
         this.talentId = talentRepository.findByName("getalenteerd").getId();
 
-        usersHasTalentsRepository.save(new Users_has_talents(personId, talentId, "Dit is mijn talent", 0));
+        usersHasTalentsRepository.save(new Users_has_talents(personId, talentId, "Dit is mijn talent", 0, 0L));
 
-        usersHasTalentsRepository.save(new Users_has_talents(personId2, talentId, "Dit is een van mijn talenten", 0));
+        usersHasTalentsRepository.save(new Users_has_talents(personId2, talentId, "Dit is een van mijn talenten", 0, 0L));
 
         talentRepository.save(new Talents("andereNaam", 0L));
         this.talentId2 = talentRepository.findByName("andereNaam").getId();
