@@ -1,6 +1,6 @@
 import fetch from 'cross-fetch'
 
-const useridtemp = '2290'
+const useridtemp = '933'
 const API = 'http://localhost:8080/api/';
 
 export const EditClicked = () => {
@@ -29,7 +29,7 @@ export const Profile = (id=useridtemp) => {
 const FetchTalentsUser = (id) => {
     return dispatch => {
         dispatch(FetchingTalentsUser());
-        return fetch(API+'users/' + id + '/talents', {
+        return fetch(API+'users/' + id + '/talentEndorsements', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -75,7 +75,7 @@ export const EndorseClicked = (description, loggedInuserId=useridtemp, profileUs
         method: 'POST',
         body: JSON.stringify({
             'description': description,
-            'persons_id': 2291,
+            'persons_id': 934,
             'users_has_talents_person_id': profileUserId,
             'users_has_talents_talent_id': talentId
         }),
@@ -85,6 +85,8 @@ export const EndorseClicked = (description, loggedInuserId=useridtemp, profileUs
         credentials: 'localhost'
     })
         .then(json => dispatch(endAddEndorsement(talentId)))
+        .then(json => dispatch(Profile()))
+
     }
 };
 

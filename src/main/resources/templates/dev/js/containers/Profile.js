@@ -13,15 +13,13 @@ class Profile extends Component {
         this.props.FetchingUser(this.props.profileUserId)
     }
 
-
-
     render() {
         return (
             <div>
                 <Navigation props={this.props.history} status={this.props.logStatus} />
                 <div className='col-md-6 col-md-offset-3' >
                     {/*Mag niet eigen profiel zijn*/}
-                    {!this.props.ownProfile ?
+                    {this.props.ownProfile ?
                         <div className='pull-right'>
                             <Button bsStyle='default' disabled={this.props.editStatus} onClick={() => this.props.onEditClick()}>Edit profile</Button>
                         </div> : ''
@@ -32,17 +30,27 @@ class Profile extends Component {
                     <div className='col-md-5 col-md-offset-3'>
                         <Panel header='Talenten' bsStyle='primary'>
                             <ListGroup>
-                                {this.props.userTalents.map((talent, index) =>
-                                    <ListGroupItem key={index}>
+                                {this.props.userTalents.map((talentInfo, index) =>
+                                    <ListGroupItem key={index} className='clearfix'>
                                         <div>
-                                            {talent.name}
-                                            {/*Mag niet eigen profiel zijn*/}
-                                            {!this.props.ownProfile || this.props.endorsedTalentIDs.map((item, i) => item.id !== talent.id ) ?
-                                                <div className='pull-right'>
-                                                    <Button bsStyle='success' onClick={() => this.props.ShowEndorseClick(talent.name, talent.id)}>+</Button>
-                                                    <Button bsStyle='info' onClick={() => this.props.ShowEndorsementsClick(this.props.profileUserId, talent.id, talent.name)}>View endorsements</Button>
-                                                </div> : ''
-                                            }
+                                            <p className='talentName'>{talentInfo.talent.name}</p>
+                                            <div className='pull-right'>
+                                                {talentInfo.endorsementCounter > 0 ?
+                                                    <Button bsStyle='info' onClick={() => this.props.ShowEndorsementsClick(this.props.profileUserId, talentInfo.talent.id, talentInfo.talent.name)}>View {talentInfo.endorsementCounter} endorsements</Button>
+                                                    : ''
+                                                }
+                                                {/*Mag niet eigen profiel zijn*/}
+                                                {this.props.ownProfile ?
+                                                    <Button bsStyle='success' onClick={() => this.props.ShowEndorseClick(talentInfo.talent.name, talentInfo.talent.id)}>+</Button>
+                                                    : ''
+                                                }
+                                                {/**/}
+                                                {this.props.endorsedTalentIDs.map((item, i) =>
+                                                    item.id === talentInfo.talent.id) ?
+                                                    ''
+                                                    : ''
+                                                }
+                                            </div>
                                         </div>
                                     </ListGroupItem>
                                 )}
@@ -62,7 +70,7 @@ class Profile extends Component {
                                   </Modal.Body>
                                   <Modal.Footer>
                                       <Button bsStyle='danger' onClick={() => this.props.ShowEndorseClick()}>Cancel</Button>
-                                      <Button bsStyle='success' onClick={() => this.props.onEndorseClick($this.textarea.value, this.props.loggedInuserId, this.props.profileUserId, this.props.endorsingTalent.id)}>Endorse</Button>
+                                      <Button bsStyle='success' onClick={() => this.props.onEndorseClick(this.textarea.value, this.props.loggedInuserId, this.props.profileUserId, this.props.endorsingTalent.id)}>Endorse</Button>
                                   </Modal.Footer> : ''
                                 </Modal>
                             </div>
@@ -72,12 +80,12 @@ class Profile extends Component {
                                       <Modal.Title id='contained-modal-title'>Endorsements talent: {this.props.endorsingTalent.name}</Modal.Title>
                                     </Modal.Header>
                                     <Modal.Body className={'modal-body2'}>
-                                        <Panel header='Talenten' bsStyle='primary'>
+                                        <Panel header='Endorsements' bsStyle='primary'>
                                             <ListGroup>
                                                 {this.props.endorsementsTalent.map((endorsement, index) =>
                                                     <ListGroupItem key={index}>
-                                                        <h3>{endorsement.description}</h3>
-                                                        <p>{endorsement.persons_id}</p>
+                                                        <h3>{endorsement.persons_id}</h3>
+                                                        <p>{endorsement.description}</p>
                                                     </ListGroupItem>
                                                 )}
                                             </ListGroup>
@@ -112,12 +120,18 @@ const mapStateToProps = (state) => ({
     userBirthday: state.Profile.birthday,
     userEmail: state.Profile.email,
     userTalents: state.Profile.talents,
+
     profileUserId:state.Profile.profileUserId,
     loggedInuserId: state.Auth.id,
+    ownProfile: true,
+
     editStatus: state.Profile.editStatus,
+
     endorsedTalentIDs: state.Profile.endorsedTalentIDs,
+
     modalShow: state.Profile.modalShow,
     modalStatus: state.Profile.modalStatus,
+
     endorsingTalent: state.Profile.endorsingTalent,
     endorsementsTalent: state.Profile.endorsementsTalent
 });
