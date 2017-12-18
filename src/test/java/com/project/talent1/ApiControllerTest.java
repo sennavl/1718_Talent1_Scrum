@@ -410,13 +410,6 @@ public class ApiControllerTest {
     ============================================================================*/
 
     @Test
-    public void getAllEndorsements() throws Exception{
-        mockMvc.perform(get("/api/endorsements"))
-                .andExpect(content().contentType(contentType))
-                .andExpect(status().isOk());
-    }
-
-    @Test
     public void addEndorsement() throws Exception{
         Endorsements endorsement = new Endorsements();
         endorsement.setDescription("Dit talent past inderdaad bij deze persoon");

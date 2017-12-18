@@ -268,11 +268,4 @@ public class ApiController {
     public int getNumberOfEndorsementsOfUserTalent(@PathVariable long person_id, @PathVariable long talent_id) {
         return endorsements.findAmountOfEndorsementsForUserTalent((int) person_id, (int) talent_id);
     }
-
-    @GetMapping(path = "/endorsements")
-    public @ResponseBody
-    Iterable<Endorsements> getAllEndorsements() {
-        return endorsements.findAll();
-    }
-
 }
