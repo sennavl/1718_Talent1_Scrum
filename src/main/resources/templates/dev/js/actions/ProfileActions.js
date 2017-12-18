@@ -22,7 +22,7 @@ export const Profile = (id='933') => {
             .then(response => response.json())
             .then(json => dispatch(FetchedUser(json)))
             .then(() => dispatch(FetchTalentsUser(id)))
-        }
+    }
 };
 
 const FetchTalentsUser = (id) => {
@@ -84,7 +84,6 @@ export const EndorseClicked = (description, loggedInuserId='933', profileUserId,
         credentials: 'localhost'
     })
         .then(json => dispatch(endAddEndorsement(talentId)))
-
     }
 };
 
@@ -101,4 +100,49 @@ export const ShowEndorseClicked = (talentName, talentId) => {
        talentName,
        talentId
    }
+};
+
+export const ShowEndorsementsClicked = (profileUserId=933, talentId, talentName) =>{
+    return dispatch => {
+        dispatch(FetchingEndorsementsTalent());
+        return fetch(API+'users/' + profileUserId + '/talents/' + talentId.toString() + '/endorsements', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'localhost'
+        })
+            .then(response => response.json())
+            .then(json => dispatch(FetchedEndorsementsTalent(json, talentName)))
+            //.then(() => dispatch(FetchProfile(profileUserId)))
+    }
+};
+
+const FetchProfile = (profileUserId) => {
+    return dispatch => {
+        dispatch(FetchingTalentsUser());
+        return fetch(API+'users/' + id + '/talents', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        credentials: 'localhost'
+    })
+        .then(response => response.json())
+        .then(json => dispatch(FetchedTalentsUser(json)))
+    }
+}
+
+const FetchingEndorsementsTalent = () => {
+    return {
+        type: 'FETCHING_ENDORSEMENTS_TALENT',
+    }
+};
+
+const FetchedEndorsementsTalent = (json, talentName) => {
+    return {
+        type: 'FETCHED_ENDORSEMENTS_TALENT',
+        json,
+        talentName
+    }
 };

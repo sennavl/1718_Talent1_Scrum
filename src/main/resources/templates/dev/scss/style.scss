@@ -3,3 +3,14 @@ $primary: #006699;
 h2 {
 	color: $primary;
 }
+
+.close-endorsements-overview{
+	position: fixed;
+	top: 15px;
+	right: 30px;
+}
+
+ .modal-body2 {
+   height: calc(100vh - 126px);
+   overflow-y:scroll;
+ }

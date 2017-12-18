@@ -1,10 +1,13 @@
-import {FETCHED_USER, FETCHED_TALENTS_USER, EDIT_CLICKED, SHOW_ENDORSE_CLICKED} from '../actions/ProfileActions';
+import {FETCHED_USER, FETCHED_TALENTS_USER, EDIT_CLICKED, SHOW_ENDORSE_CLICKED, FETCHED_ENDORSEMENTS_TALENT} from '../actions/ProfileActions';
 
 const initialState = {
     editStatus: false,
     talents: [],
     endorsedTalentIDs: [],
-    endorsingTalent: {}
+    endorsingTalent: {},
+    endorsementsTalent:[{}],
+    modalShow: false,
+
 }
 
 export default function (state = initialState, action) {
@@ -30,17 +33,25 @@ export default function (state = initialState, action) {
         case 'ADDED_ENDORSEMENT':
             return Object.assign({}, state, {
                 status: 'ADDED_ENDORSEMENT',
-                //endorsedTalentIDs = action.endorsedTalentId
                 endorsedTalentIDs: state.endorsedTalentIDs.concat({
                     id: action.endorsedTalentId
                 }),
-                show: false
+                modalShow: false
             });
         case 'SHOW_ENDORSE_CLICKED':
             return Object.assign({}, state, {
-                show: !state.show,
+                modalStatus: 'ADD',
+                modalShow: !state.modalShow,
                 endorsingTalent: {name: action.talentName, id: action.talentId},
-                status: 'SHOW_ENDORSEMENT'
+                status: 'SHOW_ADD_ENDORSEMENT'
+            });
+        case 'FETCHED_ENDORSEMENTS_TALENT':
+            return Object.assign({}, state, {
+                modalStatus: 'VIEW',
+                modalShow: !state.modalShow,
+                endorsementsTalent: action.json,
+                endorsingTalent: {name: action.talentName},
+                status: 'ENDORSEMENTS_TALENT_FETCHED'
             });
         default:
             return state
