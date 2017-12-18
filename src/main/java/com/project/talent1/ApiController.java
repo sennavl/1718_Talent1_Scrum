@@ -244,9 +244,6 @@ public class ApiController {
         try {
             endorsement.setId(0L);
             endorsements.save(endorsement);
-            Users_has_talents userTalent = usersHasTalentsRepository.findByPersonIdTalentId(endorsement.getUsers_has_talents_person_id(), endorsement.getUsers_has_talents_talent_id());
-            userTalent.setEndorsements_count(userTalent.getEndorsements_count() + 1);
-            usersHasTalentsRepository.save(userTalent);
         } catch (Exception e) {
             response.sendError(SC_EXPECTATION_FAILED, e.getMessage());
         }

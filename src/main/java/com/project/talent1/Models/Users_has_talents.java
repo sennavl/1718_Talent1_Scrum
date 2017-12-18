@@ -17,18 +17,16 @@ public class Users_has_talents {
     private long talentId;
     private String description;
     private int hide;
-    private long endorsements_count;
 
     public Users_has_talents() {
 
     }
 
-    public Users_has_talents(long personId, long talentId, String description, int hide, long endorsements_count) {
+    public Users_has_talents(long personId, long talentId, String description, int hide) {
         this.personId = personId;
         this.talentId = talentId;
         this.description = description;
         this.hide = hide;
-        this.endorsements_count = endorsements_count;
     }
 
     public long getPersonId() {
@@ -61,14 +59,6 @@ public class Users_has_talents {
 
     public void setHide(int hide) {
         this.hide = hide;
-    }
-
-    public long getEndorsements_count() {
-    return endorsements_count;
-  }
-
-    public void setEndorsements_count(long endorsements_count) {
-      this.endorsements_count = endorsements_count;
     }
 
     public void register(Talents t, long id, TalentRepository talents, UsersHasTalentsRepository usersHasTalentsRepository) {
