@@ -178,6 +178,16 @@ public class ApiController {
 
         return ouput;
     }
+    @GetMapping(path = "/users/{id}/talentEndorsements")
+    public Iterable<TalentAndEndorsement> getAllTalentsOfUserWithEndorsements(@PathVariable long id) {
+        Iterable<Users_has_talents> items = usersHasTalentsRepository.findAllByPersonId(id);
+        List<TalentAndEndorsement> ouput = StreamSupport.stream(items.spliterator(), false)
+                .filter(userTalent -> userTalent.getHide() == 0)
+                .map(usertalent -> (new TalentAndEndorsement(talents.findById(usertalent.getTalentId()),getNumberOfEndorsementsOfUserTalent(usertalent.getPersonId(),usertalent.getTalentId()))))
+                .collect(toList());
+
+        return ouput;
+    }
 
     @RequestMapping(path = "/users/{id}/talents/add")
     public Iterable<Talents> addUserTalent(@RequestBody String json, @PathVariable long id) throws IOException {
