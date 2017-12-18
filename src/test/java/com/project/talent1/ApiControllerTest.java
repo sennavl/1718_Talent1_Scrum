@@ -143,6 +143,12 @@ public class ApiControllerTest {
     }
 
     @Test
+    public void getNonExistingPerson() throws Exception{
+        mockMvc.perform(get("/api/persons/0"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     public void registerUser() throws Exception{
         Users u = new Users();
         u.setPassword(BCrypt.hashpw("Azerty123", BCrypt.gensalt()));
