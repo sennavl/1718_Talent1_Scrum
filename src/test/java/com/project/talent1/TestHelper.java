@@ -5,12 +5,18 @@ import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 
 public class TestHelper {
+
+    /*============================================================================
+        Users/persons
+    ============================================================================*/
+
     public static String loginCredentialsToJson(String email, String password){
         JSONObject json = new JSONObject();
         json.put("email", email);
         json.put("password", password);
         return json.toString();
     }
+
     public static String personToJson(String email, String firstname, String lastname){
         JSONObject json = new JSONObject();
         json.put("email", email);
@@ -18,12 +24,14 @@ public class TestHelper {
         json.put("lastname", lastname);
         return json.toString();
     }
+
     public static String personToJson(String email, String firstname){
         JSONObject json = new JSONObject();
         json.put("email", email);
         json.put("firstname", firstname);
         return json.toString();
     }
+
     public static String registrationCredentialsToJson(Users u, Persons p){
         JSONObject json = new JSONObject();
 
@@ -48,6 +56,30 @@ public class TestHelper {
 
         return json.toString().replace("[", "").replace("]", "");
     }
+
+    public static String userUpdateToJson(Users u, Persons p){
+        JSONObject json = new JSONObject();
+
+        JSONArray arrayPerson = new JSONArray();
+        JSONObject itemPerson = new JSONObject();
+        itemPerson.put("id", p.getId());
+        itemPerson.put("firstname", p.getFirstname());
+        itemPerson.put("lastname", p.getLastname());
+
+        arrayPerson.add(itemPerson);
+
+        json.put("person", arrayPerson);
+
+        json.put("birthday", u.getBirthday() + "");
+        json.put("password", u.getPassword());
+
+        return json.toString().replace("[", "").replace("]", "");
+    }
+
+    /*============================================================================
+        Talents
+    ============================================================================*/
+
     public static String talentToJson(String name){
         JSONObject json = new JSONObject();
 
@@ -55,20 +87,19 @@ public class TestHelper {
 
         return json.toString();
     }
+
     public static String userTalentToJson(Users_has_talents userTalents){
         JSONObject json = new JSONObject();
 
-        JSONArray arrayUserTalents = new JSONArray();
-        JSONObject itemUserTalent = new JSONObject();
-        itemUserTalent.put("talentId", userTalents.getTalentId());
-        itemUserTalent.put("description", userTalents.getDescription());
-        itemUserTalent.put("hide", userTalents.getHide());
-        arrayUserTalents.add(itemUserTalent);
-
-        json.put("userTalent", arrayUserTalents);
+        json.put("talentId", userTalents.getTalentId());
+        json.put("description", userTalents.getDescription());
+        json.put("hide", userTalents.getHide());
 
         return json.toString().replace("[", "").replace("]", "");
     }
+    /*============================================================================
+        Suggestions
+    ============================================================================*/
     public static String voteToJson(Votes vote){
         JSONObject json = new JSONObject();
 
@@ -96,6 +127,9 @@ public class TestHelper {
 
         return json.toString();
     }
+    /*============================================================================
+        Endorsements
+    ============================================================================*/
     public static String endorsementToJson(Endorsements endorsement){
         JSONObject json = new JSONObject();
 

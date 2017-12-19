@@ -56,6 +56,7 @@ public class ApiControllerTest {
     private long talentId;
 
     private long talentId2;
+    private long talentId3;
 
     private long voteId;
 
@@ -83,6 +84,9 @@ public class ApiControllerTest {
 
         talentRepository.save(new Talents("andereNaam", 0L));
         this.talentId2 = talentRepository.findByName("andereNaam").getId();
+
+        talentRepository.save(new Talents("doorzetter", 0L));
+        this.talentId3 = talentRepository.findByName("doorzetter").getId();
 
         voteRepository.save(new Votes("Dit is de reden", personId2, personId, talentId2));
         this.voteId = voteRepository.findByText("Dit is de reden").getId();
@@ -265,6 +269,28 @@ public class ApiControllerTest {
                 .andExpect(cookie().maxAge("user",0));
     }
 
+    @Test
+    public void updateUser() throws Exception {
+        Users user = new Users();
+
+        user.setBirthday(Date.valueOf(LocalDate.parse("1997-06-01")));
+        user.setPassword("Azerty123");
+
+        Persons person = new Persons();
+        person.setId(personId);
+        person.setFirstname("Newname");
+        person.setLastname("Van Londersele");
+
+        String jsonUpdate = TestHelper.userUpdateToJson(user, person);
+
+        mockMvc.perform(post("/api/users/update")
+                .content(jsonUpdate)
+                .contentType(contentType))
+                .andExpect(content().contentType(contentType))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.person.firstname", is("Newname")));
+    }
+
     /*============================================================================
         Talents
     ============================================================================*/
@@ -322,20 +348,33 @@ public class ApiControllerTest {
                 .andExpect(jsonPath("$", hasSize(1)));
     }
 
-    @Test
-    public void addTalentToUser() throws Exception{
+    public Users_has_talents createUsersHasTalents(long talent_id){
         Users_has_talents userTalents = new Users_has_talents();
-        userTalents.setTalentId(2);
+        userTalents.setTalentId(talent_id);
         userTalents.setDescription("Dit klopt");
         userTalents.setHide(0);
+        return userTalents;
+    }
 
-        String jsonUserTalent = TestHelper.userTalentToJson(userTalents);
+    @Test
+    public void addTalentToUser() throws Exception{
+        String jsonUserTalent = TestHelper.userTalentToJson(createUsersHasTalents(talentId3));
 
         mockMvc.perform(post("/api/users/" + personId + "/talents/add")
                 .content(jsonUserTalent)
                 .contentType(contentType))
                 .andExpect(content().contentType(contentType))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void addNonExistentTalentToUser() throws Exception{
+        String jsonUserTalent = TestHelper.userTalentToJson(createUsersHasTalents(0));
+
+        mockMvc.perform(post("/api/users/" + personId + "/talents/add")
+                .content(jsonUserTalent)
+                .contentType(contentType))
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -354,6 +393,17 @@ public class ApiControllerTest {
     public void deleteTalentFromUser() throws Exception{
         mockMvc.perform(delete("/api/users/" + personId + "/talents/" + talentId + "/delete"))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void getAllTalentsOfUserWithEndorsements() throws Exception {
+        mockMvc.perform(get("/api/users/" + personId2 + "/talentEndorsements"))
+                .andExpect(content().contentType(contentType))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].endorsementCounter", is(1)))
+                .andExpect(jsonPath("$[0].talent.name", is("getalenteerd")))
+                .andExpect(jsonPath("$[0].talent.matches", is(0)))
+                .andExpect(jsonPath("$[0].talent.id", is(toIntExact(talentId))));
     }
 
     /*============================================================================
