@@ -348,14 +348,17 @@ public class ApiControllerTest {
                 .andExpect(jsonPath("$", hasSize(1)));
     }
 
-    @Test
-    public void addTalentToUser() throws Exception{
+    public Users_has_talents createUsersHasTalents(long talent_id){
         Users_has_talents userTalents = new Users_has_talents();
-        userTalents.setTalentId(talentId3);
+        userTalents.setTalentId(talent_id);
         userTalents.setDescription("Dit klopt");
         userTalents.setHide(0);
+        return userTalents;
+    }
 
-        String jsonUserTalent = TestHelper.userTalentToJson(userTalents);
+    @Test
+    public void addTalentToUser() throws Exception{
+        String jsonUserTalent = TestHelper.userTalentToJson(createUsersHasTalents(talentId3));
 
         mockMvc.perform(post("/api/users/" + personId + "/talents/add")
                 .content(jsonUserTalent)
@@ -366,12 +369,7 @@ public class ApiControllerTest {
 
     @Test
     public void addNonExistentTalentToUser() throws Exception{
-        Users_has_talents userTalents = new Users_has_talents();
-        userTalents.setTalentId(0);
-        userTalents.setDescription("Dit klopt");
-        userTalents.setHide(0);
-
-        String jsonUserTalent = TestHelper.userTalentToJson(userTalents);
+        String jsonUserTalent = TestHelper.userTalentToJson(createUsersHasTalents(0));
 
         mockMvc.perform(post("/api/users/" + personId + "/talents/add")
                 .content(jsonUserTalent)
