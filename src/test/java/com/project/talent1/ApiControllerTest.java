@@ -265,6 +265,28 @@ public class ApiControllerTest {
                 .andExpect(cookie().maxAge("user",0));
     }
 
+    @Test
+    public void updateUser() throws Exception {
+        Users user = new Users();
+
+        user.setBirthday(Date.valueOf(LocalDate.parse("1997-06-01")));
+        user.setPassword("Azerty123");
+
+        Persons person = new Persons();
+        person.setId(personId);
+        person.setFirstname("Newname");
+        person.setLastname("Van Londersele");
+
+        String jsonUpdate = TestHelper.userUpdateToJson(user, person);
+
+        mockMvc.perform(post("/api/users/update")
+                .content(jsonUpdate)
+                .contentType(contentType))
+                .andExpect(content().contentType(contentType))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.person.firstname", is("Newname")));
+    }
+
     /*============================================================================
         Talents
     ============================================================================*/
@@ -354,6 +376,17 @@ public class ApiControllerTest {
     public void deleteTalentFromUser() throws Exception{
         mockMvc.perform(delete("/api/users/" + personId + "/talents/" + talentId + "/delete"))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void getAllTalentsOfUserWithEndorsements() throws Exception {
+        mockMvc.perform(get("/api/users/" + personId2 + "/talentEndorsements"))
+                .andExpect(content().contentType(contentType))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].endorsementCounter", is(1)))
+                .andExpect(jsonPath("$[0].talent.name", is("getalenteerd")))
+                .andExpect(jsonPath("$[0].talent.matches", is(0)))
+                .andExpect(jsonPath("$[0].talent.id", is((long)talentId)));
     }
 
     /*============================================================================
