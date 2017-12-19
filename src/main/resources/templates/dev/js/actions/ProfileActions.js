@@ -1,6 +1,7 @@
 import fetch from 'cross-fetch'
 
-const useridtemp = '1082'
+const loggedinUseridtemp = '2474'
+const profileuseridtemp = '2473'
 const API = 'http://localhost:8080/api/';
 
 export const EditClicked = () => {
@@ -9,10 +10,9 @@ export const EditClicked = () => {
     }
 };
 //logged in user gebruiken
-export const Profile = (profileUserId=useridtemp) => {
+export const Profile = (profileUserId=profileuseridtemp) => {
     return dispatch => {
         dispatch(FetchingUser());
-
         return fetch(API+'users/' + profileUserId, {
             method: 'GET',
             headers: {
@@ -69,7 +69,7 @@ const FetchedTalentsUser = (json) => {
 }
 
 //logged in user gebruiken
-export const EndorseClicked = (description, loggedInuserId=useridtemp, profileUserId, talentId) =>{
+export const EndorseClicked = (description, loggedInuserId=loggedinUseridtemp, profileUserId, talentId) =>{
     return dispatch => {
         return fetch(API+'endorsement/add', {
         method: 'POST',
@@ -85,7 +85,7 @@ export const EndorseClicked = (description, loggedInuserId=useridtemp, profileUs
         credentials: 'localhost'
     })
         .then(json => dispatch(EndAddEndorsement(talentId)))
-        .then(json => dispatch(Profile()))
+        .then(json => dispatch(Profile(profileUserId)))
 
     }
 };
@@ -105,7 +105,7 @@ export const ShowEndorseClicked = (talentName, talentId) => {
    }
 };
 
-export const ShowEndorsementsClicked = (profileUserId=useridtemp, talentId, talentName) =>{
+export const ShowEndorsementsClicked = (profileUserId=profileuseridtemp, talentId, talentName) =>{
     return dispatch => {
         dispatch(FetchingEndorsementsTalent());
         return fetch(API+'users/' + profileUserId + '/talents/' + talentId.toString() + '/endorsements', {
@@ -117,14 +117,13 @@ export const ShowEndorsementsClicked = (profileUserId=useridtemp, talentId, tale
         })
             .then(response => response.json())
             .then(json => dispatch(FetchedEndorsementsTalent(json, talentName)))
-            //.then(() => dispatch(FetchProfile(profileUserId)))
     }
 };
-////////////////////////////////////////////////////////////////////////
-const FetchProfile = (profileUserId) => {
+
+export const FetchPerson = (personId) => {
     return dispatch => {
-        dispatch(FetchingTalentsUser());
-        return fetch(API+'users/' + id + '/talents', {
+        dispatch(FetchingPerson());
+        return fetch(API+'users/' + personId, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -132,9 +131,22 @@ const FetchProfile = (profileUserId) => {
         credentials: 'localhost'
     })
         .then(response => response.json())
-        .then(json => dispatch(FetchedTalentsUser(json)))
+        .then(json => dispatch(FetchedPerson(json)))
     }
 }
+
+const FetchingPerson = () => {
+    return {
+        type: 'FETCHING_PERSON'
+    }
+};
+
+const FetchedPerson = (json) => {
+    return {
+        type: 'FETCHED_PERSON',
+        json
+    }
+};
 
 const FetchingEndorsementsTalent = () => {
     return {
@@ -152,18 +164,18 @@ const FetchedEndorsementsTalent = (json, talentName) => {
 
 export const CancelEditClicked = () => {
     return {
-        type: 'CANCELEDIT_CLICKED'
+        type: 'CANCEL_EDIT_CLICKED'
     }
 };
 
 const DeletedUserTalent = (talentId) => {
     return {
         type: 'DELETED_USER_TALENT',
-        talentId
+        talentId,
     }
 };
 
-export const DeleteTalentClicked = (talentId, profileUserId=useridtemp) => {
+export const DeleteTalentClicked = (talentId, profileUserId=profileuseridtemp) => {
     return dispatch => {
         return fetch(API+'users/' + profileUserId + '/talents/' + talentId + '/delete', {
             method: 'DELETE',
@@ -172,9 +184,44 @@ export const DeleteTalentClicked = (talentId, profileUserId=useridtemp) => {
             },
             credentials: 'localhost'
         })
-            .then(response => response.json())
-            .then(dispatch(DeletedUserTalent(talentId, json)))
+            .then(dispatch(DeletedUserTalent(talentId)))
             .then(dispatch(FetchTalentsUser(profileUserId)))
+    }
+};
 
+export const SaveClicked = (firstname, lastname, date, password, personId=loggedinUseridtemp) => {
+    return dispatch => {
+        dispatch(UpdatingUser());
+        return fetch(API+'users/update', {
+            method: 'POST',
+            body: JSON.stringify({
+                "person" : {
+                    "id": 1083,
+            		"firstname": "michiel2",
+            		"lastname": "vdb2"
+            	},
+            	"birthday": "1994-12-29",
+            	"password": "Azert12"
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'same-origin'
+        })
+            .then(response => response.json())
+            .then(json => dispatch(UpdatedUser(json)))
+    }
+};
+
+const UpdatingUser = () => {
+    return {
+        type: 'UPDATING_PERSON',
+    }
+};
+
+const UpdatedUser = (json) => {
+    return {
+        type: 'UPDATED_PERSON',
+        json
     }
 };

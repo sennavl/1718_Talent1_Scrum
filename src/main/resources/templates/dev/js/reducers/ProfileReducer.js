@@ -1,4 +1,4 @@
-import {FETCHED_USER, FETCHED_TALENTS_USER, EDIT_CLICKED, SHOW_ENDORSE_CLICKED, FETCHED_ENDORSEMENTS_TALENT, CANCELEDIT_CLICKED, DELETED_USER_TALENT} from '../actions/ProfileActions';
+import {FETCHED_USER, FETCHED_TALENTS_USER, EDIT_CLICKED, SHOW_ENDORSE_CLICKED, FETCHED_ENDORSEMENTS_TALENT, CANCEL_EDIT_CLICKED, DELETED_USER_TALENT, FETCHED_PERSON, UPDATED_PERSON} from '../actions/ProfileActions';
 
 const initialState = {
     editStatus: false,
@@ -7,7 +7,6 @@ const initialState = {
     endorsingTalent: {},
     endorsementsTalent:[{}],
     modalShow: false,
-
 }
 
 export default function (state = initialState, action) {
@@ -54,7 +53,7 @@ export default function (state = initialState, action) {
                 endorsingTalent: {name: action.talentName},
                 status: 'ENDORSEMENTS_TALENT_FETCHED'
             });
-        case 'CANCELEDIT_CLICKED':
+        case 'CANCEL_EDIT_CLICKED':
             return Object.assign({}, state, {
                 editStatus: false
             });
@@ -62,6 +61,15 @@ export default function (state = initialState, action) {
             return Object.assign({}, state, {
                 deletedTalentId: action.talentId,
                 status: 'USER_TALENT_DELETED'
+            });
+        case 'FETCHED_PERSON':
+            return Object.assign({}, state, {
+                endorsementPerson: action.jason,
+                status: 'PERSON_FETCHED'
+            });
+        case 'UPDATED_PERSON':
+            return Object.assign({}, state, {
+                status: 'PERSON_UPDATED'
             });
         default:
             return state

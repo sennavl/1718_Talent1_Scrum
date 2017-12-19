@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {Button, ListGroup, ListGroupItem, Panel, Modal, FormGroup, ControlLabel, FormControl} from  'react-bootstrap';
 import {Navigation} from '../components/Navigation';
-import {Profile as Profilegetter, EditClicked, EndorseClicked, ShowEndorseClicked, ShowEndorsementsClicked, CancelEditClicked, DeleteTalentClicked} from '../actions/ProfileActions';
+import {Profile as Profilegetter, EditClicked, EndorseClicked, ShowEndorseClicked, ShowEndorsementsClicked, CancelEditClicked, DeleteTalentClicked, FetchPerson, SaveClicked} from '../actions/ProfileActions';
 import {UserInfo} from '../components/Profile/UserInfo';
 import style from '../../scss/style.scss'
 
@@ -25,13 +25,63 @@ class Profile extends Component {
                             :
                             <div>
                                 <Button bsStyle='danger' onClick={() => this.props.onCancelEditClick()}>Cancel</Button>
-                                <Button bsStyle='primary' onClick={() => this.props.onEditClick()}>Save</Button>
+                                <Button bsStyle='primary' onClick={() => this.props.onSaveClick(this.newFirstname.value, this.newLastname.value, this.newDate.value, this.newPassword.value, this.props.loggedInuserId)}>Save</Button>
                             </div>
-                    }
+                        }
                         </div>
                         : ''
                     }
-                    <UserInfo userFirstname={this.props.userFirstname} userLastname={this.props.userLastname} userEmail={this.props.userEmail} userBirthday={this.props.userBirthday} editStatus={this.props.editStatus}></UserInfo>
+                    {this.props.editStatus ?
+                        <div>
+                            <h2>Edit Profiel</h2>
+                            <form>
+                                <FormGroup controlId="formFirstname">
+                                    <ControlLabel>Firstname</ControlLabel>
+                                    <FormControl
+                                        inputRef={ref => { this.newFirstname = ref; }}
+                                        type="text"
+                                        placeholder={this.props.userFirstname}
+                                    />
+                                    <FormControl.Feedback />
+                                </FormGroup>
+                                <FormGroup controlId="formLastname">
+                                    <ControlLabel>Lastname</ControlLabel>
+                                    <FormControl
+                                        inputRef={ref => { this.newLastname = ref; }}
+                                        type="email"
+                                        placeholder="Enter your lastname"
+                                    />
+                                    <FormControl.Feedback />
+                                </FormGroup>
+                                <FormGroup controlId="formBirth">
+                                    <ControlLabel>Birthday</ControlLabel>
+                                    <FormControl
+                                        inputRef={ref => { this.newDate = ref; }}
+                                        type="date"
+                                        placeholder="Enter your birthday"
+                                    />
+                                    <FormControl.Feedback />
+                                </FormGroup>
+                                <FormGroup controlId="formPassword">
+                                    <ControlLabel>Password</ControlLabel>
+                                    <FormControl
+                                        inputRef={ref => { this.newPassword = ref; }}
+                                        type="password"
+                                        placeholder="Enter your password"
+                                    />
+                                    <FormControl.Feedback />
+                                </FormGroup>
+                            </form>
+                        </div>
+                        :
+                        <div>
+                            <h2>Profiel</h2>
+                            <p>Naam: {this.props.userFirstname} {this.props.userLastname}</p>
+                            <p>Geboortedatum: {this.props.userBirthday}</p>
+                            <p>Email: {this.props.userEmail}</p>
+                        </div>
+                    }
+                    {/*<UserInfo userFirstname={this.props.userFirstname} userLastname={this.props.userLastname} userEmail={this.props.userEmail} userBirthday={this.props.userBirthday} editStatus={this.props.editStatus}></UserInfo>*/}
                 </div>
                 <div>
                     <div className='col-md-5 col-md-offset-3'>
@@ -52,7 +102,8 @@ class Profile extends Component {
                                                     : ''
                                                 }
                                                 {this.props.editStatus ?
-                                                    <Button bsStyle='danger' onClick={() => this.props.deleteTalentClick(talentInfo.talent.id, this.props.loggedInuserId)}>X</Button>
+                                                    <Button bsStyle='danger' onClick={() => this.props.deleteTalentClick(talentInfo.talent.id, this.props.loggedInuserId)}>X {this.props.counter}</Button>
+
                                                     : ''
                                                 }
                                                 {/**/}
@@ -94,8 +145,10 @@ class Profile extends Component {
                                         <Panel header='Endorsements' bsStyle='primary'>
                                             <ListGroup>
                                                 {this.props.endorsementsTalent.map((endorsement, index) =>
-                                                    <ListGroupItem key={index}>
-                                                        //<h3>{endorsement.persons_id}</h3>
+                                                    <ListGroupItem key={index} onClick={() => this.props.onViewEndorseClick(endorsement.persons_id)}>
+                                                        {this.props.endorsementPerson ?
+                                                        <h3>{this.props.endorsementPerson.person.lastname}</h3> : ''
+                                                        }
                                                         <p>{endorsement.description}</p>
                                                     </ListGroupItem>
                                                 )}
@@ -125,17 +178,18 @@ const mapStateToProps = (state) => ({
 
     profileUserId:state.Profile.profileUserId,
     loggedInuserId: state.Auth.id,
-    ownProfile: false,
+    ownProfile: true,
 
     editStatus: state.Profile.editStatus,
 
-    endorsedTalentIDs: state.Profile.endorsedTalentIDs,
 
     modalShow: state.Profile.modalShow,
     modalStatus: state.Profile.modalStatus,
 
+    endorsedTalentIDs: state.Profile.endorsedTalentIDs,
     endorsingTalent: state.Profile.endorsingTalent,
-    endorsementsTalent: state.Profile.endorsementsTalent
+    endorsementsTalent: state.Profile.endorsementsTalent,
+    endorsementPerson: state.Profile.endorsementPerson,
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -160,7 +214,13 @@ const mapDispatchToProps = (dispatch) => {
         },
         deleteTalentClick: (talentId, loggedInuserId) => {
             dispatch(DeleteTalentClicked(talentId, loggedInuserId));
-        }
+        },
+        onViewEndorseClick: (personId) => {
+            dispatch(FetchPerson(personId));
+        },
+        onSaveClick: () => {
+            dispatch(SaveClicked());
+        },
     }
 };
 

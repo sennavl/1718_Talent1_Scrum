@@ -15,6 +15,19 @@ export const UserInfo = (props) => (
     props.editStatus ?
     <div>
         <h2>Edit Profiel</h2>
+        <form>
+            <FormGroup
+                controlId="formFirstname"
+            >
+                <ControlLabel>Firstname</ControlLabel>
+                <FormControl
+                    inputRef={ref => { props.userFirstname = ref; }}
+                    type="text"
+                    placeholder="Enter your firstname"
+                />
+                <FormControl.Feedback />
+            </FormGroup>
+        </form>
         <p>Naam: {props.userFirstname} {props.userLastname}</p>
         <p>Geboortedatum: {props.userBirthday}</p>
         <p>Email: {props.userEmail}</p>
