@@ -47,6 +47,17 @@ public class ApiController {
         return users.findAll();
     }
 
+    @GetMapping(path = "/users/search/{needle}")
+    public @ResponseBody
+    Iterable<Users> searchUser(@PathVariable String needle) {
+        List<Persons> people= persons.getPeople(needle);
+        List<Users> ouput = StreamSupport.stream(people.spliterator(), false)
+                .filter(person -> users.findByPerson_id(person.getId()) != null)
+                .map(person -> users.findByPerson_id(person.getId()))
+                .collect(toList());
+        return ouput;
+    }
+
     @GetMapping(path = "/users/{id}")
     public Users getUser(@PathVariable long id) {
         Users user = users.findByPerson_id(id);
