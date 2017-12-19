@@ -91,14 +91,9 @@ public class TestHelper {
     public static String userTalentToJson(Users_has_talents userTalents){
         JSONObject json = new JSONObject();
 
-        JSONArray arrayUserTalents = new JSONArray();
-        JSONObject itemUserTalent = new JSONObject();
-        itemUserTalent.put("talentId", userTalents.getTalentId());
-        itemUserTalent.put("description", userTalents.getDescription());
-        itemUserTalent.put("hide", userTalents.getHide());
-        arrayUserTalents.add(itemUserTalent);
-
-        json.put("userTalent", arrayUserTalents);
+        json.put("talentId", userTalents.getTalentId());
+        json.put("description", userTalents.getDescription());
+        json.put("hide", userTalents.getHide());
 
         return json.toString().replace("[", "").replace("]", "");
     }

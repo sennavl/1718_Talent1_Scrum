@@ -191,15 +191,13 @@ public class ApiController {
     }
 
     @RequestMapping(path = "/users/{id}/talents/add")
-    public Iterable<Talents> addUserTalent(@RequestBody String json, @PathVariable long id) throws IOException {
-        Users_has_talents userTalent = JsonHelper.getUserTalentOutJson(json);
-        Talents t = null;
-        if (userTalent.getTalentId() == 0) {
-            t = JsonHelper.getTalentOutJson(json);
-            t = addTalent(t);
+    public Iterable<Talents> addUserTalent(@RequestBody Users_has_talents userTalent, @PathVariable long id) throws IOException {
+        long talentId = userTalent.getTalentId();
+        if (talents.findById(talentId) == null) {
+            throw new TalentNotFoundException(talentId);
         }
-        if (talents.findById(userTalent.getTalentId()) != null) {
-            userTalent.register(t, id, talents, usersHasTalentsRepository);
+        else {
+            userTalent.register(talents.findById(talentId), id, talents, usersHasTalentsRepository);
         }
         return getAllTalentsOfUser(id);
     }

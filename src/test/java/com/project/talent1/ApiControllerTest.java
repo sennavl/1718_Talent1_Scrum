@@ -56,6 +56,7 @@ public class ApiControllerTest {
     private long talentId;
 
     private long talentId2;
+    private long talentId3;
 
     private long voteId;
 
@@ -83,6 +84,9 @@ public class ApiControllerTest {
 
         talentRepository.save(new Talents("andereNaam", 0L));
         this.talentId2 = talentRepository.findByName("andereNaam").getId();
+
+        talentRepository.save(new Talents("doorzetter", 0L));
+        this.talentId3 = talentRepository.findByName("doorzetter").getId();
 
         voteRepository.save(new Votes("Dit is de reden", personId2, personId, talentId2));
         this.voteId = voteRepository.findByText("Dit is de reden").getId();
@@ -347,7 +351,7 @@ public class ApiControllerTest {
     @Test
     public void addTalentToUser() throws Exception{
         Users_has_talents userTalents = new Users_has_talents();
-        userTalents.setTalentId(2);
+        userTalents.setTalentId(talentId3);
         userTalents.setDescription("Dit klopt");
         userTalents.setHide(0);
 
@@ -358,6 +362,21 @@ public class ApiControllerTest {
                 .contentType(contentType))
                 .andExpect(content().contentType(contentType))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void addNonExistentTalentToUser() throws Exception{
+        Users_has_talents userTalents = new Users_has_talents();
+        userTalents.setTalentId(0);
+        userTalents.setDescription("Dit klopt");
+        userTalents.setHide(0);
+
+        String jsonUserTalent = TestHelper.userTalentToJson(userTalents);
+
+        mockMvc.perform(post("/api/users/" + personId + "/talents/add")
+                .content(jsonUserTalent)
+                .contentType(contentType))
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -386,7 +405,7 @@ public class ApiControllerTest {
                 .andExpect(jsonPath("$[0].endorsementCounter", is(1)))
                 .andExpect(jsonPath("$[0].talent.name", is("getalenteerd")))
                 .andExpect(jsonPath("$[0].talent.matches", is(0)))
-                .andExpect(jsonPath("$[0].talent.id", is((long)talentId)));
+                .andExpect(jsonPath("$[0].talent.id", is(toIntExact(talentId))));
     }
 
     /*============================================================================
