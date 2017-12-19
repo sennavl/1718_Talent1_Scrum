@@ -2,9 +2,8 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {Button, ListGroup, ListGroupItem, Panel, Modal, FormGroup, ControlLabel, FormControl} from  'react-bootstrap';
 import {Navigation} from '../components/Navigation';
-import {Profile as Profilegetter, EditClicked, EndorseClicked, ShowEndorseClicked, ShowEndorsementsClicked, } from '../actions/ProfileActions';
+import {Profile as Profilegetter, EditClicked, EndorseClicked, ShowEndorseClicked, ShowEndorsementsClicked, CancelEditClicked, DeleteTalentClicked} from '../actions/ProfileActions';
 import {UserInfo} from '../components/Profile/UserInfo';
-import {EndorsementModal} from '../components/Profile/EndorsementModal';
 import style from '../../scss/style.scss'
 
 
@@ -21,10 +20,18 @@ class Profile extends Component {
                     {/*Mag niet eigen profiel zijn*/}
                     {this.props.ownProfile ?
                         <div className='pull-right'>
+                        {!this.props.editStatus ?
                             <Button bsStyle='default' disabled={this.props.editStatus} onClick={() => this.props.onEditClick()}>Edit profile</Button>
-                        </div> : ''
+                            :
+                            <div>
+                                <Button bsStyle='danger' onClick={() => this.props.onCancelEditClick()}>Cancel</Button>
+                                <Button bsStyle='primary' onClick={() => this.props.onEditClick()}>Save</Button>
+                            </div>
                     }
-                    <UserInfo userName={this.props.userName} userEmail={this.props.userEmail} userBirthday={this.props.userBirthday}></UserInfo>
+                        </div>
+                        : ''
+                    }
+                    <UserInfo userFirstname={this.props.userFirstname} userLastname={this.props.userLastname} userEmail={this.props.userEmail} userBirthday={this.props.userBirthday} editStatus={this.props.editStatus}></UserInfo>
                 </div>
                 <div>
                     <div className='col-md-5 col-md-offset-3'>
@@ -36,12 +43,16 @@ class Profile extends Component {
                                             <p className='talentName'>{talentInfo.talent.name}</p>
                                             <div className='pull-right'>
                                                 {talentInfo.endorsementCounter > 0 ?
-                                                    <Button bsStyle='info' onClick={() => this.props.ShowEndorsementsClick(this.props.profileUserId, talentInfo.talent.id, talentInfo.talent.name)}>View {talentInfo.endorsementCounter} endorsements</Button>
+                                                    <Button bsStyle='info' onClick={() => this.props.showEndorsementsClick(this.props.profileUserId, talentInfo.talent.id, talentInfo.talent.name)}>View {talentInfo.endorsementCounter} endorsements</Button>
                                                     : ''
                                                 }
                                                 {/*Mag niet eigen profiel zijn*/}
-                                                {this.props.ownProfile ?
-                                                    <Button bsStyle='success' onClick={() => this.props.ShowEndorseClick(talentInfo.talent.name, talentInfo.talent.id)}>+</Button>
+                                                {!this.props.ownProfile ?
+                                                    <Button bsStyle='success' onClick={() => this.props.showEndorseClick(talentInfo.talent.name, talentInfo.talent.id)}>+</Button>
+                                                    : ''
+                                                }
+                                                {this.props.editStatus ?
+                                                    <Button bsStyle='danger' onClick={() => this.props.deleteTalentClick(talentInfo.talent.id, this.props.loggedInuserId)}>X</Button>
                                                     : ''
                                                 }
                                                 {/**/}
@@ -69,7 +80,7 @@ class Profile extends Component {
                                       </FormGroup>
                                   </Modal.Body>
                                   <Modal.Footer>
-                                      <Button bsStyle='danger' onClick={() => this.props.ShowEndorseClick()}>Cancel</Button>
+                                      <Button bsStyle='danger' onClick={() => this.props.showEndorseClick()}>Cancel</Button>
                                       <Button bsStyle='success' onClick={() => this.props.onEndorseClick(this.textarea.value, this.props.loggedInuserId, this.props.profileUserId, this.props.endorsingTalent.id)}>Endorse</Button>
                                   </Modal.Footer> : ''
                                 </Modal>
@@ -84,7 +95,7 @@ class Profile extends Component {
                                             <ListGroup>
                                                 {this.props.endorsementsTalent.map((endorsement, index) =>
                                                     <ListGroupItem key={index}>
-                                                        <h3>{endorsement.persons_id}</h3>
+                                                        //<h3>{endorsement.persons_id}</h3>
                                                         <p>{endorsement.description}</p>
                                                     </ListGroupItem>
                                                 )}
@@ -92,38 +103,29 @@ class Profile extends Component {
                                         </Panel>
                                     </Modal.Body>
                                     <Modal.Footer>
-                                        <Button className='close-endorsements-overview' bsStyle='danger' onClick={() => this.props.ShowEndorseClick()}>X</Button>
+                                        <Button className='close-endorsements-overview' bsStyle='danger' onClick={() => this.props.showEndorseClick()}>X</Button>
                                     </Modal.Footer>
                                 </Modal>
                             </div>
                     }
                     </div>
-                    <div>
-                        {this.props.editStatus ?
-                            <h1>Test</h1> : ''
-                        }
-                    </div>
                 </div>
-
             </div>
         );
     }
-
-
-
 }
 
-
-
 const mapStateToProps = (state) => ({
-    userName: state.Profile.name,
+    userFirstname: state.Profile.firstname,
+    userLastname: state.Profile.lastname,
     userBirthday: state.Profile.birthday,
     userEmail: state.Profile.email,
     userTalents: state.Profile.talents,
+    userPerson: state.Profile.person,
 
     profileUserId:state.Profile.profileUserId,
     loggedInuserId: state.Auth.id,
-    ownProfile: true,
+    ownProfile: false,
 
     editStatus: state.Profile.editStatus,
 
@@ -147,11 +149,17 @@ const mapDispatchToProps = (dispatch) => {
         onEndorseClick: (description, loggedInuserId, profileUserId, talentId) => {
            dispatch(EndorseClicked(description, loggedInuserId, profileUserId, talentId));
         },
-        ShowEndorseClick: (endorsingTalentName, endorsingTalentId) => {
+        showEndorseClick: (endorsingTalentName, endorsingTalentId) => {
           dispatch(ShowEndorseClicked(endorsingTalentName, endorsingTalentId));
         },
-        ShowEndorsementsClick: (profileUserId, talentId, talentName) => {
+        showEndorsementsClick: (profileUserId, talentId, talentName) => {
           dispatch(ShowEndorsementsClicked(profileUserId, talentId, talentName));
+        },
+        onCancelEditClick: () => {
+            dispatch(CancelEditClicked());
+        },
+        deleteTalentClick: (talentId, loggedInuserId) => {
+            dispatch(DeleteTalentClicked(talentId, loggedInuserId));
         }
     }
 };

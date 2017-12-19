@@ -1,6 +1,6 @@
 import fetch from 'cross-fetch'
 
-const useridtemp = '933'
+const useridtemp = '1082'
 const API = 'http://localhost:8080/api/';
 
 export const EditClicked = () => {
@@ -9,11 +9,11 @@ export const EditClicked = () => {
     }
 };
 //logged in user gebruiken
-export const Profile = (id=useridtemp) => {
+export const Profile = (profileUserId=useridtemp) => {
     return dispatch => {
         dispatch(FetchingUser());
 
-        return fetch(API+'users/' + id, {
+        return fetch(API+'users/' + profileUserId, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -22,14 +22,14 @@ export const Profile = (id=useridtemp) => {
         })
             .then(response => response.json())
             .then(json => dispatch(FetchedUser(json)))
-            .then(() => dispatch(FetchTalentsUser(id)))
+            .then(() => dispatch(FetchTalentsUser(profileUserId)))
     }
 };
 
-const FetchTalentsUser = (id) => {
+const FetchTalentsUser = (profileUserId) => {
     return dispatch => {
         dispatch(FetchingTalentsUser());
-        return fetch(API+'users/' + id + '/talentEndorsements', {
+        return fetch(API+'users/' + profileUserId + '/talentEndorsements', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -75,7 +75,7 @@ export const EndorseClicked = (description, loggedInuserId=useridtemp, profileUs
         method: 'POST',
         body: JSON.stringify({
             'description': description,
-            'persons_id': 934,
+            'persons_id': 1083,
             'users_has_talents_person_id': profileUserId,
             'users_has_talents_talent_id': talentId
         }),
@@ -84,13 +84,13 @@ export const EndorseClicked = (description, loggedInuserId=useridtemp, profileUs
         },
         credentials: 'localhost'
     })
-        .then(json => dispatch(endAddEndorsement(talentId)))
+        .then(json => dispatch(EndAddEndorsement(talentId)))
         .then(json => dispatch(Profile()))
 
     }
 };
 
-const endAddEndorsement = (endorsedTalentId) => {
+const EndAddEndorsement = (endorsedTalentId) => {
    return {
        type: 'ADDED_ENDORSEMENT',
        endorsedTalentId
@@ -120,7 +120,7 @@ export const ShowEndorsementsClicked = (profileUserId=useridtemp, talentId, tale
             //.then(() => dispatch(FetchProfile(profileUserId)))
     }
 };
-
+////////////////////////////////////////////////////////////////////////
 const FetchProfile = (profileUserId) => {
     return dispatch => {
         dispatch(FetchingTalentsUser());
@@ -147,5 +147,34 @@ const FetchedEndorsementsTalent = (json, talentName) => {
         type: 'FETCHED_ENDORSEMENTS_TALENT',
         json,
         talentName
+    }
+};
+
+export const CancelEditClicked = () => {
+    return {
+        type: 'CANCELEDIT_CLICKED'
+    }
+};
+
+const DeletedUserTalent = (talentId) => {
+    return {
+        type: 'DELETED_USER_TALENT',
+        talentId
+    }
+};
+
+export const DeleteTalentClicked = (talentId, profileUserId=useridtemp) => {
+    return dispatch => {
+        return fetch(API+'users/' + profileUserId + '/talents/' + talentId + '/delete', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'localhost'
+        })
+            .then(response => response.json())
+            .then(dispatch(DeletedUserTalent(talentId, json)))
+            .then(dispatch(FetchTalentsUser(profileUserId)))
+
     }
 };

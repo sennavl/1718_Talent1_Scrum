@@ -1,4 +1,4 @@
-import {FETCHED_USER, FETCHED_TALENTS_USER, EDIT_CLICKED, SHOW_ENDORSE_CLICKED, FETCHED_ENDORSEMENTS_TALENT} from '../actions/ProfileActions';
+import {FETCHED_USER, FETCHED_TALENTS_USER, EDIT_CLICKED, SHOW_ENDORSE_CLICKED, FETCHED_ENDORSEMENTS_TALENT, CANCELEDIT_CLICKED, DELETED_USER_TALENT} from '../actions/ProfileActions';
 
 const initialState = {
     editStatus: false,
@@ -19,7 +19,8 @@ export default function (state = initialState, action) {
             });
         case 'FETCHED_USER':
             return Object.assign({}, state, {
-                name: action.json.person.firstname + ' ' + action.json.person.lastname,
+                firstname: action.json.person.firstname,
+                lastname:  action.json.person.lastname,
                 birthday: action.json.birthday,
                 email: action.json.person.email,
                 profileUserId: action.json.person.id,
@@ -52,6 +53,15 @@ export default function (state = initialState, action) {
                 endorsementsTalent: action.json,
                 endorsingTalent: {name: action.talentName},
                 status: 'ENDORSEMENTS_TALENT_FETCHED'
+            });
+        case 'CANCELEDIT_CLICKED':
+            return Object.assign({}, state, {
+                editStatus: false
+            });
+        case 'DELETED_USER_TALENT':
+            return Object.assign({}, state, {
+                deletedTalentId: action.talentId,
+                status: 'USER_TALENT_DELETED'
             });
         default:
             return state
