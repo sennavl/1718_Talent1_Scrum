@@ -46,6 +46,10 @@ public class ApiController {
         return users.findAll();
     }
 
+    @GetMapping(path = "/users/search/")
+    Iterable<Users> searchUserDefault(){
+        return searchUser("");
+    }
     @GetMapping(path = "/users/search/{needle}")
     public @ResponseBody
     Iterable<Users> searchUser(@PathVariable String needle) {
