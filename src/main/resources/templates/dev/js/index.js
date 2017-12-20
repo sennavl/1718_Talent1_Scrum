@@ -9,6 +9,7 @@ import allReducers from './reducers';
 import App from './components/App';
 import { BrowserRouter } from 'react-router-dom'
 
+import { searchClicked } from './actions/SearchActions';
 import { FetchTalents } from './actions/TalentRegisterActions';
 
 
@@ -21,6 +22,8 @@ const store = createStore(
 );
 
 store.dispatch(FetchTalents());
+store.dispatch(searchClicked());
+
 
 ReactDOM.render(
     <Provider store={store}>

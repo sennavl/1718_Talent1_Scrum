@@ -3,6 +3,7 @@ import Login from '../containers/Login'
 import Register from '../containers/Register'
 import { Switch, Route } from 'react-router-dom'
 import TalentRegistration from '../containers/TalentRegistration'
+import Search from '../containers/Search'
 
 
 require('../../scss/style.scss');
@@ -15,6 +16,7 @@ const App = () => (
             <Route exact path='/register' component={Register}/>
             <Route exact path='/login' component={Login}/>
             <Route exact path='/talentregistration' component={TalentRegistration}/>
+            <Route exact path='/search' component={Search}/>
         </Switch>
     </div>
 );

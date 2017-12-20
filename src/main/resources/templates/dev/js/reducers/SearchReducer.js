@@ -1,7 +1,8 @@
 const initialState = {
 
     status: 'SEARCHING_FOR_NO_USER',
-    searchstring: ''
+    searchstring: '',
+    foundUsers: []
 };
 
 export default function (state = initialState, action) {
