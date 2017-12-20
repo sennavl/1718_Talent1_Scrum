@@ -14,7 +14,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.StreamSupport;
 
 import static java.util.stream.Collectors.toList;
@@ -50,7 +49,7 @@ public class ApiController {
     @GetMapping(path = "/users/search/{needle}")
     public @ResponseBody
     Iterable<Users> searchUser(@PathVariable String needle) {
-        List<Persons> people= persons.getPeople(needle);
+        List<Persons> people = persons.getPeople(needle);
         List<Users> ouput = StreamSupport.stream(people.spliterator(), false)
                 .filter(person -> users.findByPerson_id(person.getId()) != null)
                 .map(person -> users.findByPerson_id(person.getId()))
@@ -107,7 +106,7 @@ public class ApiController {
             Users user = users.findByPerson_id(persons.findByEmail(email).getId());
             user.login(response, password, response);
             return user.getPerson_id();
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             throw new UserNotFoundException(email);
         }
     }
@@ -122,7 +121,7 @@ public class ApiController {
     @RequestMapping(path = "/users/update")
     public Users update(@RequestBody Users user, HttpServletResponse response) {
         if (users.findByPerson_id(user.person.getId()) == null) {
-            throw new UserNotFoundException(user.getPerson_id());
+            throw new UserNotFoundException(user.person.getId());
         } else {
             try {
                 user.updateUser(users);
@@ -132,6 +131,7 @@ public class ApiController {
             }
 
         }
+
     }
 
     /*============================================================================
@@ -153,12 +153,12 @@ public class ApiController {
     }
 
     @RequestMapping(path = "/talents/add")
-    public Talents addTalent(@RequestBody Talents t) {
-        Talents fetchedTalent = checkIfTalentExistsAndFetch(t.getName());
+    public Talents addTalent(@RequestBody Talents talent) {
+        Talents fetchedTalent = checkIfTalentExistsAndFetch(talent.getName());
         if (fetchedTalent == null) {
-            t.setMatches(Long.parseLong("0"));
-            talents.save(t);
-            return talents.findByName(t.getName());
+            talent.setMatches(Long.parseLong("0"));
+            talents.save(talent);
+            return talents.findByName(talent.getName());
         } else {
             return fetchedTalent;
         }
@@ -171,7 +171,7 @@ public class ApiController {
             throw new UserNotFoundException(user_id);
         }
         Talents talent = talents.findById(talent_id);
-        if (talent == null){
+        if (talent == null) {
             throw new TalentNotFoundException(talent_id);
         }
         endorsements.delete(endorsements.findEndorsementsForUserTalent(user_id, talent_id));
@@ -195,7 +195,7 @@ public class ApiController {
         Iterable<Users_has_talents> items = usersHasTalentsRepository.findAllByPersonId(id);
         List<TalentAndEndorsement> ouput = StreamSupport.stream(items.spliterator(), false)
                 .filter(userTalent -> userTalent.getHide() == 0)
-                .map(usertalent -> (new TalentAndEndorsement(talents.findById(usertalent.getTalentId()),getNumberOfEndorsementsOfUserTalent(usertalent.getPersonId(),usertalent.getTalentId()))))
+                .map(usertalent -> (new TalentAndEndorsement(talents.findById(usertalent.getTalentId()), getNumberOfEndorsementsOfUserTalent(usertalent.getPersonId(), usertalent.getTalentId()))))
                 .collect(toList());
 
         return ouput;
@@ -206,8 +206,7 @@ public class ApiController {
         long talentId = userTalent.getTalentId();
         if (talents.findById(talentId) == null) {
             throw new TalentNotFoundException(talentId);
-        }
-        else {
+        } else {
             userTalent.register(talents.findById(talentId), id, talents, usersHasTalentsRepository);
         }
         return getAllTalentsOfUser(id);
