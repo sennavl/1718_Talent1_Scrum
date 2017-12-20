@@ -1,7 +1,7 @@
 import fetch from 'cross-fetch'
 
-const loggedinUseridtemp = '1083'
-const profileuseridtemp = '1082'
+const loggedinUseridtemp = '1090'
+const profileuseridtemp = '1089'
 const API = 'http://localhost:8080/api/';
 
 export const EditClicked = () => {
@@ -73,7 +73,7 @@ export const EndorseClicked = (description, loggedInuserId=loggedinUseridtemp, p
         method: 'POST',
         body: JSON.stringify({
             'description': description,
-            'persons_id': 1083,
+            'persons_id': loggedInuserId,
             'users_has_talents_person_id': profileUserId,
             'users_has_talents_talent_id': talentId
         }),
@@ -83,7 +83,7 @@ export const EndorseClicked = (description, loggedInuserId=loggedinUseridtemp, p
         credentials: 'localhost'
     })
         .then(json => dispatch(EndAddEndorsement(talentId)))
-        .then(json => dispatch(Profile(profileUserId)))
+        .then(dispatch(Profile(profileUserId)))
 
     }
 };
@@ -165,7 +165,7 @@ const FetchedPerson = (json) => {
 
 export const CancelEditClicked = () => {
     return {
-        type: 'CANCEL_EDIT_CLICKED'
+        type: 'CANCEL_EDIT_CLICKED',
     }
 };
 
@@ -193,19 +193,19 @@ const DeletedUserTalent = (talentId) => {
 
 
 
-export const SaveClicked = (firstname, lastname, date, password, personId=loggedinUseridtemp) => {
+export const SaveClicked = (firstname, lastname, date, password, personId=profileuseridtemp) => {
     return dispatch => {
         dispatch(UpdatingUser());
         return fetch(API+'users/update', {
             method: 'POST',
             body: JSON.stringify({
                 'person': {
-                    'id': 1082,
-            		'firstname': 'vdb',
-            		'lastname': 'lastname'
+                    'id': personId,
+            		'firstname': firstname,
+            		'lastname': lastname
             	},
-            	'birthday': '1997-10-16',
-            	'password': 'Azerty12'
+            	'birthday': date,
+            	'password': password
             }),
             headers: {
                 'Content-Type': 'application/json'
@@ -251,8 +251,88 @@ const AddedSuggestion = () => {
         type: 'ADDED_SUGGESTION',
     }
 };
+
+
 export const AlertDismissClicked = () => {
     return {
         type: 'DISMISS_ALERT',
+    }
+};
+
+
+export const SuggestionsClicked = (personId=profileuseridtemp) => {
+    return dispatch => {
+        dispatch(FetchingSuggestions());
+        return fetch(API+'users/' + personId + '/suggestions', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'same-origin'
+        })
+            .then(response => response.json())
+            .then(json => dispatch(FetchedSuggestions(json)))
+    }
+};
+const FetchingSuggestions = () => {
+    return {
+        type: 'FETCHING_SUGGESTIONS',
+    }
+};
+const FetchedSuggestions = (json) => {
+    return {
+        type: 'FETCHED_SUGGESTIONS',
+        json
+    }
+};
+
+
+
+export const AcceptSuggestionClicked = (suggestionId, personId=profileuseridtemp) => {
+    return dispatch => {
+        return fetch(API+'users/processSugestion', {
+            method: 'POST',
+            body: JSON.stringify({
+                'voteId': suggestionId,
+              	'accepted': true,
+                'hide' : false
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'same-origin'
+        })
+            .then(dispatch(AcceptedSuggestion()))
+            .then(dispatch(SuggestionsClicked(personId)))
+    }
+};
+const AcceptedSuggestion = () => {
+    return {
+        type: 'ACCEPTED_SUGGESTION',
+    }
+};
+
+
+
+export const DeclineSuggestionClicked = (suggestionId, personId=profileuseridtemp) => {
+    return dispatch => {
+        return fetch(API+'users/processSugestion', {
+            method: 'POST',
+            body: JSON.stringify({
+                'voteId': suggestionId,
+              	'accepted': false
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'same-origin'
+        })
+            .then(dispatch(DeclinedSuggestion()))
+            .then(dispatch(SuggestionsClicked(personId)))
+    }
+};
+const DeclinedSuggestion = () => {
+    return {
+        type: 'DECLINED_SUGGESTION',
     }
 };

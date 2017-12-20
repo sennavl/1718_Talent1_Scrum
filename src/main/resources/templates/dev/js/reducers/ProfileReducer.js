@@ -1,6 +1,10 @@
-import {FETCHED_USER, FETCHED_TALENTS_USER, EDIT_CLICKED, SHOW_ENDORSE_CLICKED, FETCHED_ENDORSEMENTS_TALENT, CANCEL_EDIT_CLICKED, DELETED_USER_TALENT, FETCHED_PERSON, UPDATED_PERSON} from '../actions/ProfileActions';
+import {FETCHED_USER, FETCHED_TALENTS_USER, EDIT_CLICKED, SHOW_ENDORSE_CLICKED, FETCHED_ENDORSEMENTS_TALENT, CANCEL_EDIT_CLICKED, DELETED_USER_TALENT, FETCHED_PERSON, UPDATED_PERSON, SUGGESTIONS_CLICKED, FETCHED_SUGGESTIONS, FETCHED_ALL_TALENTS, ACCEPTED_SUGGESTION, DECLINED_SUGGESTION} from '../actions/ProfileActions';
 
 const initialState = {
+    firstname: '',
+    lastname: '',
+    birthday: '',
+    email: '',
     editStatus: false,
     talents: [],
     endorsedTalentIDs: [],
@@ -55,7 +59,7 @@ export default function (state = initialState, action) {
         case 'FETCHED_ENDORSEMENTS_TALENT':
             return Object.assign({}, state, {
                 modalStatus: 'VIEW',
-                modalShow: !state.modalShow,
+                modalShow: true,
                 endorsementsTalent: action.json,
                 endorsingTalent: {name: action.talentName},
                 status: 'ENDORSEMENTS_TALENT_FETCHED'
@@ -95,6 +99,27 @@ export default function (state = initialState, action) {
             return Object.assign({}, state, {
                 alertVisible: false,
                 status: 'ALERT_DISMISSED'
+            });
+        case 'FETCHED_SUGGESTIONS':
+            return Object.assign({}, state, {
+                modalStatus: 'SUGGEST',
+                modalShow: true,
+                suggestions: action.json,
+                status: 'SUGGESTIONS_FETCHED'
+            });
+        case 'ACCEPTED_SUGGESTION':
+            return Object.assign({}, state, {
+                alertVisible: true,
+                alertStyle: 'success',
+                alertMessage: 'Suggestion accepted and talent added!',
+                status: 'SUGGESTIONS_ACCECPTED'
+            });
+        case 'DECLINED_SUGGESTION':
+            return Object.assign({}, state, {
+                alertVisible: true,
+                alertStyle: 'success',
+                alertMessage: 'Suggestion declined and talent not added!',
+                status: 'SUGGESTIONS_DECLINED'
             });
         default:
             return state

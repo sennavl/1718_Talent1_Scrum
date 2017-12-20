@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {Button, ListGroup, ListGroupItem, Panel, Modal, FormGroup, ControlLabel, FormControl, DropdownButton, MenuItem, Alert} from  'react-bootstrap';
 import {Navigation} from '../components/Navigation';
-import {Profile as Profilegetter, EditClicked, EndorseClicked, ShowEndorseClicked, ShowEndorsementsClicked, CancelEditClicked, DeleteTalentClicked, FetchPerson, SaveClicked, SuggestTalentClicked, AlertDismissClicked} from '../actions/ProfileActions';
+import {Profile as Profilegetter, EditClicked, EndorseClicked, ShowEndorseClicked, ShowEndorsementsClicked, CancelEditClicked, DeleteTalentClicked, FetchPerson, SaveClicked, SuggestTalentClicked, AlertDismissClicked, SuggestionsClicked, AcceptSuggestionClicked, DeclineSuggestionClicked} from '../actions/ProfileActions';
 import {FetchTalents} from '../actions/TalentRegisterActions';
 import style from '../../scss/style.scss'
 
@@ -18,17 +18,19 @@ class Profile extends Component {
                 <Navigation props={this.props.history} status={this.props.logStatus} />
                 {this.props.alertVisible ?
                     <Alert bsStyle={this.props.alertStyle} onDismiss={this.handleAlertDismiss}>
-                        <Button bsStyle='default' className='pull-right close' type="button" aria-label="Close"onClick={() => this.props.onAlertDismissClick()}>X</Button>
+                        <Button bsStyle='default' className='pull-right close' type='button' aria-label='Close'onClick={() => this.props.onAlertDismissClick()}>X</Button>
                         <p>{this.props.alertMessage}</p>
                     </Alert>
                   : ''
                 }
                 <div className='col-md-6 col-md-offset-3' >
-                    {/*Mag niet eigen profiel zijn*/}
                     {this.props.ownProfile ?
                         <div className='pull-right'>
                         {!this.props.editStatus ?
-                            <Button bsStyle='default' disabled={this.props.editStatus} onClick={() => this.props.onEditClick()}>Edit profile</Button>
+                            <div>
+                                <Button bsStyle='default' onClick={() => this.props.onSuggestionsClick(this.props.loggedInuserId)}>Suggestions</Button>
+                                <Button bsStyle='default' disabled={this.props.editStatus} onClick={() => this.props.onEditClick()}>Edit profile</Button>
+                            </div>
                             :
                             <div>
                                 <Button bsStyle='danger' onClick={() => this.props.onCancelEditClick()}>Cancel</Button>
@@ -103,7 +105,6 @@ class Profile extends Component {
                                                     <Button bsStyle='info' onClick={() => this.props.showEndorsementsClick(this.props.profileUserId, talentInfo.talent.id, talentInfo.talent.name)}>View {talentInfo.endorsementCounter} endorsements</Button>
                                                     : ''
                                                 }
-                                                {/*Mag niet eigen profiel zijn*/}
                                                 {!this.props.ownProfile ?
                                                     <Button bsStyle='success' onClick={() => this.props.showEndorseClick(talentInfo.talent.name, talentInfo.talent.id)}>+</Button>
                                                     : ''
@@ -111,12 +112,6 @@ class Profile extends Component {
                                                 {this.props.editStatus ?
                                                     <Button bsStyle='danger' onClick={() => this.props.deleteTalentClick(talentInfo.talent.id, this.props.loggedInuserId)}>X {this.props.counter}</Button>
 
-                                                    : ''
-                                                }
-                                                {/**/}
-                                                {this.props.endorsedTalentIDs.map((item, i) =>
-                                                    item.id === talentInfo.talent.id) ?
-                                                    ''
                                                     : ''
                                                 }
                                             </div>
@@ -156,9 +151,10 @@ class Profile extends Component {
                                     </Modal.Footer>
                                 </Panel>
                             </div>
-                            : ''
+                            :
+                            ''
                         }
-                        {this.props.modalStatus === 'ADD' ?
+                        {this.props.modalStatus === 'ADD' &&
                             <div>
                                 <Modal show={this.props.modalShow} onHide={this.close} container={this} aria-labelledby='contained-modal-title'>
                                   <Modal.Header>
@@ -166,10 +162,10 @@ class Profile extends Component {
                                   </Modal.Header>
                                   <Modal.Body>
                                       <FormGroup controlId='formControlsTextarea'>
-                                        <ControlLabel>Comment</ControlLabel>
+                                        <ControlLabel>Comments</ControlLabel>
                                         <FormControl
                                             componentClass='textarea'
-                                            placeholder='Comments about this talent'
+                                            placeholder='Comment about this talent'
                                             rows='6'
                                             inputRef={ref => { this.textarea = ref; }}/>
                                       </FormGroup>
@@ -180,7 +176,9 @@ class Profile extends Component {
                                   </Modal.Footer> : ''
                                 </Modal>
                             </div>
-                        :   <div>
+                        }
+                        {this.props.modalStatus === 'VIEW' &&
+                            <div>
                                 <Modal show={this.props.modalShow} style={'customStyles'} onHide={this.close} container={this} aria-labelledby='contained-modal-title'>
                                     <Modal.Header>
                                       <Modal.Title id='contained-modal-title'>Endorsements talent: {this.props.endorsingTalent.name}</Modal.Title>
@@ -205,7 +203,43 @@ class Profile extends Component {
                                     </Modal.Footer>
                                 </Modal>
                             </div>
-                    }
+                        }
+                        {this.props.modalStatus === 'SUGGEST' &&
+                            <div>
+                                <Modal show={this.props.modalShow} onHide={this.close} container={this} aria-labelledby='contained-modal-title'>
+                                  <Modal.Header>
+                                    <Modal.Title id='contained-modal-title'>Manage suggestions</Modal.Title>
+                                  </Modal.Header>
+                                  <Modal.Body>
+                                      <Panel header='Suggestions' bsStyle='primary'>
+                                          <ListGroup>
+                                              {this.props.suggestions.map((suggestion, index) =>
+                                                  <ListGroupItem key={index} className='clearfix'>
+                                                      <div>
+                                                          {this.props.allTalents.map((talent, index2) =>
+                                                              talent.id === suggestion.users_has_talents_talent_id &&
+                                                              <div key={index}>
+                                                                  <h3>Talent: {talent.name}</h3>
+                                                                  <p>Reason:</p>
+                                                                  <p>{suggestion.text}</p>
+                                                                  <div className='pull-right'>
+                                                                      <Button bsStyle='success' onClick={() => this.props.onAcceptSuggestionClick(suggestion.id, this.props.loggedInuserId)}>+</Button>
+                                                                      <Button bsStyle='danger' onClick={() => this.props.onDeclineSuggestionClick(suggestion.id, this.props.loggedInuserId)}>X {this.props.counter}</Button>
+                                                                  </div>
+                                                              </div>
+                                                          )}
+                                                      </div>
+                                                  </ListGroupItem>
+                                              )}
+                                          </ListGroup>
+                                      </Panel>
+                                  </Modal.Body>
+                                  <Modal.Footer>
+                                      <Button bsStyle='danger' onClick={() => this.props.showEndorseClick()}>Cancel</Button>
+                                  </Modal.Footer>
+                                </Modal>
+                            </div>
+                        }
                     </div>
                 </div>
             </div>
@@ -237,6 +271,8 @@ const mapStateToProps = (state) => ({
     endorsingTalent: state.Profile.endorsingTalent,
     endorsementsTalent: state.Profile.endorsementsTalent,
     endorsementPerson: state.Profile.endorsementPerson,
+
+    suggestions: state.Profile.suggestions,
 
     allTalents: state.TalentRegister.talents,
 });
@@ -275,7 +311,16 @@ const mapDispatchToProps = (dispatch) => {
         },
         onAlertDismissClick: () => {
             dispatch(AlertDismissClicked())
-        }
+        },
+        onSuggestionsClick: (loggedInuserId) => {
+            dispatch(SuggestionsClicked(loggedInuserId))
+        },
+        onAcceptSuggestionClick: (suggestionId) => {
+                dispatch(AcceptSuggestionClicked(suggestionId))
+        },
+        onDeclineSuggestionClick: (suggestionId) => {
+                dispatch(DeclineSuggestionClicked(suggestionId))
+        },
     }
 };
 
