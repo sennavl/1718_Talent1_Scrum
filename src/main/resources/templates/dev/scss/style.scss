@@ -3,3 +3,19 @@ $primary: #006699;
 h2 {
 	color: $primary;
 }
+
+.close-endorsements-overview{
+	position: fixed;
+	top: 15px;
+	right: 30px;
+}
+
+ .modal-body2 {
+   height: 90%;
+   overflow-y:scroll;
+ }
+.talentName{
+	float: left;
+	height: 100%;
+	text-align: center;
+}
