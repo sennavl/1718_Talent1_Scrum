@@ -130,7 +130,7 @@ public class ApiController {
             user.login(response, password);
 
             session = request.getSession();
-            session.setAttribute("user", user.person.getFirstname());
+            session.setAttribute("user", user.person);
             session.setMaxInactiveInterval(30*60);
 
             return user.getPerson_id();
