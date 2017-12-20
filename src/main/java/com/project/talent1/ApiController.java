@@ -50,11 +50,11 @@ public class ApiController {
     public @ResponseBody
     Iterable<Users> searchUser(@PathVariable String needle) {
         List<Persons> people = persons.getPeople(needle);
-        List<Users> ouput = StreamSupport.stream(people.spliterator(), false)
+        List<Users> output = StreamSupport.stream(people.spliterator(), false)
                 .filter(person -> users.findByPerson_id(person.getId()) != null)
                 .map(person -> users.findByPerson_id(person.getId()))
                 .collect(toList());
-        return ouput;
+        return output;
     }
 
     @GetMapping(path = "/users/{id}")
@@ -182,23 +182,23 @@ public class ApiController {
     @GetMapping(path = "/users/{id}/talents")
     public Iterable<Talents> getAllTalentsOfUser(@PathVariable long id) {
         Iterable<Users_has_talents> items = usersHasTalentsRepository.findAllByPersonId(id);
-        List<Talents> ouput = StreamSupport.stream(items.spliterator(), false)
+        List<Talents> output = StreamSupport.stream(items.spliterator(), false)
                 .filter(userTalent -> userTalent.getHide() == 0)
                 .map(usertalent -> (talents.findById(usertalent.getTalentId())))
                 .collect(toList());
 
-        return ouput;
+        return output;
     }
 
     @GetMapping(path = "/users/{id}/talentEndorsements")
     public Iterable<TalentAndEndorsement> getAllTalentsOfUserWithEndorsements(@PathVariable long id) {
         Iterable<Users_has_talents> items = usersHasTalentsRepository.findAllByPersonId(id);
-        List<TalentAndEndorsement> ouput = StreamSupport.stream(items.spliterator(), false)
+        List<TalentAndEndorsement> output = StreamSupport.stream(items.spliterator(), false)
                 .filter(userTalent -> userTalent.getHide() == 0)
                 .map(usertalent -> (new TalentAndEndorsement(talents.findById(usertalent.getTalentId()), getNumberOfEndorsementsOfUserTalent(usertalent.getPersonId(), usertalent.getTalentId()))))
                 .collect(toList());
 
-        return ouput;
+        return output;
     }
 
     @RequestMapping(path = "/users/{id}/talents/add")

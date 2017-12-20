@@ -11,6 +11,6 @@ public interface PersonRepository extends CrudRepository<Persons, Long> {
 
     Persons findById(long id);
 
-    @Query(nativeQuery = true, value = "select * from r0621673_talentsProfileDB.persons where firstname like  %:needle% or lastname like %:needle%")
+    @Query(nativeQuery = true, value = "select * from persons where firstname like  %:needle% or lastname like %:needle%")
     List<Persons> getPeople(@Param("needle") String needle);
 }
