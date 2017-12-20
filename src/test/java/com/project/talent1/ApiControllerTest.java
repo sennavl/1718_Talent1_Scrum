@@ -170,21 +170,9 @@ public class ApiControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    public Persons createTestPerson() {
-        Persons person = new Persons();
-        person.setEmail("senna2@mail.be");
-        person.setFirstname("Senna");
-        person.setLastname("Van Londersele");
-        return person;
-    }
-
     @Test
     public void registerUser() throws Exception {
-        Users user = new Users();
-        user.setPassword(BCrypt.hashpw("Azerty123", BCrypt.gensalt()));
-        user.setBirthday(Date.valueOf(LocalDate.parse("1997-06-01")));
-
-        String jsonRegistration = TestHelper.registrationCredentialsToJson(user, createTestPerson());
+        String jsonRegistration = TestHelper.registrationCredentialsToJson(new Users(Date.valueOf(LocalDate.parse("1997-06-01")), BCrypt.hashpw("Azerty123", BCrypt.gensalt())), new Persons("Senna", "Van Londersele", "senna2@mail.be"));
 
         mockMvc.perform(post("/api/users/register/")
                 .content(jsonRegistration)
@@ -196,10 +184,7 @@ public class ApiControllerTest {
 
     @Test
     public void registerUserMissingCredential() throws Exception {
-        Users user = new Users();
-        user.setPassword(BCrypt.hashpw("Azerty123", BCrypt.gensalt()));
-
-        String jsonRegistration = TestHelper.registrationCredentialsToJson(user, createTestPerson());
+        String jsonRegistration = TestHelper.registrationCredentialsToJson(new Users(BCrypt.hashpw("Azerty123", BCrypt.gensalt())), new Persons("Senna", "Van Londersele", "senna2@mail.be"));
 
         mockMvc.perform(post("/api/users/register/")
                 .content(jsonRegistration)
@@ -209,10 +194,7 @@ public class ApiControllerTest {
 
     @Test
     public void logUserIn() throws Exception {
-        String email = "senna@mail.be";
-        String password = "Azerty123";
-
-        String jsonLogin = TestHelper.loginCredentialsToJson(email, password);
+        String jsonLogin = TestHelper.loginCredentialsToJson("senna@mail.be", "Azerty123");
 
         mockMvc.perform(post("/api/users/login/")
                 .content(jsonLogin)
@@ -224,11 +206,7 @@ public class ApiControllerTest {
 
     @Test
     public void addPerson() throws Exception {
-        String email = "testperson@gmail.com";
-        String firstname = "TestPersonVN";
-        String lastname = "TestPersonAN";
-
-        String jsonPerson = TestHelper.personToJson(email, firstname, lastname);
+        String jsonPerson = TestHelper.personToJson(new Persons("TestPersonVN", "TestPersonAN", "testperson@gmail.com"));
 
         mockMvc.perform(post("/api/persons/add/")
                 .content(jsonPerson)
@@ -239,10 +217,7 @@ public class ApiControllerTest {
 
     @Test
     public void addPersonMissingCredential() throws Exception {
-        String email = "testperson@gmail.com";
-        String firstname = "TestPersonVN";
-
-        String jsonPerson = TestHelper.personToJson(email, firstname);
+        String jsonPerson = TestHelper.personToJson(new Persons("TestPersonVN", "testperson@gmail.com"));
 
         mockMvc.perform(post("/api/persons/add/")
                 .content(jsonPerson)
@@ -252,10 +227,7 @@ public class ApiControllerTest {
 
     @Test
     public void logUserInWithWrongPassword() throws Exception {
-        String email = "senna@mail.be";
-        String password = "Qwerty123";
-
-        String jsonLogin = TestHelper.loginCredentialsToJson(email, password);
+        String jsonLogin = TestHelper.loginCredentialsToJson("senna@mail.be", "Qwerty123");
 
         mockMvc.perform(post("/api/users/login/")
                 .content(jsonLogin)
@@ -266,10 +238,7 @@ public class ApiControllerTest {
 
     @Test
     public void logNonExistentUserIn() throws Exception {
-        String email = "nonExistent@mail.be";
-        String password = "Qwerty123";
-
-        String jsonLogin = TestHelper.loginCredentialsToJson(email, password);
+        String jsonLogin = TestHelper.loginCredentialsToJson("nonExistent@mail.be", "Qwerty123");
 
         mockMvc.perform(post("/api/users/login/")
                 .content(jsonLogin)
@@ -287,17 +256,7 @@ public class ApiControllerTest {
 
     @Test
     public void updateUser() throws Exception {
-        Users user = new Users();
-
-        user.setBirthday(Date.valueOf(LocalDate.parse("1997-06-01")));
-        user.setPassword("Azerty123");
-
-        Persons person = new Persons();
-        person.setId(personId);
-        person.setFirstname("Newname");
-        person.setLastname("Van Londersele");
-
-        String jsonUpdate = TestHelper.userUpdateToJson(user, person);
+        String jsonUpdate = TestHelper.userUpdateToJson(new Users(Date.valueOf(LocalDate.parse("1997-06-01")), "Azerty123"), new Persons(personId, "Newname", "Van Londersele"));
 
         mockMvc.perform(post("/api/users/update")
                 .content(jsonUpdate)
@@ -305,6 +264,16 @@ public class ApiControllerTest {
                 .andExpect(content().contentType(contentType))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.person.firstname", is("Newname")));
+    }
+
+    @Test
+    public void updateNonExistentUser() throws Exception {
+        String jsonUpdate = TestHelper.userUpdateToJson(new Users(Date.valueOf(LocalDate.parse("1997-06-01")), "Azerty123"), new Persons(0L, "Newname", "Van Londersele"));
+
+        mockMvc.perform(post("/api/users/update")
+                .content(jsonUpdate)
+                .contentType(contentType))
+                .andExpect(status().isNotFound());
     }
 
     /*============================================================================
@@ -343,9 +312,7 @@ public class ApiControllerTest {
 
     @Test
     public void addTalent() throws Exception {
-        String name = "Talent";
-
-        String jsonTalent = TestHelper.talentToJson(name);
+        String jsonTalent = TestHelper.talentToJson("Talent");
 
         mockMvc.perform(post("/api/talents/add")
                 .content(jsonTalent)
@@ -364,17 +331,20 @@ public class ApiControllerTest {
                 .andExpect(jsonPath("$", hasSize(1)));
     }
 
-    public Users_has_talents createUsersHasTalents(long talent_id) {
-        Users_has_talents userTalents = new Users_has_talents();
-        userTalents.setTalentId(talent_id);
-        userTalents.setDescription("Dit klopt");
-        userTalents.setHide(0);
-        return userTalents;
+    @Test
+    public void getAllTalentsOfUserWithEndorsements() throws Exception {
+        mockMvc.perform(get("/api/users/" + personId2 + "/talentEndorsements"))
+                .andExpect(content().contentType(contentType))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].endorsementCounter", is(1)))
+                .andExpect(jsonPath("$[0].talent.name", is("getalenteerd")))
+                .andExpect(jsonPath("$[0].talent.matches", is(0)))
+                .andExpect(jsonPath("$[0].talent.id", is(toIntExact(talentId))));
     }
 
     @Test
     public void addTalentToUser() throws Exception {
-        String jsonUserTalent = TestHelper.userTalentToJson(createUsersHasTalents(talentId3));
+        String jsonUserTalent = TestHelper.userTalentToJson(new Users_has_talents(talentId3, "Dit klopt", 0));
 
         mockMvc.perform(post("/api/users/" + personId + "/talents/add")
                 .content(jsonUserTalent)
@@ -385,7 +355,7 @@ public class ApiControllerTest {
 
     @Test
     public void addNonExistentTalentToUser() throws Exception {
-        String jsonUserTalent = TestHelper.userTalentToJson(createUsersHasTalents(0));
+        String jsonUserTalent = TestHelper.userTalentToJson(new Users_has_talents(0, "Dit klopt", 0));
 
         mockMvc.perform(post("/api/users/" + personId + "/talents/add")
                 .content(jsonUserTalent)
@@ -411,19 +381,8 @@ public class ApiControllerTest {
                 .andExpect(status().isOk());
     }
 
-    @Test
-    public void getAllTalentsOfUserWithEndorsements() throws Exception {
-        mockMvc.perform(get("/api/users/" + personId2 + "/talentEndorsements"))
-                .andExpect(content().contentType(contentType))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].endorsementCounter", is(1)))
-                .andExpect(jsonPath("$[0].talent.name", is("getalenteerd")))
-                .andExpect(jsonPath("$[0].talent.matches", is(0)))
-                .andExpect(jsonPath("$[0].talent.id", is(toIntExact(talentId))));
-    }
-
     /*============================================================================
-        Votes
+        Suggestions
     ============================================================================*/
 
     @Test
@@ -436,13 +395,7 @@ public class ApiControllerTest {
 
     @Test
     public void addSuggestion() throws Exception {
-        Votes vote = new Votes();
-        vote.setText("Dat is inderdaad waar");
-        vote.setPerson_id(personId);
-        vote.setUsers_has_talents_person_id(personId2);
-        vote.setUsers_has_talents_talent_id(talentId);
-
-        String jsonVote = TestHelper.voteToJson(vote);
+        String jsonVote = TestHelper.voteToJson(new Votes("Dat is inderdaad waar", personId, personId2, talentId));
 
         mockMvc.perform(post("/api/users/suggest")
                 .content(jsonVote)
@@ -452,7 +405,6 @@ public class ApiControllerTest {
 
     @Test
     public void acceptSuggestion() throws Exception {
-
         String jsonReaction = TestHelper.reactionToSuggestionToJson(voteId, true, false);
 
         mockMvc.perform(post("/api/users/processSugestion")
@@ -477,13 +429,7 @@ public class ApiControllerTest {
 
     @Test
     public void addEndorsement() throws Exception {
-        Endorsements endorsement = new Endorsements();
-        endorsement.setDescription("Dit talent past inderdaad bij deze persoon");
-        endorsement.setPersons_id(personId2);
-        endorsement.setUsers_has_talents_person_id(personId);
-        endorsement.setUsers_has_talents_talent_id(talentId);
-
-        String jsonEndorsement = TestHelper.endorsementToJson(endorsement);
+        String jsonEndorsement = TestHelper.endorsementToJson(new Endorsements("Dit talent past inderdaad bij deze persoon", personId2, personId, talentId));
 
         mockMvc.perform(post("/api/endorsement/add")
                 .content(jsonEndorsement)
@@ -493,12 +439,7 @@ public class ApiControllerTest {
 
     @Test
     public void addIncompleteEndorsement() throws Exception {
-        Endorsements endorsement = new Endorsements();
-        endorsement.setDescription("Dit talent past inderdaad bij deze persoon");
-        endorsement.setPersons_id(personId2);
-        endorsement.setUsers_has_talents_person_id(personId);
-
-        String jsonEndorsement = TestHelper.endorsementToJson(endorsement);
+        String jsonEndorsement = TestHelper.endorsementToJson(new Endorsements("Dit talent past inderdaad bij deze persoon", personId2, personId));
 
         mockMvc.perform(post("/api/endorsement/add")
                 .content(jsonEndorsement)
