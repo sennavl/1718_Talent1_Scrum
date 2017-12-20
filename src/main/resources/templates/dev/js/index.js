@@ -25,6 +25,7 @@ store.dispatch(FetchTalents());
 store.dispatch(searchClicked());
 
 
+
 ReactDOM.render(
     <Provider store={store}>
         <BrowserRouter>
