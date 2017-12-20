@@ -5,6 +5,9 @@ import { Login as LoginClicked } from '../actions/LoginActions';
 import { Navigation } from '../components/Navigation';
 
 class Login extends Component {
+    componentWillMount(){
+        this.props.logStatus === "LOGGED_IN" ? this.props.history.push("/talentregistration") : ''
+    }
     render() {
         return (
             <div className="static-modal">

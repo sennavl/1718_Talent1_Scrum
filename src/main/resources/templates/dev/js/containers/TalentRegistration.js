@@ -7,6 +7,9 @@ import { TRDropdown } from '../components/TalentRegistration/TRDropdown';
 import { searchClicked } from '../actions/SearchActions'
 
 class TalentRegister extends Component {
+    componentWillMount(){
+        this.props.logStatus !== "LOGGED_IN" ? this.props.history.push("/login") : ''
+    }
     render() {
         //total count dropdowns for talents
         var list = [];
@@ -43,9 +46,6 @@ class TalentRegister extends Component {
                         <Button bsStyle="success" onClick={() => this.props.onPostAllTalents(this.props.chosenTalents, this.props.userId)}>Bevestig</Button>
                     </div>
                 </div>
-                {
-                    this.props.logStatus !== "LOGGED_IN" ? this.props.history.push("/login") : ''
-                }
             </div>
         );
     }
