@@ -16,15 +16,14 @@ class Profile extends Component {
         return (
             <div>
                 <Navigation props={this.props.history} status={this.props.logStatus} />
-                {this.props.alertVisible ?
-                    <Alert bsStyle={this.props.alertStyle} onDismiss={this.handleAlertDismiss}>
+                {this.props.alertVisible &&
+                    <Alert bsStyle={this.props.alertStyle}>
                         <Button bsStyle='default' className='pull-right close' type='button' aria-label='Close'onClick={() => this.props.onAlertDismissClick()}>X</Button>
                         <p>{this.props.alertMessage}</p>
                     </Alert>
-                  : ''
                 }
                 <div className='col-md-6 col-md-offset-3' >
-                    {this.props.ownProfile ?
+                    {this.props.ownProfile &&
                         <div className='pull-right'>
                         {!this.props.editStatus ?
                             <div>
@@ -37,7 +36,6 @@ class Profile extends Component {
                             </div>
                         }
                         </div>
-                        : ''
                     }
                     {this.props.editStatus ?
                         <div>
@@ -80,7 +78,6 @@ class Profile extends Component {
                                     <FormControl.Feedback />
                                 </FormGroup>
                                     <Button className='pull-right' bsStyle='primary' onClick={() => this.props.onSaveClick(this.newFirstname.value, this.newLastname.value, this.newDate.value, this.newPassword.value, this.props.loggedInuserId)}>Save</Button>
-
                             </form>
                         </div>
                         :
@@ -105,22 +102,22 @@ class Profile extends Component {
                                                     <Button bsStyle='info' onClick={() => this.props.showEndorsementsClick(this.props.profileUserId, talentInfo.talent.id, talentInfo.talent.name)}>View {talentInfo.endorsementCounter} endorsements</Button>
                                                     : ''
                                                 }
-                                                {!this.props.ownProfile ?
+                                                {!this.props.ownProfile &&
                                                     <Button bsStyle='success' onClick={() => this.props.showEndorseClick(talentInfo.talent.name, talentInfo.talent.id)}>+</Button>
-                                                    : ''
                                                 }
-                                                {this.props.editStatus ?
-                                                    <Button bsStyle='danger' onClick={() => this.props.deleteTalentClick(talentInfo.talent.id, this.props.loggedInuserId)}>X {this.props.counter}</Button>
-
-                                                    : ''
+                                                {this.props.editStatus &&
+                                                    <Button bsStyle='danger' onClick={() => this.props.deleteTalentClick(talentInfo.talent.id, this.props.loggedInuserId)}>X</Button>
                                                 }
                                             </div>
                                         </div>
                                     </ListGroupItem>
                                 )}
                             </ListGroup>
+                            {this.props.editStatus &&
+                                <Button bsStyle='default' className= 'pull-right'>Add more talents</Button>
+                            }
                         </Panel>
-                        {!this.props.ownProfile ?
+                        {!this.props.ownProfile &&
                             <div>
                                 <Panel header='Recommend a talent' bsStyle='primary'>
                                     <Modal.Body>
@@ -140,7 +137,7 @@ class Profile extends Component {
                                                         inputRef={ref => { this.suggestionReason = ref; }}
                                                         componentClass='textarea'
                                                         placeholder='Reason(s) for suggesting talent'
-                                                        rows='6'
+                                                        rows='4'
                                                 />
                                                 <FormControl.Feedback />
                                             </FormGroup>
@@ -151,8 +148,6 @@ class Profile extends Component {
                                     </Modal.Footer>
                                 </Panel>
                             </div>
-                            :
-                            ''
                         }
                         {this.props.modalStatus === 'ADD' &&
                             <div>
@@ -173,7 +168,7 @@ class Profile extends Component {
                                   <Modal.Footer>
                                       <Button bsStyle='danger' onClick={() => this.props.showEndorseClick()}>Cancel</Button>
                                       <Button bsStyle='success' onClick={() => this.props.onEndorseClick(this.textarea.value, this.props.loggedInuserId, this.props.profileUserId, this.props.endorsingTalent.id)}>Endorse</Button>
-                                  </Modal.Footer> : ''
+                                  </Modal.Footer>
                                 </Modal>
                             </div>
                         }
@@ -195,9 +190,8 @@ class Profile extends Component {
                                         </Panel>
                                     </Modal.Body>
                                     <Modal.Footer>
-                                        {this.props.endorsementPerson ?
+                                        {this.props.endorsementPerson &&
                                         <h3>by: {this.props.endorsementPerson.firstname + ' ' + this.props.endorsementPerson.lastname}</h3>
-                                        : ''
                                         }
                                         <Button className='close-endorsements-overview' bsStyle='danger' onClick={() => this.props.showEndorseClick()}>X</Button>
                                     </Modal.Footer>
@@ -257,7 +251,7 @@ const mapStateToProps = (state) => ({
 
     profileUserId:state.Profile.profileUserId,
     loggedInuserId: state.Auth.id,
-    ownProfile: true,
+    ownProfile: false,
 
     editStatus: state.Profile.editStatus,
     alertVisible: state.Profile.alertVisible,
