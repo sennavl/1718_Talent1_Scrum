@@ -10,29 +10,22 @@ public class TestHelper {
         Users/persons
     ============================================================================*/
 
-    public static String loginCredentialsToJson(String email, String password){
+    public static String loginCredentialsToJson(String email, String password) {
         JSONObject json = new JSONObject();
         json.put("email", email);
         json.put("password", password);
         return json.toString();
     }
 
-    public static String personToJson(String email, String firstname, String lastname){
+    public static String personToJson(Persons person) {
         JSONObject json = new JSONObject();
-        json.put("email", email);
-        json.put("firstname", firstname);
-        json.put("lastname", lastname);
+        if(person.getEmail() != null) json.put("email", person.getEmail());
+        if(person.getFirstname() != null) json.put("firstname", person.getFirstname());
+        if(person.getLastname() != null) json.put("lastname", person.getLastname());
         return json.toString();
     }
 
-    public static String personToJson(String email, String firstname){
-        JSONObject json = new JSONObject();
-        json.put("email", email);
-        json.put("firstname", firstname);
-        return json.toString();
-    }
-
-    public static String registrationCredentialsToJson(Users u, Persons p){
+    public static String registrationCredentialsToJson(Users u, Persons p) {
         JSONObject json = new JSONObject();
 
         JSONArray arrayPerson = new JSONArray();
@@ -46,7 +39,7 @@ public class TestHelper {
 
         JSONArray arrayUser = new JSONArray();
         JSONObject itemUser = new JSONObject();
-        if(u.getBirthday()!= null) itemUser.put("birthday", u.getBirthday().toString());
+        if (u.getBirthday() != null) itemUser.put("birthday", u.getBirthday().toString());
         itemUser.put("password", u.getPassword());
         arrayUser.add(itemUser);
 
@@ -57,7 +50,7 @@ public class TestHelper {
         return json.toString().replace("[", "").replace("]", "");
     }
 
-    public static String userUpdateToJson(Users u, Persons p){
+    public static String userUpdateToJson(Users u, Persons p) {
         JSONObject json = new JSONObject();
 
         JSONArray arrayPerson = new JSONArray();
@@ -80,7 +73,7 @@ public class TestHelper {
         Talents
     ============================================================================*/
 
-    public static String talentToJson(String name){
+    public static String talentToJson(String name) {
         JSONObject json = new JSONObject();
 
         json.put("name", name);
@@ -88,7 +81,7 @@ public class TestHelper {
         return json.toString();
     }
 
-    public static String userTalentToJson(Users_has_talents userTalents){
+    public static String userTalentToJson(Users_has_talents userTalents) {
         JSONObject json = new JSONObject();
 
         json.put("talentId", userTalents.getTalentId());
@@ -97,10 +90,11 @@ public class TestHelper {
 
         return json.toString().replace("[", "").replace("]", "");
     }
+
     /*============================================================================
         Suggestions
     ============================================================================*/
-    public static String voteToJson(Votes vote){
+    public static String voteToJson(Votes vote) {
         JSONObject json = new JSONObject();
 
         json.put("text", vote.getText());
@@ -110,7 +104,8 @@ public class TestHelper {
 
         return json.toString();
     }
-    public static String reactionToSuggestionToJson(long voteId, boolean accepted){
+
+    public static String reactionToSuggestionToJson(long voteId, boolean accepted) {
         JSONObject json = new JSONObject();
 
         json.put("voteId", voteId);
@@ -118,7 +113,8 @@ public class TestHelper {
 
         return json.toString();
     }
-    public static String reactionToSuggestionToJson(long voteId, boolean accepted, boolean hide){
+
+    public static String reactionToSuggestionToJson(long voteId, boolean accepted, boolean hide) {
         JSONObject json = new JSONObject();
 
         json.put("voteId", voteId);
@@ -127,16 +123,18 @@ public class TestHelper {
 
         return json.toString();
     }
+
     /*============================================================================
         Endorsements
     ============================================================================*/
-    public static String endorsementToJson(Endorsements endorsement){
+    public static String endorsementToJson(Endorsements endorsement) {
         JSONObject json = new JSONObject();
 
         json.put("description", endorsement.getDescription());
         json.put("persons_id", endorsement.getPersons_id());
         json.put("users_has_talents_person_id", endorsement.getUsers_has_talents_person_id());
-        if(endorsement.getUsers_has_talents_person_id()!=null) json.put("users_has_talents_talent_id", endorsement.getUsers_has_talents_talent_id());
+        if (endorsement.getUsers_has_talents_person_id() != null)
+            json.put("users_has_talents_talent_id", endorsement.getUsers_has_talents_talent_id());
 
         return json.toString();
     }

@@ -3,10 +3,9 @@ package com.project.talent1.Repositories;
 import com.project.talent1.Models.Talents;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
-
 import java.util.List;
 
-public interface TalentRepository extends CrudRepository<Talents,Long> {
+public interface TalentRepository extends CrudRepository<Talents, Long> {
     Talents findById(long id);
 
     List<Talents> findAll();
@@ -15,5 +14,6 @@ public interface TalentRepository extends CrudRepository<Talents,Long> {
     List<Talents> findTop20();
 
     Talents findByNameContaining(String name);
+
     Talents findByName(String name);
 }

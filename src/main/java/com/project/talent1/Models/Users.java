@@ -6,7 +6,9 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import javax.persistence.*;
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
@@ -22,6 +24,15 @@ public class Users {
     private Long person_id;
     private java.sql.Date birthday;
     private String password;
+
+    public Users(String password){
+        this.password = password;
+    }
+
+    public Users(java.sql.Date birthday, String password) {
+        this.birthday = birthday;
+        this.password = password;
+    }
 
     public Users(long personId, java.sql.Date birthday, String password) {
         this.person_id = personId;
@@ -57,12 +68,12 @@ public class Users {
         this.password = password;
     }
 
-    public void login(HttpServletResponse response, String password, HttpServletResponse httpServletResponse) throws IOException {
+    public void login(HttpServletResponse response, String password) throws IOException {
         try {
             if (!BCrypt.checkpw(password, this.getPassword())) {
                 response.sendError(SC_UNAUTHORIZED, "Wrong password");
             } else {
-                Cookie userCookie = new Cookie("user", getPerson_id().toString());
+                Cookie userCookie = new Cookie("user", this.person.getFirstname());
                 userCookie.setMaxAge(30 * 60);
                 response.addCookie(userCookie);
             }
@@ -82,14 +93,14 @@ public class Users {
         Users storedUser = users.findByPerson_id(person.getId());
         setPerson_id(person.getId());
         person.setEmail(storedUser.person.getEmail());
-        if(getPassword()==null){
+        if (getPassword() == null) {
             setPassword(storedUser.getPassword());
-        }else{
+        } else {
             setPassword(BCrypt.hashpw(getPassword(), BCrypt.gensalt()));
         }
-        if(getBirthday()==null)setBirthday(storedUser.getBirthday());
-        if(person.getFirstname()==null)person.setFirstname(storedUser.person.getFirstname());
-        if(person.getLastname()==null)person.setLastname(storedUser.person.getLastname());
+        if (getBirthday() == null) setBirthday(storedUser.getBirthday());
+        if (person.getFirstname() == null) person.setFirstname(storedUser.person.getFirstname());
+        if (person.getLastname() == null) person.setLastname(storedUser.person.getLastname());
         users.save(this);
         persons.save(person);
     }

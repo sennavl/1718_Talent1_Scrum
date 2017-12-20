@@ -22,6 +22,12 @@ public class Users_has_talents {
 
     }
 
+    public Users_has_talents(long talentId, String description, int hide) {
+        this.talentId = talentId;
+        this.description = description;
+        this.hide = hide;
+    }
+
     public Users_has_talents(long personId, long talentId, String description, int hide) {
         this.personId = personId;
         this.talentId = talentId;

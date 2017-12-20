@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.StreamSupport;
@@ -37,13 +39,17 @@ public class ApiController {
     @Autowired
     EndorsementRepository endorsements;
 
+
     /*============================================================================
         Users
     ============================================================================*/
     @GetMapping(path = "/users")
     public @ResponseBody
-    Iterable<Users> getAllUsers() {
-        return users.findAll();
+    Iterable<Users> getAllUsers() { return users.findAll(); }
+
+    @GetMapping(path = "/users/search/")
+    Iterable<Users> searchUserDefault(){
+        return searchUser("");
     }
 
     @GetMapping(path = "/users/search/{needle}")
@@ -99,12 +105,12 @@ public class ApiController {
     }
 
     @RequestMapping(path = "/users/login", method = RequestMethod.POST)
-    public Long login(@RequestBody String json, HttpServletResponse response) throws IOException {
+    public Long login(@RequestBody String json, HttpServletRequest request, HttpServletResponse response) throws IOException {
         String password = JsonHelper.getStringOutJson("password", json);
         String email = JsonHelper.getStringOutJson("email", json);
         try {
             Users user = users.findByPerson_id(persons.findByEmail(email).getId());
-            user.login(response, password, response);
+            user.login(response, password);
             return user.getPerson_id();
         } catch (NullPointerException e) {
             throw new UserNotFoundException(email);
@@ -124,14 +130,13 @@ public class ApiController {
             throw new UserNotFoundException(user.person.getId());
         } else {
             try {
-                user.updateUser(users,persons);
+                user.updateUser(users, persons);
                 return user;
             } catch (NullPointerException e) {
                 throw new NullPointerException("User details not filled in");
             }
 
         }
-
     }
 
     /*============================================================================
