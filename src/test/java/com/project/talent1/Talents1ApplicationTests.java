@@ -11,6 +11,7 @@ public class Talents1ApplicationTests {
 
     @Test
     public void contextLoads() {
+        Talent1Application.main(new String[] {});
     }
 
 }

@@ -117,6 +117,24 @@ public class ApiControllerTest {
     }
 
     @Test
+    public void searchUserByFirstname() throws Exception {
+        mockMvc.perform(get("/api/users/search/Peter"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].person_id", is(toIntExact(personId2))))
+                .andExpect(jsonPath("$[0].birthday", is("1990-05-04")));
+    }
+
+    @Test
+    public void searchUserByLastname() throws Exception {
+        mockMvc.perform(get("/api/users/search/peeters"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].person_id", is(toIntExact(personId2))))
+                .andExpect(jsonPath("$[0].birthday", is("1990-05-04")));
+    }
+
+    @Test
     public void getOneUser() throws Exception {
         mockMvc.perform(get("/api/users/" + personId))
                 .andExpect(content().contentType(contentType))
