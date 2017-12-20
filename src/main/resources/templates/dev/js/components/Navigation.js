@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Navbar, Nav, NavItem, FormGroup, FormControl, Button} from  'react-bootstrap';
+import {Navbar, Nav, NavItem, FormGroup, FormControl, Button, Form} from  'react-bootstrap';
 
 export const Navigation = (props) => (
     <Navbar inverse collapseOnSelect>
@@ -18,22 +18,22 @@ export const Navigation = (props) => (
                     </Nav>
                     :
                     <div className="col-md-11">
-                        <FormGroup className="col-md-10">
-                            <FormControl
-                                style={{margin: '5px', float: 'left', width: '90%'}}
-                                type="text"
-                                placeholder="Naar wie ben je opzoek?"
-                                inputRef={ref => { this.searchstring = ref; }}
-                            />
-                            <Button onClick={() => this.props.onSearchClick(this.searchstring.value)} style={{margin: '5px'}}bsStyle="primary">Zoek</Button>
-                        </FormGroup>
+                        <Form>
+                            <FormGroup controlId="formSearchstring" className="col-md-10">
+                                <FormControl
+                                    inputRef={ref => { props.parent.searchstring = ref }}
+                                    type="input"
+                                    placeholder="Naar wie ben je opzoek?"
+                                    style={{margin: '5px', float: 'left', width: '90%'}}
+                                />
+                                <Button onClick={() => props.onSearchClick(props.parent.searchstring.value)} style={{margin: '5px'}} bsStyle="primary">Zoek</Button>
+                            </FormGroup>
+                        </Form>
                         <Nav pullRight className="col-md-2">
                             <NavItem onClick={() => props.history.push("/profile")}>Profiel</NavItem>
                         </Nav>
                     </div>
-
             }
-
         </Navbar.Collapse>
     </Navbar>
 );

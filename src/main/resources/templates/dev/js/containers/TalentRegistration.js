@@ -4,6 +4,7 @@ import { Panel, Button, form, FormGroup, FormControl } from  'react-bootstrap';
 import { AddTalentClicked, chooseTalent, postAllTalents, submitTalentClick, submitNewTalent } from '../actions/TalentRegisterActions';
 import { Navigation } from '../components/Navigation';
 import { TRDropdown } from '../components/TalentRegistration/TRDropdown';
+import { searchClicked, searchInput } from '../actions/SearchActions'
 
 class TalentRegister extends Component {
     render() {
@@ -20,7 +21,7 @@ class TalentRegister extends Component {
         return (
             <div>
 
-                <Navigation onSearchClick={} history={this.props.history} status={this.props.logStatus} />
+                <Navigation parent={this} searchstring={this.props.string} onSearchClick={this.props.onSearchClick} history={this.props.history} status={this.props.logStatus} />
                 <div className="col-md-6 col-md-offset-3" >
                     <Panel header="Wat zijn uw talenten?" bsStyle="primary">
                         {list}
@@ -63,7 +64,8 @@ const mapStateToProps = (state) => ({
     chosenTalents: state.TalentRegister.chosenTalents,
     userId: state.Auth.id,
     submitTalent: state.TalentRegister.submitTalent,
-    talentRegStatus: state.TalentRegister.status
+    talentRegStatus: state.TalentRegister.status,
+    string: state.Search.searchstring
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -84,8 +86,12 @@ const mapDispatchToProps = (dispatch) => {
              dispatch(submitNewTalent(talent))
         },
         onSearchClick: (searchstring) => {
-             dispatch:
+             dispatch(searchClicked(searchstring))
+        },
+        onSearchInput: (text) => {
+             dispatch(searchInput(text))
         }
+
     }
 };
 
