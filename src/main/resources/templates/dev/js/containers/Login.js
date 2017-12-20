@@ -9,8 +9,12 @@ class Login extends Component {
         return (
             <div className="static-modal">
                 <Navigation history={this.props.history} status={this.props.logStatus} />
+                <Modal.Dialog>
+                    <Modal.Header>
+                        <Modal.Title>Login</Modal.Title>
+                    </Modal.Header>
 
-
+                    <Modal.Body>
                         <form>
                             <FormGroup
                                 controlId="formEmailAddress"
@@ -35,12 +39,16 @@ class Login extends Component {
                                 <FormControl.Feedback />
                             </FormGroup>
                         </form>
+                    </Modal.Body>
+                    <Modal.Footer>
                         <Button>Cancel</Button>
                         <Button onClick={() => this.props.history.push("/register")}>Register</Button>
                         <Button bsStyle="primary" onClick={() => this.props.onLoginClick(this.email.value, this.password.value)}>Login</Button>
                         {
-                            //this.props.logStatus === "LOGGED_IN" ? this.props.history.push("/talentregistration") : ''
+                            this.props.logStatus === "LOGGED_IN" ? this.props.history.push("/talentregistration") : ''
                         }
+                    </Modal.Footer>
+                </Modal.Dialog>
             </div>
         );
     }
