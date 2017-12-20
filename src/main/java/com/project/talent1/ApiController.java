@@ -142,12 +142,12 @@ public class ApiController {
     }
 
     @RequestMapping(path = "/talents/add")
-    public Talents addTalent(@RequestBody Talents t) {
-        Talents fetchedTalent = checkIfTalentExistsAndFetch(t.getName());
+    public Talents addTalent(@RequestBody Talents talent) {
+        Talents fetchedTalent = checkIfTalentExistsAndFetch(talent.getName());
         if (fetchedTalent == null) {
-            t.setMatches(Long.parseLong("0"));
-            talents.save(t);
-            return talents.findByName(t.getName());
+            talent.setMatches(Long.parseLong("0"));
+            talents.save(talent);
+            return talents.findByName(talent.getName());
         } else {
             return fetchedTalent;
         }

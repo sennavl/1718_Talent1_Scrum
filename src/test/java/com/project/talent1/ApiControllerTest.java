@@ -54,7 +54,6 @@ public class ApiControllerTest {
     private long personId2;
 
     private long talentId;
-
     private long talentId2;
     private long talentId3;
 
@@ -300,7 +299,7 @@ public class ApiControllerTest {
         mockMvc.perform(get("/api/talents"))
                 .andExpect(content().contentType(contentType))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)));
+                .andExpect(jsonPath("$", hasSize(3)));
     }
 
     @Test
