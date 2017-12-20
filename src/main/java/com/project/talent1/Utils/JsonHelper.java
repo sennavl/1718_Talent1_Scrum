@@ -22,18 +22,6 @@ public class JsonHelper {
         return mapper.convertValue(node.get("person"), Persons.class);
     }
 
-    public static Talents getTalentOutJson(String json) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode node = mapper.readTree(json);
-        return mapper.convertValue(node.get("talent"), Talents.class);
-    }
-
-    public static Users_has_talents getUserTalentOutJson(String json) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode node = mapper.readTree(json);
-        return mapper.convertValue(node.get("userTalent"), Users_has_talents.class);
-    }
-
     public static String getStringOutJson(String name, String json) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode node = mapper.readTree(json);
