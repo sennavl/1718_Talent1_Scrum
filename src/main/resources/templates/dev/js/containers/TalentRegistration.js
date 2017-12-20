@@ -20,7 +20,7 @@ class TalentRegister extends Component {
         return (
             <div>
 
-                <Navigation history={this.props.history} status={this.props.logStatus} />
+                <Navigation onSearchClick={} history={this.props.history} status={this.props.logStatus} />
                 <div className="col-md-6 col-md-offset-3" >
                     <Panel header="Wat zijn uw talenten?" bsStyle="primary">
                         {list}
@@ -82,6 +82,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         onSubmitNewTalent: (talent) => {
              dispatch(submitNewTalent(talent))
+        },
+        onSearchClick: (searchstring) => {
+             dispatch:
         }
     }
 };
