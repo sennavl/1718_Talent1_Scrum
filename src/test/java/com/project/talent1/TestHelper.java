@@ -17,18 +17,11 @@ public class TestHelper {
         return json.toString();
     }
 
-    public static String personToJson(String email, String firstname, String lastname) {
+    public static String personToJson(Persons person) {
         JSONObject json = new JSONObject();
-        json.put("email", email);
-        json.put("firstname", firstname);
-        json.put("lastname", lastname);
-        return json.toString();
-    }
-
-    public static String personToJson(String email, String firstname) {
-        JSONObject json = new JSONObject();
-        json.put("email", email);
-        json.put("firstname", firstname);
+        if(person.getEmail() != null) json.put("email", person.getEmail());
+        if(person.getFirstname() != null) json.put("firstname", person.getFirstname());
+        if(person.getLastname() != null) json.put("lastname", person.getLastname());
         return json.toString();
     }
 

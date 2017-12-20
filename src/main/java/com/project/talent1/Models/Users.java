@@ -25,6 +25,15 @@ public class Users {
     private java.sql.Date birthday;
     private String password;
 
+    public Users(String password){
+        this.password = password;
+    }
+
+    public Users(java.sql.Date birthday, String password) {
+        this.birthday = birthday;
+        this.password = password;
+    }
+
     public Users(long personId, java.sql.Date birthday, String password) {
         this.person_id = personId;
         this.birthday = birthday;

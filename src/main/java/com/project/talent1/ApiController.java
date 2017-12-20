@@ -39,90 +39,69 @@ public class ApiController {
     @Autowired
     EndorsementRepository endorsements;
 
-    HttpSession session;
-
 
     /*============================================================================
         Users
     ============================================================================*/
     @GetMapping(path = "/users")
     public @ResponseBody
-    Iterable<Users> getAllUsers() {
-        if (session != null) {
-            return users.findAll();
-        }
-        return null;
-    }
+    Iterable<Users> getAllUsers() { return users.findAll(); }
 
     @GetMapping(path = "/users/search/")
     Iterable<Users> searchUserDefault(){
         return searchUser("");
     }
+
     @GetMapping(path = "/users/search/{needle}")
     public @ResponseBody
     Iterable<Users> searchUser(@PathVariable String needle) {
-        if (session != null) {
-            List<Persons> people = persons.getPeople(needle);
-            List<Users> ouput = StreamSupport.stream(people.spliterator(), false)
-                    .filter(person -> users.findByPerson_id(person.getId()) != null)
-                    .map(person -> users.findByPerson_id(person.getId()))
-                    .collect(toList());
-            return ouput;
-        }
-        return null;
+        List<Persons> people = persons.getPeople(needle);
+        List<Users> ouput = StreamSupport.stream(people.spliterator(), false)
+                .filter(person -> users.findByPerson_id(person.getId()) != null)
+                .map(person -> users.findByPerson_id(person.getId()))
+                .collect(toList());
+        return ouput;
     }
 
     @GetMapping(path = "/users/{id}")
     public Users getUser(@PathVariable long id) {
-        if (session != null) {
-            Users user = users.findByPerson_id(id);
-            if (user == null) {
-                throw new UserNotFoundException(id);
-            }
-            return user;
+        Users user = users.findByPerson_id(id);
+        if (user == null) {
+            throw new UserNotFoundException(id);
         }
-        return null;
+        return user;
     }
 
     @RequestMapping(path = "/users/register", method = RequestMethod.POST)
     public Users registerUser(@RequestBody String json, HttpServletResponse response) throws IOException {
-        if (session != null) {
-            try {
-                Users user = JsonHelper.getUserOutJson(json);
-                Persons person = JsonHelper.getPersonOutJson(json);
-                user.register(response, person, users, persons);
-                return getUser(user.getPerson_id());
-            } catch (Exception e) {
-                response.sendError(SC_CONFLICT, e.getMessage());
-                return null;
-            }
+        try {
+            Users user = JsonHelper.getUserOutJson(json);
+            Persons person = JsonHelper.getPersonOutJson(json);
+            user.register(response, person, users, persons);
+            return getUser(user.getPerson_id());
+        } catch (Exception e) {
+            response.sendError(SC_CONFLICT, e.getMessage());
+            return null;
         }
-        return null;
     }
 
     @RequestMapping(path = "/persons/add", method = RequestMethod.POST)
     public Persons registerPerson(@RequestBody Persons person, HttpServletResponse response) throws IOException {
-        if (session != null) {
-            try {
-                return person.register(persons);
-            } catch (Exception e) {
-                response.sendError(SC_CONFLICT, e.getMessage());
-                return null;
-            }
+        try {
+            return person.register(persons);
+        } catch (Exception e) {
+            response.sendError(SC_CONFLICT, e.getMessage());
+            return null;
         }
-        return null;
     }
 
     @GetMapping(path = "/persons/{id}")
     public Persons getPerson(@PathVariable long id) {
-        if (session != null) {
-            Persons person = persons.findById(id);
-            if (person == null) {
-                throw new PersonNotFoundException(id);
-            }
-            return person;
+        Persons person = persons.findById(id);
+        if (person == null) {
+            throw new PersonNotFoundException(id);
         }
-        return null;
+        return person;
     }
 
     @RequestMapping(path = "/users/login", method = RequestMethod.POST)
@@ -132,11 +111,6 @@ public class ApiController {
         try {
             Users user = users.findByPerson_id(persons.findByEmail(email).getId());
             user.login(response, password);
-
-            session = request.getSession();
-            session.setAttribute("user", user.person);
-            session.setMaxInactiveInterval(30*60);
-
             return user.getPerson_id();
         } catch (NullPointerException e) {
             throw new UserNotFoundException(email);
@@ -145,32 +119,24 @@ public class ApiController {
 
     @RequestMapping(path = "/users/logout", method = RequestMethod.POST)
     public void logOut(HttpServletResponse response) throws InterruptedException {
-        if (session != null) {
-            Cookie userCookie = new Cookie("user", null);
-            userCookie.setMaxAge(0);
-            response.addCookie(userCookie);
-            session.removeAttribute("user");
-            session.invalidate();
-            session = null;
-        }
+        Cookie userCookie = new Cookie("user", null);
+        userCookie.setMaxAge(0);
+        response.addCookie(userCookie);
     }
 
     @RequestMapping(path = "/users/update")
     public Users update(@RequestBody Users user, HttpServletResponse response) {
-        if (session != null) {
-            if (users.findByPerson_id(user.person.getId()) == null) {
-                throw new UserNotFoundException(user.person.getId());
-            } else {
-                try {
-                    user.updateUser(users, persons);
-                    return user;
-                } catch (NullPointerException e) {
-                    throw new NullPointerException("User details not filled in");
-                }
-
+        if (users.findByPerson_id(user.person.getId()) == null) {
+            throw new UserNotFoundException(user.person.getId());
+        } else {
+            try {
+                user.updateUser(users, persons);
+                return user;
+            } catch (NullPointerException e) {
+                throw new NullPointerException("User details not filled in");
             }
+
         }
-        return null;
     }
 
     /*============================================================================
@@ -178,114 +144,88 @@ public class ApiController {
     ============================================================================*/
     @GetMapping(path = "/talents")
     public Iterable<Talents> getAllTalents() {
-        if (session != null) {
-            return talents.findAll();
-        }
-        return null;
+        return talents.findAll();
     }
 
     @GetMapping(path = "/talents/top20")
     public Iterable<Talents> getTop20Talents() {
-        if (session != null) {
-            return talents.findTop20();
-        }
-        return null;
+        return talents.findTop20();
     }
 
     @GetMapping(path = "/talents/{id}")
     public Talents getTalent(@PathVariable long id) {
-        if (session != null) {
-            return talents.findById(id);
-        }
-        return null;
+        return talents.findById(id);
     }
 
     @RequestMapping(path = "/talents/add")
     public Talents addTalent(@RequestBody Talents talent) {
-        if (session != null) {
-            Talents fetchedTalent = checkIfTalentExistsAndFetch(talent.getName());
-            if (fetchedTalent == null) {
-                talent.setMatches(Long.parseLong("0"));
-                talents.save(talent);
-                return talents.findByName(talent.getName());
-            } else {
-                return fetchedTalent;
-            }
+        Talents fetchedTalent = checkIfTalentExistsAndFetch(talent.getName());
+        if (fetchedTalent == null) {
+            talent.setMatches(Long.parseLong("0"));
+            talents.save(talent);
+            return talents.findByName(talent.getName());
+        } else {
+            return fetchedTalent;
         }
-        return null;
     }
 
     @RequestMapping(path = "/users/{user_id}/talents/{talent_id}/delete", method = RequestMethod.DELETE)
     public void deleteTalent(@PathVariable int user_id, @PathVariable int talent_id) {
-        if (session != null) {
-            Users user = users.findByPerson_id(user_id);
-            if (user == null) {
-                throw new UserNotFoundException(user_id);
-            }
-            Talents talent = talents.findById(talent_id);
-            if (talent == null) {
-                throw new TalentNotFoundException(talent_id);
-            }
-            endorsements.delete(endorsements.findEndorsementsForUserTalent(user_id, talent_id));
-            Users_has_talents userTalent = usersHasTalentsRepository.findByPersonIdTalentId(user_id, talent_id);
-            usersHasTalentsRepository.delete(userTalent);
+        Users user = users.findByPerson_id(user_id);
+        if (user == null) {
+            throw new UserNotFoundException(user_id);
         }
+        Talents talent = talents.findById(talent_id);
+        if (talent == null) {
+            throw new TalentNotFoundException(talent_id);
+        }
+        endorsements.delete(endorsements.findEndorsementsForUserTalent(user_id, talent_id));
+        Users_has_talents userTalent = usersHasTalentsRepository.findByPersonIdTalentId(user_id, talent_id);
+        usersHasTalentsRepository.delete(userTalent);
     }
 
     @GetMapping(path = "/users/{id}/talents")
     public Iterable<Talents> getAllTalentsOfUser(@PathVariable long id) {
-        if (session != null) {
-            Iterable<Users_has_talents> items = usersHasTalentsRepository.findAllByPersonId(id);
-            List<Talents> ouput = StreamSupport.stream(items.spliterator(), false)
-                    .filter(userTalent -> userTalent.getHide() == 0)
-                    .map(usertalent -> (talents.findById(usertalent.getTalentId())))
-                    .collect(toList());
+        Iterable<Users_has_talents> items = usersHasTalentsRepository.findAllByPersonId(id);
+        List<Talents> ouput = StreamSupport.stream(items.spliterator(), false)
+                .filter(userTalent -> userTalent.getHide() == 0)
+                .map(usertalent -> (talents.findById(usertalent.getTalentId())))
+                .collect(toList());
 
-            return ouput;
-        }
-        return null;
+        return ouput;
     }
 
     @GetMapping(path = "/users/{id}/talentEndorsements")
     public Iterable<TalentAndEndorsement> getAllTalentsOfUserWithEndorsements(@PathVariable long id) {
-        if (session != null) {
-            Iterable<Users_has_talents> items = usersHasTalentsRepository.findAllByPersonId(id);
-            List<TalentAndEndorsement> ouput = StreamSupport.stream(items.spliterator(), false)
-                    .filter(userTalent -> userTalent.getHide() == 0)
-                    .map(usertalent -> (new TalentAndEndorsement(talents.findById(usertalent.getTalentId()), getNumberOfEndorsementsOfUserTalent(usertalent.getPersonId(), usertalent.getTalentId()))))
-                    .collect(toList());
+        Iterable<Users_has_talents> items = usersHasTalentsRepository.findAllByPersonId(id);
+        List<TalentAndEndorsement> ouput = StreamSupport.stream(items.spliterator(), false)
+                .filter(userTalent -> userTalent.getHide() == 0)
+                .map(usertalent -> (new TalentAndEndorsement(talents.findById(usertalent.getTalentId()), getNumberOfEndorsementsOfUserTalent(usertalent.getPersonId(), usertalent.getTalentId()))))
+                .collect(toList());
 
-            return ouput;
-        }
-        return null;
+        return ouput;
     }
 
     @RequestMapping(path = "/users/{id}/talents/add")
     public Iterable<Talents> addUserTalent(@RequestBody Users_has_talents userTalent, @PathVariable long id) throws IOException {
-        if (session != null) {
-            long talentId = userTalent.getTalentId();
-            if (talents.findById(talentId) == null) {
-                throw new TalentNotFoundException(talentId);
-            } else {
-                userTalent.register(talents.findById(talentId), id, talents, usersHasTalentsRepository);
-            }
-            return getAllTalentsOfUser(id);
+        long talentId = userTalent.getTalentId();
+        if (talents.findById(talentId) == null) {
+            throw new TalentNotFoundException(talentId);
+        } else {
+            userTalent.register(talents.findById(talentId), id, talents, usersHasTalentsRepository);
         }
-        return null;
+        return getAllTalentsOfUser(id);
     }
 
     public Talents checkIfTalentExistsAndFetch(String talent) {
-        if (session != null) {
-            Talents searchTalent = talents.findByNameContaining(talent);
-            if (searchTalent == null) {
-                return talents.findByNameContaining(talent);
+        Talents searchTalent = talents.findByNameContaining(talent);
+        if (searchTalent == null) {
+            return talents.findByNameContaining(talent);
+        }
+        for (Talents t : talents.findAll()) {
+            if (talent.contains(t.getName())) {
+                return t;
             }
-            for (Talents t : talents.findAll()) {
-                if (talent.contains(t.getName())) {
-                    return t;
-                }
-            }
-            return null;
         }
         return null;
     }
@@ -296,33 +236,26 @@ public class ApiController {
 
     @GetMapping(path = "/users/{id}/suggestions")
     public Iterable<Votes> getAllSuggestionsForUser(@PathVariable long id) {
-        if (session != null) {
-            return votes.findSuggestionsForUser(id);
-        }
-        return null;
+        return votes.findSuggestionsForUser(id);
     }
 
     @RequestMapping(path = "/users/suggest")
     public void addSuggestion(@RequestBody Votes vote) {
-        if (session != null) {
-            vote.setId(0L);
-            votes.save(vote);
-        }
+        vote.setId(0L);
+        votes.save(vote);
     }
 
     @RequestMapping(path = "/users/processSugestion")
     public void reactToSuggestion(@RequestBody String json) throws IOException {
-        if (session != null) {
-            long voteId = Long.parseLong(JsonHelper.getStringOutJson("voteId", json));
-            boolean accepted = Boolean.parseBoolean(JsonHelper.getStringOutJson("accepted", json));
-            Votes vote = votes.findById(voteId);
-            if (vote != null) {
-                if (accepted) {
-                    boolean hide = Boolean.parseBoolean(JsonHelper.getStringOutJson("hide", json));
-                    vote.AcceptVote(votes, usersHasTalentsRepository, hide);
-                } else {
-                    vote.RefuseVote(votes);
-                }
+        long voteId = Long.parseLong(JsonHelper.getStringOutJson("voteId", json));
+        boolean accepted = Boolean.parseBoolean(JsonHelper.getStringOutJson("accepted", json));
+        Votes vote = votes.findById(voteId);
+        if (vote != null) {
+            if (accepted) {
+                boolean hide = Boolean.parseBoolean(JsonHelper.getStringOutJson("hide", json));
+                vote.AcceptVote(votes, usersHasTalentsRepository, hide);
+            } else {
+                vote.RefuseVote(votes);
             }
         }
     }
@@ -332,39 +265,21 @@ public class ApiController {
     ============================================================================*/
     @RequestMapping(path = "/endorsement/add")
     public void addEndorsement(@RequestBody Endorsements endorsement, HttpServletResponse response) throws IOException {
-        if (session != null) {
-            try {
-                endorsement.setId(0L);
-                endorsements.save(endorsement);
-            } catch (Exception e) {
-                response.sendError(SC_EXPECTATION_FAILED, e.getMessage());
-            }
+        try {
+            endorsement.setId(0L);
+            endorsements.save(endorsement);
+        } catch (Exception e) {
+            response.sendError(SC_EXPECTATION_FAILED, e.getMessage());
         }
     }
 
     @GetMapping(path = "/users/{person_id}/talents/{talent_id}/endorsements")
     public Iterable<Endorsements> getAllEndorsementsOfUserTalent(@PathVariable long person_id, @PathVariable long talent_id) {
-        if (session != null) {
-            return endorsements.findEndorsementsForUserTalent((int) person_id, (int) talent_id);
-        }
-        return null;
+        return endorsements.findEndorsementsForUserTalent((int) person_id, (int) talent_id);
     }
 
     @GetMapping(path = "/users/{person_id}/talents/{talent_id}/endorsements/count")
     public int getNumberOfEndorsementsOfUserTalent(@PathVariable long person_id, @PathVariable long talent_id) {
-        if (session != null) {
-            return endorsements.findAmountOfEndorsementsForUserTalent((int) person_id, (int) talent_id);
-        }
-        return 0;
-    }
-
-    @GetMapping(path = "/getSession")
-    public Object getSession() {
-
-        if (session != null) {
-            return session.getAttribute("user");
-        }
-
-        return session;
+        return endorsements.findAmountOfEndorsementsForUserTalent((int) person_id, (int) talent_id);
     }
 }
