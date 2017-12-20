@@ -21,6 +21,37 @@ USE `r0621673_talentsdb`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `endorsements`
+--
+
+DROP TABLE IF EXISTS `endorsements`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `endorsements` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `description` text NOT NULL,
+  `persons_id` int(11) NOT NULL,
+  `users_has_talents_person_id` int(11) NOT NULL,
+  `users_has_talents_talent_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`),
+  KEY `fk_endorsements_persons1_idx` (`persons_id`),
+  KEY `fk_endorsements_users_has_talents1_idx` (`users_has_talents_person_id`,`users_has_talents_talent_id`),
+  CONSTRAINT `fk_endorsements_persons1` FOREIGN KEY (`persons_id`) REFERENCES `persons` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_endorsements_users_has_talents1` FOREIGN KEY (`users_has_talents_person_id`, `users_has_talents_talent_id`) REFERENCES `users_has_talents` (`person_id`, `talent_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=910 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `endorsements`
+--
+
+LOCK TABLES `endorsements` WRITE;
+/*!40000 ALTER TABLE `endorsements` DISABLE KEYS */;
+/*!40000 ALTER TABLE `endorsements` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `persons`
 --
 
@@ -33,7 +64,7 @@ CREATE TABLE `persons` (
   `lastname` varchar(100) NOT NULL,
   `email` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2799 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -42,7 +73,6 @@ CREATE TABLE `persons` (
 
 LOCK TABLES `persons` WRITE;
 /*!40000 ALTER TABLE `persons` DISABLE KEYS */;
-INSERT INTO `persons` VALUES (4,'Jan','Robert','janrobert422@gmail.com'),(9,'Voornaam','Achternaam','mail@test.be');
 /*!40000 ALTER TABLE `persons` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -58,7 +88,7 @@ CREATE TABLE `talents` (
   `name` varchar(100) NOT NULL,
   `matches` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3177 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -67,7 +97,6 @@ CREATE TABLE `talents` (
 
 LOCK TABLES `talents` WRITE;
 /*!40000 ALTER TABLE `talents` DISABLE KEYS */;
-INSERT INTO `talents` VALUES (1,'motiverend',1),(2,'motiverender',4);
 /*!40000 ALTER TABLE `talents` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -94,7 +123,6 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (4,'1997-10-16','$2a$10$97ZJKFel.g5repcCSAUY2.1SEsqGkSGbmdWmtqCWpUDnrG2ALAk3e'),(9,'1997-01-01','$2a$10$97ZJKFel.g5repcCSAUY2.1SEsqGkSGbmdWmtqCWpUDnrG2ALAk3e');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -124,7 +152,6 @@ CREATE TABLE `users_has_talents` (
 
 LOCK TABLES `users_has_talents` WRITE;
 /*!40000 ALTER TABLE `users_has_talents` DISABLE KEYS */;
-INSERT INTO `users_has_talents` VALUES (4,1,'Ik vind dit bij me passen','\0');
 /*!40000 ALTER TABLE `users_has_talents` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -142,12 +169,10 @@ CREATE TABLE `votes` (
   `person_id` int(11) NOT NULL,
   `users_has_talents_person_id` int(11) NOT NULL,
   `users_has_talents_talent_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`,`person_id`,`users_has_talents_person_id`,`users_has_talents_talent_id`),
+  PRIMARY KEY (`id`),
   KEY `fk_Votes_People1_idx` (`person_id`),
-  KEY `fk_Votes_Users_has_Talents1_idx` (`users_has_talents_person_id`,`users_has_talents_talent_id`),
-  CONSTRAINT `fk_Votes_People1` FOREIGN KEY (`person_id`) REFERENCES `persons` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Votes_Users_has_Talents1` FOREIGN KEY (`users_has_talents_person_id`, `users_has_talents_talent_id`) REFERENCES `users_has_talents` (`person_id`, `talent_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  CONSTRAINT `fk_Votes_People1` FOREIGN KEY (`person_id`) REFERENCES `persons` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=1128 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -168,4 +193,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-12-13 18:30:43
+-- Dump completed on 2017-12-20 19:45:32
