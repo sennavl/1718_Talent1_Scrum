@@ -151,18 +151,21 @@ public class ApiControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    public Persons createTestPerson(){
+        Persons person = new Persons();
+        person.setEmail("senna2@mail.be");
+        person.setFirstname("Senna");
+        person.setLastname("Van Londersele");
+        return person;
+    }
+
     @Test
     public void registerUser() throws Exception{
-        Users u = new Users();
-        u.setPassword(BCrypt.hashpw("Azerty123", BCrypt.gensalt()));
-        u.setBirthday(Date.valueOf(LocalDate.parse("1997-06-01")));
+        Users user = new Users();
+        user.setPassword(BCrypt.hashpw("Azerty123", BCrypt.gensalt()));
+        user.setBirthday(Date.valueOf(LocalDate.parse("1997-06-01")));
 
-        Persons p = new Persons();
-        p.setEmail("senna2@mail.be");
-        p.setFirstname("Senna");
-        p.setLastname("Van Londersele");
-
-        String jsonRegistration = TestHelper.registrationCredentialsToJson(u, p);
+        String jsonRegistration = TestHelper.registrationCredentialsToJson(user, createTestPerson());
 
         mockMvc.perform(post("/api/users/register/")
                 .content(jsonRegistration)
@@ -174,15 +177,10 @@ public class ApiControllerTest {
 
     @Test
     public void registerUserMissingCredential() throws Exception{
-        Users u = new Users();
-        u.setPassword(BCrypt.hashpw("Azerty123", BCrypt.gensalt()));
+        Users user = new Users();
+        user.setPassword(BCrypt.hashpw("Azerty123", BCrypt.gensalt()));
 
-        Persons p = new Persons();
-        p.setEmail("senna2@mail.be");
-        p.setFirstname("Senna");
-        p.setLastname("Van Londersele");
-
-        String jsonRegistration = TestHelper.registrationCredentialsToJson(u, p);
+        String jsonRegistration = TestHelper.registrationCredentialsToJson(user, createTestPerson());
 
         mockMvc.perform(post("/api/users/register/")
                 .content(jsonRegistration)
@@ -269,7 +267,7 @@ public class ApiControllerTest {
     }
 
     @Test
-    public void updateUser() throws Exception {
+    public void updateUser() throws Exception{
         Users user = new Users();
 
         user.setBirthday(Date.valueOf(LocalDate.parse("1997-06-01")));
@@ -395,7 +393,7 @@ public class ApiControllerTest {
     }
 
     @Test
-    public void getAllTalentsOfUserWithEndorsements() throws Exception {
+    public void getAllTalentsOfUserWithEndorsements() throws Exception{
         mockMvc.perform(get("/api/users/" + personId2 + "/talentEndorsements"))
                 .andExpect(content().contentType(contentType))
                 .andExpect(status().isOk())
