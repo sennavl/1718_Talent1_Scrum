@@ -6,7 +6,9 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import javax.persistence.*;
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
@@ -57,12 +59,12 @@ public class Users {
         this.password = password;
     }
 
-    public void login(HttpServletResponse response, String password, HttpServletResponse httpServletResponse) throws IOException {
+    public void login(HttpServletResponse response, String password) throws IOException {
         try {
             if (!BCrypt.checkpw(password, this.getPassword())) {
                 response.sendError(SC_UNAUTHORIZED, "Wrong password");
             } else {
-                Cookie userCookie = new Cookie("user", getPerson_id().toString());
+                Cookie userCookie = new Cookie("user", this.person.getFirstname());
                 userCookie.setMaxAge(30 * 60);
                 response.addCookie(userCookie);
             }
