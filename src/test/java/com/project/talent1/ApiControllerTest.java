@@ -312,14 +312,23 @@ public class ApiControllerTest {
 
     @Test
     public void addTalent() throws Exception {
-        String jsonTalent = TestHelper.talentToJson("Talent");
+        addTalent("Talent");
+    }
+
+    @Test
+    public void addAlreadyExistingTalent() throws Exception {
+        addTalent("getalenteerd");
+    }
+
+    public void addTalent(String talentName) throws Exception {
+        String jsonTalent = TestHelper.talentToJson(talentName);
 
         mockMvc.perform(post("/api/talents/add")
                 .content(jsonTalent)
                 .contentType(contentType))
                 .andExpect(content().contentType(contentType))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name", is("Talent")))
+                .andExpect(jsonPath("$.name", is(talentName)))
                 .andExpect(jsonPath("$.matches", is(0)));
     }
 
