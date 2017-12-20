@@ -25,6 +25,19 @@ export const Profile = (profileUserId=profileuseridtemp) => {
             .then(() => dispatch(FetchTalentsUser(profileUserId)))
     }
 };
+const FetchingUser = () => {
+    return {
+        type: 'FETCHING_USER',
+    }
+};
+const FetchedUser = (json) => {
+    return {
+        type: 'FETCHED_USER',
+        json
+    }
+};
+
+
 
 const FetchTalentsUser = (profileUserId) => {
     return dispatch => {
@@ -39,36 +52,21 @@ const FetchTalentsUser = (profileUserId) => {
         .then(response => response.json())
         .then(json => dispatch(FetchedTalentsUser(json)))
     }
-}
-
-
-const FetchingUser = () => {
-    return {
-        type: 'FETCHING_USER',
-    }
 };
-
-const FetchedUser = (json) => {
-    return {
-        type: 'FETCHED_USER',
-        json
-    }
-};
-
 const FetchingTalentsUser = () => {
     return {
         type: 'FETCHING_TALENTS_USER',
     }
 };
-
 const FetchedTalentsUser = (json) => {
     return {
         type: 'FETCHED_TALENTS_USER',
         json
     }
-}
+};
 
-//logged in user gebruiken
+
+
 export const EndorseClicked = (description, loggedInuserId=loggedinUseridtemp, profileUserId, talentId) =>{
     return dispatch => {
         return fetch(API+'endorsement/add', {
@@ -89,13 +87,14 @@ export const EndorseClicked = (description, loggedInuserId=loggedinUseridtemp, p
 
     }
 };
-
 const EndAddEndorsement = (endorsedTalentId) => {
    return {
        type: 'ADDED_ENDORSEMENT',
        endorsedTalentId
    }
 };
+
+
 
 export const ShowEndorseClicked = (talentName, talentId) => {
    return {
@@ -104,6 +103,8 @@ export const ShowEndorseClicked = (talentName, talentId) => {
        talentId
    }
 };
+
+
 
 export const ShowEndorsementsClicked = (profileUserId=profileuseridtemp, talentId, talentName) =>{
     return dispatch => {
@@ -119,6 +120,20 @@ export const ShowEndorsementsClicked = (profileUserId=profileuseridtemp, talentI
             .then(json => dispatch(FetchedEndorsementsTalent(json, talentName)))
     }
 };
+const FetchingEndorsementsTalent = () => {
+    return {
+        type: 'FETCHING_ENDORSEMENTS_TALENT',
+    }
+};
+const FetchedEndorsementsTalent = (json, talentName) => {
+    return {
+        type: 'FETCHED_ENDORSEMENTS_TALENT',
+        json,
+        talentName
+    }
+};
+
+
 
 export const FetchPerson = (personId) => {
     return dispatch => {
@@ -133,14 +148,12 @@ export const FetchPerson = (personId) => {
         .then(response => response.json())
         .then(json => dispatch(FetchedPerson(json)))
     }
-}
-
+};
 const FetchingPerson = () => {
     return {
         type: 'FETCHING_PERSON'
     }
 };
-
 const FetchedPerson = (json) => {
     return {
         type: 'FETCHED_PERSON',
@@ -148,19 +161,7 @@ const FetchedPerson = (json) => {
     }
 };
 
-const FetchingEndorsementsTalent = () => {
-    return {
-        type: 'FETCHING_ENDORSEMENTS_TALENT',
-    }
-};
 
-const FetchedEndorsementsTalent = (json, talentName) => {
-    return {
-        type: 'FETCHED_ENDORSEMENTS_TALENT',
-        json,
-        talentName
-    }
-};
 
 export const CancelEditClicked = () => {
     return {
@@ -168,12 +169,7 @@ export const CancelEditClicked = () => {
     }
 };
 
-const DeletedUserTalent = (talentId) => {
-    return {
-        type: 'DELETED_USER_TALENT',
-        talentId,
-    }
-};
+
 
 export const DeleteTalentClicked = (talentId, profileUserId=profileuseridtemp) => {
     return dispatch => {
@@ -188,6 +184,14 @@ export const DeleteTalentClicked = (talentId, profileUserId=profileuseridtemp) =
             .then(dispatch(FetchTalentsUser(profileUserId)))
     }
 };
+const DeletedUserTalent = (talentId) => {
+    return {
+        type: 'DELETED_USER_TALENT',
+        talentId,
+    }
+};
+
+
 
 export const SaveClicked = (firstname, lastname, date, password, personId=loggedinUseridtemp) => {
     return dispatch => {
@@ -195,8 +199,8 @@ export const SaveClicked = (firstname, lastname, date, password, personId=logged
         return fetch(API+'users/update', {
             method: 'POST',
             body: JSON.stringify({
-                'person' : {
-                    'id': 1083,
+                'person': {
+                    'id': 1082,
             		'firstname': 'vdb',
             		'lastname': 'lastname'
             	},
@@ -211,18 +215,18 @@ export const SaveClicked = (firstname, lastname, date, password, personId=logged
             .then(dispatch(UpdatedUser()))
     }
 };
-
 const UpdatingUser = () => {
     return {
-        type: 'UPDATING_PERSON',
+        type: 'UPDATING_USER'
+    }
+};
+const UpdatedUser = () => {
+    return {
+        type: 'UPDATED_USER'
     }
 };
 
-const UpdatedUser = () => {
-    return {
-        type: 'UPDATED_PERSON',
-    }
-};
+
 
 export const SuggestTalentClicked = (reason, personId=loggedinUseridtemp, talentId, profileUserId=profileuseridtemp) => {
     return dispatch => {
@@ -242,13 +246,11 @@ export const SuggestTalentClicked = (reason, personId=loggedinUseridtemp, talent
             .then(dispatch(AddedSuggestion()))
     }
 };
-
 const AddedSuggestion = () => {
     return {
         type: 'ADDED_SUGGESTION',
     }
 };
-
 export const AlertDismissClicked = () => {
     return {
         type: 'DISMISS_ALERT',

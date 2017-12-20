@@ -77,7 +77,7 @@ export default function (state = initialState, action) {
                 endorsementPerson: action.json,
                 status: 'PERSON_FETCHED'
             });
-        case 'UPDATED_PERSON':
+        case 'UPDATED_USER':
             return Object.assign({}, state, {
                 alertVisible: true,
                 alertStyle: 'success',

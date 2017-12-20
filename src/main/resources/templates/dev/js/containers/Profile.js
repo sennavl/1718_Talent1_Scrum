@@ -4,7 +4,6 @@ import {Button, ListGroup, ListGroupItem, Panel, Modal, FormGroup, ControlLabel,
 import {Navigation} from '../components/Navigation';
 import {Profile as Profilegetter, EditClicked, EndorseClicked, ShowEndorseClicked, ShowEndorsementsClicked, CancelEditClicked, DeleteTalentClicked, FetchPerson, SaveClicked, SuggestTalentClicked, AlertDismissClicked} from '../actions/ProfileActions';
 import {FetchTalents} from '../actions/TalentRegisterActions';
-import {UserInfo} from '../components/Profile/UserInfo';
 import style from '../../scss/style.scss'
 
 
@@ -19,7 +18,7 @@ class Profile extends Component {
                 <Navigation props={this.props.history} status={this.props.logStatus} />
                 {this.props.alertVisible ?
                     <Alert bsStyle={this.props.alertStyle} onDismiss={this.handleAlertDismiss}>
-                        <Button bsStyle='danger' className='pull-right'onClick={() => this.props.onAlertDismissClick()}>Hide Alert</Button>
+                        <Button bsStyle='default' className='pull-right close' type="button" aria-label="Close"onClick={() => this.props.onAlertDismissClick()}>X</Button>
                         <p>{this.props.alertMessage}</p>
                     </Alert>
                   : ''
@@ -90,7 +89,6 @@ class Profile extends Component {
                             <p>Email: {this.props.userEmail}</p>
                         </div>
                     }
-                    {/*<UserInfo userFirstname={this.props.userFirstname} userLastname={this.props.userLastname} userEmail={this.props.userEmail} userBirthday={this.props.userBirthday} editStatus={this.props.editStatus}></UserInfo>*/}
                 </div>
                 <div>
                     <div className='col-md-5 col-md-offset-3'>
