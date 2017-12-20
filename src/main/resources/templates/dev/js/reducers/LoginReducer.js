@@ -1,8 +1,7 @@
 import {LOGGED_IN} from '../actions/LoginActions';
 
 const initialState = {
-
-    status: 'NOT_LOGGED_IN'
+    status: 'LOGGED_IN'
 };
 
 export default function (state = initialState, action) {

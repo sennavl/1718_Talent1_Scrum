@@ -9,7 +9,7 @@ class Search extends Component {
         return (
             <div>
                 <Navigation parent={this} searchstring={this.props.string} onSearchClick={this.props.onSearchClick} history={this.props.history} status={this.props.logStatus} />
-                <Userlink foundUsers={this.foundUsers} history={this.props.history}/>
+                <Userlink foundUsers={this.props.foundUsers} history={this.props.history}/>
                 {
                     this.props.logStatus !== "LOGGED_IN" ? this.props.history.push("/login") : ''
                 }
@@ -27,7 +27,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => {
     return {
         onSearchClick: (searchstring) => {
-            dispatch(searchClicked(searchstring))
+            dispatch(searchClicked(searchstring)).then(
+                this.props.history.push("/search"))
         }
     }
 };

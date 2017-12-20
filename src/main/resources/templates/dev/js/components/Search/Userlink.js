@@ -3,16 +3,16 @@ import {ListGroup, ListGroupItem} from  'react-bootstrap';
 
 export const Userlink = (props) => (
     <div>
+        <ListGroup>
+
         {
             props.foundUsers.map((user, i) => {
                 return (
-                <ListGroup>
-                    <ListGroupItem href="#link1">Link 1</ListGroupItem>
-                    <ListGroupItem href="#link2">Link 2</ListGroupItem>
-                </ListGroup>
+                    <ListGroupItem key={i} href="/talentsregistration">{user.person.firstname}</ListGroupItem>
                 )
             })
         }
+        </ListGroup>
     </div>
 );
 

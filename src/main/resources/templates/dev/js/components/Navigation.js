@@ -26,7 +26,7 @@ export const Navigation = (props) => (
                                     placeholder="Naar wie ben je opzoek?"
                                     style={{margin: '5px', float: 'left', width: '90%'}}
                                 />
-                                <Button onClick={() => props.onSearchClick(props.parent.searchstring.value)} style={{margin: '5px'}} bsStyle="primary">Zoek</Button>
+                                <Button onClick={() => (props.onSearchClick(props.parent.searchstring.value), props.history.push("/search"))} style={{margin: '5px'}} bsStyle="primary">Zoek</Button>
                             </FormGroup>
                         </Form>
                         <Nav pullRight className="col-md-2">

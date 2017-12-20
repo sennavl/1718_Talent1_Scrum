@@ -22,7 +22,7 @@ const store = createStore(
 );
 
 store.dispatch(FetchTalents());
-store.dispatch(searchClicked());
+store.dispatch(searchClicked(''));
 
 
 
