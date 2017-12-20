@@ -13,6 +13,11 @@ Als dit lukt zou je op localhost:3000 de homepagina moeten zien.
 
 Java en React.
 
+## API
+
+Voor de API documentatie werd een Postman overzicht aangemaakt: https://documenter.getpostman.com/view/3207031/scrum-talent1/7EN28r9<br />
+Daar kunt u van elke API functie een voorbeeld vinden.
+
 ## Authors
 
 * **Jan Robert** - *Backend*
