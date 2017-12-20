@@ -78,7 +78,7 @@ public class Users {
         users.save(this);
     }
 
-    public void updateUser(UserRepository users) {
+    public void updateUser(UserRepository users, PersonRepository persons) {
         Users storedUser = users.findByPerson_id(person.getId());
         setPerson_id(person.getId());
         person.setEmail(storedUser.person.getEmail());
@@ -91,6 +91,7 @@ public class Users {
         if(person.getFirstname()==null)person.setFirstname(storedUser.person.getFirstname());
         if(person.getLastname()==null)person.setLastname(storedUser.person.getLastname());
         users.save(this);
+        persons.save(person);
     }
 }
 
