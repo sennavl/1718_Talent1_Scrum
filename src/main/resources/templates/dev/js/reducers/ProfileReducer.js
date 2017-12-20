@@ -7,6 +7,10 @@ const initialState = {
     endorsingTalent: {},
     endorsementsTalent:[{}],
     modalShow: false,
+    suggestionTalent: '',
+    alertMessage: '',
+    alertVisible: false,
+    alertStyle: 'default',
 }
 
 export default function (state = initialState, action) {
@@ -32,11 +36,14 @@ export default function (state = initialState, action) {
             });
         case 'ADDED_ENDORSEMENT':
             return Object.assign({}, state, {
-                status: 'ADDED_ENDORSEMENT',
                 endorsedTalentIDs: state.endorsedTalentIDs.concat({
                     id: action.endorsedTalentId
                 }),
-                modalShow: false
+                modalShow: false,
+                alertVisible: true,
+                alertStyle: 'success',
+                alertMessage: 'Endorsement added!',
+                status: 'ADDED_ENDORSEMENT'
             });
         case 'SHOW_ENDORSE_CLICKED':
             return Object.assign({}, state, {
@@ -60,16 +67,34 @@ export default function (state = initialState, action) {
         case 'DELETED_USER_TALENT':
             return Object.assign({}, state, {
                 deletedTalentId: action.talentId,
+                alertVisible: true,
+                alertStyle: 'success',
+                alertMessage: 'Talent deleted!',
                 status: 'USER_TALENT_DELETED'
             });
         case 'FETCHED_PERSON':
             return Object.assign({}, state, {
-                endorsementPerson: action.jason,
+                endorsementPerson: action.json,
                 status: 'PERSON_FETCHED'
             });
         case 'UPDATED_PERSON':
             return Object.assign({}, state, {
+                alertVisible: true,
+                alertStyle: 'success',
+                alertMessage: 'Info updated!',
                 status: 'PERSON_UPDATED'
+            });
+        case 'ADDED_SUGGESTION':
+            return Object.assign({}, state, {
+                alertVisible: true,
+                alertStyle: 'success',
+                alertMessage: 'Suggestion added!',
+                status: 'SUGGESTION_ADDED'
+            });
+        case 'DISMISS_ALERT':
+            return Object.assign({}, state, {
+                alertVisible: false,
+                status: 'ALERT_DISMISSED'
             });
         default:
             return state

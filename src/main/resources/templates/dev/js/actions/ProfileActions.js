@@ -1,7 +1,7 @@
 import fetch from 'cross-fetch'
 
-const loggedinUseridtemp = '2474'
-const profileuseridtemp = '2473'
+const loggedinUseridtemp = '1083'
+const profileuseridtemp = '1082'
 const API = 'http://localhost:8080/api/';
 
 export const EditClicked = () => {
@@ -123,7 +123,7 @@ export const ShowEndorsementsClicked = (profileUserId=profileuseridtemp, talentI
 export const FetchPerson = (personId) => {
     return dispatch => {
         dispatch(FetchingPerson());
-        return fetch(API+'users/' + personId, {
+        return fetch(API+'persons/' + personId ,{
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -195,21 +195,20 @@ export const SaveClicked = (firstname, lastname, date, password, personId=logged
         return fetch(API+'users/update', {
             method: 'POST',
             body: JSON.stringify({
-                "person" : {
-                    "id": 1083,
-            		"firstname": "michiel2",
-            		"lastname": "vdb2"
+                'person' : {
+                    'id': 1083,
+            		'firstname': 'vdb',
+            		'lastname': 'lastname'
             	},
-            	"birthday": "1994-12-29",
-            	"password": "Azert12"
+            	'birthday': '1997-10-16',
+            	'password': 'Azerty12'
             }),
             headers: {
                 'Content-Type': 'application/json'
             },
             credentials: 'same-origin'
         })
-            .then(response => response.json())
-            .then(json => dispatch(UpdatedUser(json)))
+            .then(dispatch(UpdatedUser()))
     }
 };
 
@@ -219,9 +218,39 @@ const UpdatingUser = () => {
     }
 };
 
-const UpdatedUser = (json) => {
+const UpdatedUser = () => {
     return {
         type: 'UPDATED_PERSON',
-        json
+    }
+};
+
+export const SuggestTalentClicked = (reason, personId=loggedinUseridtemp, talentId, profileUserId=profileuseridtemp) => {
+    return dispatch => {
+        return fetch(API+'users/suggest', {
+            method: 'POST',
+            body: JSON.stringify({
+              'text': reason,
+              'person_id': personId,
+              'users_has_talents_talent_id': talentId,
+              'users_has_talents_person_id': profileUserId
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'same-origin'
+        })
+            .then(dispatch(AddedSuggestion()))
+    }
+};
+
+const AddedSuggestion = () => {
+    return {
+        type: 'ADDED_SUGGESTION',
+    }
+};
+
+export const AlertDismissClicked = () => {
+    return {
+        type: 'DISMISS_ALERT',
     }
 };

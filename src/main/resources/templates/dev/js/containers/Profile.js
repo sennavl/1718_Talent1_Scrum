@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {Button, ListGroup, ListGroupItem, Panel, Modal, FormGroup, ControlLabel, FormControl} from  'react-bootstrap';
+import {Button, ListGroup, ListGroupItem, Panel, Modal, FormGroup, ControlLabel, FormControl, DropdownButton, MenuItem, Alert} from  'react-bootstrap';
 import {Navigation} from '../components/Navigation';
-import {Profile as Profilegetter, EditClicked, EndorseClicked, ShowEndorseClicked, ShowEndorsementsClicked, CancelEditClicked, DeleteTalentClicked, FetchPerson, SaveClicked} from '../actions/ProfileActions';
+import {Profile as Profilegetter, EditClicked, EndorseClicked, ShowEndorseClicked, ShowEndorsementsClicked, CancelEditClicked, DeleteTalentClicked, FetchPerson, SaveClicked, SuggestTalentClicked, AlertDismissClicked} from '../actions/ProfileActions';
+import {FetchTalents} from '../actions/TalentRegisterActions';
 import {UserInfo} from '../components/Profile/UserInfo';
 import style from '../../scss/style.scss'
 
@@ -16,6 +17,13 @@ class Profile extends Component {
         return (
             <div>
                 <Navigation props={this.props.history} status={this.props.logStatus} />
+                {this.props.alertVisible ?
+                    <Alert bsStyle={this.props.alertStyle} onDismiss={this.handleAlertDismiss}>
+                        <Button bsStyle='danger' className='pull-right'onClick={() => this.props.onAlertDismissClick()}>Hide Alert</Button>
+                        <p>{this.props.alertMessage}</p>
+                    </Alert>
+                  : ''
+                }
                 <div className='col-md-6 col-md-offset-3' >
                     {/*Mag niet eigen profiel zijn*/}
                     {this.props.ownProfile ?
@@ -25,7 +33,6 @@ class Profile extends Component {
                             :
                             <div>
                                 <Button bsStyle='danger' onClick={() => this.props.onCancelEditClick()}>Cancel</Button>
-                                <Button bsStyle='primary' onClick={() => this.props.onSaveClick(this.newFirstname.value, this.newLastname.value, this.newDate.value, this.newPassword.value, this.props.loggedInuserId)}>Save</Button>
                             </div>
                         }
                         </div>
@@ -33,51 +40,53 @@ class Profile extends Component {
                     }
                     {this.props.editStatus ?
                         <div>
-                            <h2>Edit Profiel</h2>
+                            <h2>Edit Profile</h2>
                             <form>
-                                <FormGroup controlId="formFirstname">
+                                <FormGroup controlId='formFirstname'>
                                     <ControlLabel>Firstname</ControlLabel>
                                     <FormControl
                                         inputRef={ref => { this.newFirstname = ref; }}
-                                        type="text"
+                                        type='text'
                                         placeholder={this.props.userFirstname}
                                     />
                                     <FormControl.Feedback />
                                 </FormGroup>
-                                <FormGroup controlId="formLastname">
+                                <FormGroup controlId='formLastname'>
                                     <ControlLabel>Lastname</ControlLabel>
                                     <FormControl
                                         inputRef={ref => { this.newLastname = ref; }}
-                                        type="email"
-                                        placeholder="Enter your lastname"
+                                        type='email'
+                                        placeholder={this.props.userLastname}
                                     />
                                     <FormControl.Feedback />
                                 </FormGroup>
-                                <FormGroup controlId="formBirth">
+                                <FormGroup controlId='formBirth'>
                                     <ControlLabel>Birthday</ControlLabel>
                                     <FormControl
                                         inputRef={ref => { this.newDate = ref; }}
-                                        type="date"
-                                        placeholder="Enter your birthday"
+                                        type='date'
+                                        placeholder={this.props.userBirthday}
                                     />
                                     <FormControl.Feedback />
                                 </FormGroup>
-                                <FormGroup controlId="formPassword">
+                                <FormGroup controlId='formPassword'>
                                     <ControlLabel>Password</ControlLabel>
                                     <FormControl
                                         inputRef={ref => { this.newPassword = ref; }}
-                                        type="password"
-                                        placeholder="Enter your password"
+                                        type='password'
+                                        placeholder='Enter new password'
                                     />
                                     <FormControl.Feedback />
                                 </FormGroup>
+                                    <Button className='pull-right' bsStyle='primary' onClick={() => this.props.onSaveClick(this.newFirstname.value, this.newLastname.value, this.newDate.value, this.newPassword.value, this.props.loggedInuserId)}>Save</Button>
+
                             </form>
                         </div>
                         :
                         <div>
-                            <h2>Profiel</h2>
-                            <p>Naam: {this.props.userFirstname} {this.props.userLastname}</p>
-                            <p>Geboortedatum: {this.props.userBirthday}</p>
+                            <h2>Profile</h2>
+                            <p>Name: {this.props.userFirstname} {this.props.userLastname}</p>
+                            <p>Date of birth: {this.props.userBirthday}</p>
                             <p>Email: {this.props.userEmail}</p>
                         </div>
                     }
@@ -85,7 +94,7 @@ class Profile extends Component {
                 </div>
                 <div>
                     <div className='col-md-5 col-md-offset-3'>
-                        <Panel header='Talenten' bsStyle='primary'>
+                        <Panel header='Talents' bsStyle='primary'>
                             <ListGroup>
                                 {this.props.userTalents.map((talentInfo, index) =>
                                     <ListGroupItem key={index} className='clearfix'>
@@ -118,6 +127,39 @@ class Profile extends Component {
                                 )}
                             </ListGroup>
                         </Panel>
+                        {!this.props.ownProfile ?
+                            <div>
+                                <Panel header='Recommend a talent' bsStyle='primary'>
+                                    <Modal.Body>
+                                        <form>
+                                            <FormGroup controlId='formControlsSelect'>
+                                                <ControlLabel>Talent</ControlLabel>
+                                                <FormControl componentClass='select' placeholder='select' inputRef = {(input)=> this.suggestionTalentId = input}>
+                                                    {this.props.allTalents.map((talent, index) => {
+                                                            return <option key={index} value={talent.id}>{talent.name}</option>
+                                                        })
+                                                    }
+                                                </FormControl>
+                                            </FormGroup>
+                                            <FormGroup controlId='formSuggestTalent'>
+                                                <ControlLabel>Reason</ControlLabel>
+                                                <FormControl
+                                                        inputRef={ref => { this.suggestionReason = ref; }}
+                                                        componentClass='textarea'
+                                                        placeholder='Reason(s) for suggesting talent'
+                                                        rows='6'
+                                                />
+                                                <FormControl.Feedback />
+                                            </FormGroup>
+                                          </form>
+                                    </Modal.Body>
+                                    <Modal.Footer>
+                                        <Button bsStyle='success' onClick={() => this.props.onSuggestClick(this.suggestionReason.value, this.props.loggedInuserId, this.suggestionTalentId.value, this.props.profileUserId)}>Suggest</Button>
+                                    </Modal.Footer>
+                                </Panel>
+                            </div>
+                            : ''
+                        }
                         {this.props.modalStatus === 'ADD' ?
                             <div>
                                 <Modal show={this.props.modalShow} onHide={this.close} container={this} aria-labelledby='contained-modal-title'>
@@ -127,7 +169,11 @@ class Profile extends Component {
                                   <Modal.Body>
                                       <FormGroup controlId='formControlsTextarea'>
                                         <ControlLabel>Comment</ControlLabel>
-                                        <FormControl componentClass='textarea' placeholder='Comments about this talent' rows='6' inputRef={ref => { this.textarea = ref; }}/>
+                                        <FormControl
+                                            componentClass='textarea'
+                                            placeholder='Comments about this talent'
+                                            rows='6'
+                                            inputRef={ref => { this.textarea = ref; }}/>
                                       </FormGroup>
                                   </Modal.Body>
                                   <Modal.Footer>
@@ -146,9 +192,6 @@ class Profile extends Component {
                                             <ListGroup>
                                                 {this.props.endorsementsTalent.map((endorsement, index) =>
                                                     <ListGroupItem key={index} onClick={() => this.props.onViewEndorseClick(endorsement.persons_id)}>
-                                                        {this.props.endorsementPerson ?
-                                                        <h3>{this.props.endorsementPerson.person.lastname}</h3> : ''
-                                                        }
                                                         <p>{endorsement.description}</p>
                                                     </ListGroupItem>
                                                 )}
@@ -156,6 +199,10 @@ class Profile extends Component {
                                         </Panel>
                                     </Modal.Body>
                                     <Modal.Footer>
+                                        {this.props.endorsementPerson ?
+                                        <h3>by: {this.props.endorsementPerson.firstname + ' ' + this.props.endorsementPerson.lastname}</h3>
+                                        : ''
+                                        }
                                         <Button className='close-endorsements-overview' bsStyle='danger' onClick={() => this.props.showEndorseClick()}>X</Button>
                                     </Modal.Footer>
                                 </Modal>
@@ -181,7 +228,9 @@ const mapStateToProps = (state) => ({
     ownProfile: true,
 
     editStatus: state.Profile.editStatus,
-
+    alertVisible: state.Profile.alertVisible,
+    alertMessage: state.Profile.alertMessage,
+    alertStyle: state.Profile.alertStyle,
 
     modalShow: state.Profile.modalShow,
     modalStatus: state.Profile.modalStatus,
@@ -190,6 +239,8 @@ const mapStateToProps = (state) => ({
     endorsingTalent: state.Profile.endorsingTalent,
     endorsementsTalent: state.Profile.endorsementsTalent,
     endorsementPerson: state.Profile.endorsementPerson,
+
+    allTalents: state.TalentRegister.talents,
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -218,9 +269,15 @@ const mapDispatchToProps = (dispatch) => {
         onViewEndorseClick: (personId) => {
             dispatch(FetchPerson(personId));
         },
-        onSaveClick: () => {
-            dispatch(SaveClicked());
+        onSaveClick: (firstname, lastname, date, password, personId) => {
+            dispatch(SaveClicked(firstname, lastname, date, password, personId));
         },
+        onSuggestClick: (reason, personId, talentId, profileUserId) => {
+            dispatch(SuggestTalentClicked(reason, personId, talentId, profileUserId));
+        },
+        onAlertDismissClick: () => {
+            dispatch(AlertDismissClicked())
+        }
     }
 };
 
