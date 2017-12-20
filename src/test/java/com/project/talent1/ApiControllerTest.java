@@ -18,6 +18,7 @@ import org.springframework.web.context.WebApplicationContext;
 import java.nio.charset.Charset;
 import java.time.LocalDate;
 import java.sql.Date;
+
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -60,7 +61,7 @@ public class ApiControllerTest {
     private long voteId;
 
     @Before
-    public void setup(){
+    public void setup() {
 
         this.mockMvc = webAppContextSetup(webApplicationContext).build();
 
@@ -94,7 +95,7 @@ public class ApiControllerTest {
     }
 
     @After
-    public void after(){
+    public void after() {
         endorsementRepository.deleteAll();
         voteRepository.deleteAll();
         usersHasTalentsRepository.deleteAll();
@@ -108,7 +109,7 @@ public class ApiControllerTest {
     ============================================================================*/
 
     @Test
-    public void getAllUsers() throws Exception{
+    public void getAllUsers() throws Exception {
         mockMvc.perform(get("/api/users"))
                 .andExpect(content().contentType(contentType))
                 .andExpect(status().isOk())
@@ -116,7 +117,7 @@ public class ApiControllerTest {
     }
 
     @Test
-    public void getOneUser() throws Exception{
+    public void getOneUser() throws Exception {
         mockMvc.perform(get("/api/users/" + personId))
                 .andExpect(content().contentType(contentType))
                 .andExpect(status().isOk())
@@ -129,7 +130,7 @@ public class ApiControllerTest {
     }
 
     @Test
-    public void getOnePerson() throws Exception{
+    public void getOnePerson() throws Exception {
         mockMvc.perform(get("/api/persons/" + personId))
                 .andExpect(content().contentType(contentType))
                 .andExpect(status().isOk())
@@ -140,18 +141,18 @@ public class ApiControllerTest {
     }
 
     @Test
-    public void getNonExistingUser() throws Exception{
+    public void getNonExistingUser() throws Exception {
         mockMvc.perform(get("/api/users/0"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    public void getNonExistingPerson() throws Exception{
+    public void getNonExistingPerson() throws Exception {
         mockMvc.perform(get("/api/persons/0"))
                 .andExpect(status().isNotFound());
     }
 
-    public Persons createTestPerson(){
+    public Persons createTestPerson() {
         Persons person = new Persons();
         person.setEmail("senna2@mail.be");
         person.setFirstname("Senna");
@@ -160,7 +161,7 @@ public class ApiControllerTest {
     }
 
     @Test
-    public void registerUser() throws Exception{
+    public void registerUser() throws Exception {
         Users user = new Users();
         user.setPassword(BCrypt.hashpw("Azerty123", BCrypt.gensalt()));
         user.setBirthday(Date.valueOf(LocalDate.parse("1997-06-01")));
@@ -176,7 +177,7 @@ public class ApiControllerTest {
     }
 
     @Test
-    public void registerUserMissingCredential() throws Exception{
+    public void registerUserMissingCredential() throws Exception {
         Users user = new Users();
         user.setPassword(BCrypt.hashpw("Azerty123", BCrypt.gensalt()));
 
@@ -189,7 +190,7 @@ public class ApiControllerTest {
     }
 
     @Test
-    public void logUserIn() throws Exception{
+    public void logUserIn() throws Exception {
         String email = "senna@mail.be";
         String password = "Azerty123";
 
@@ -204,7 +205,7 @@ public class ApiControllerTest {
     }
 
     @Test
-    public void addPerson() throws Exception{
+    public void addPerson() throws Exception {
         String email = "testperson@gmail.com";
         String firstname = "TestPersonVN";
         String lastname = "TestPersonAN";
@@ -219,7 +220,7 @@ public class ApiControllerTest {
     }
 
     @Test
-    public void addPersonMissingCredential() throws Exception{
+    public void addPersonMissingCredential() throws Exception {
         String email = "testperson@gmail.com";
         String firstname = "TestPersonVN";
 
@@ -232,7 +233,7 @@ public class ApiControllerTest {
     }
 
     @Test
-    public void logUserInWithWrongPassword() throws Exception{
+    public void logUserInWithWrongPassword() throws Exception {
         String email = "senna@mail.be";
         String password = "Qwerty123";
 
@@ -246,7 +247,7 @@ public class ApiControllerTest {
     }
 
     @Test
-    public void logNonExistentUserIn() throws Exception{
+    public void logNonExistentUserIn() throws Exception {
         String email = "nonExistent@mail.be";
         String password = "Qwerty123";
 
@@ -259,15 +260,15 @@ public class ApiControllerTest {
     }
 
     @Test
-    public void logoutUser() throws Exception{
+    public void logoutUser() throws Exception {
         this.logUserIn();
 
         mockMvc.perform(post("/api/users/logout"))
-                .andExpect(cookie().maxAge("user",0));
+                .andExpect(cookie().maxAge("user", 0));
     }
 
     @Test
-    public void updateUser() throws Exception{
+    public void updateUser() throws Exception {
         Users user = new Users();
 
         user.setBirthday(Date.valueOf(LocalDate.parse("1997-06-01")));
@@ -293,7 +294,7 @@ public class ApiControllerTest {
     ============================================================================*/
 
     @Test
-    public void getAllTalents() throws Exception{
+    public void getAllTalents() throws Exception {
         mockMvc.perform(get("/api/talents"))
                 .andExpect(content().contentType(contentType))
                 .andExpect(status().isOk())
@@ -301,8 +302,8 @@ public class ApiControllerTest {
     }
 
     @Test
-    public void getTop20Talents() throws Exception{
-        for(int i = 0; i < 25; i++){
+    public void getTop20Talents() throws Exception {
+        for (int i = 0; i < 25; i++) {
             talentRepository.save(new Talents("tal" + i + "ent", 0L));
         }
 
@@ -313,7 +314,7 @@ public class ApiControllerTest {
     }
 
     @Test
-    public void getOneTalent() throws Exception{
+    public void getOneTalent() throws Exception {
         mockMvc.perform(get("/api/talents/" + this.talentId))
                 .andExpect(content().contentType(contentType))
                 .andExpect(status().isOk())
@@ -323,7 +324,7 @@ public class ApiControllerTest {
     }
 
     @Test
-    public void addTalent() throws Exception{
+    public void addTalent() throws Exception {
         String name = "Talent";
 
         String jsonTalent = TestHelper.talentToJson(name);
@@ -338,14 +339,14 @@ public class ApiControllerTest {
     }
 
     @Test
-    public void getAllTalentsOfUser() throws Exception{
+    public void getAllTalentsOfUser() throws Exception {
         mockMvc.perform(get("/api/users/" + this.personId + "/talents"))
                 .andExpect(content().contentType(contentType))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)));
     }
 
-    public Users_has_talents createUsersHasTalents(long talent_id){
+    public Users_has_talents createUsersHasTalents(long talent_id) {
         Users_has_talents userTalents = new Users_has_talents();
         userTalents.setTalentId(talent_id);
         userTalents.setDescription("Dit klopt");
@@ -354,7 +355,7 @@ public class ApiControllerTest {
     }
 
     @Test
-    public void addTalentToUser() throws Exception{
+    public void addTalentToUser() throws Exception {
         String jsonUserTalent = TestHelper.userTalentToJson(createUsersHasTalents(talentId3));
 
         mockMvc.perform(post("/api/users/" + personId + "/talents/add")
@@ -365,7 +366,7 @@ public class ApiControllerTest {
     }
 
     @Test
-    public void addNonExistentTalentToUser() throws Exception{
+    public void addNonExistentTalentToUser() throws Exception {
         String jsonUserTalent = TestHelper.userTalentToJson(createUsersHasTalents(0));
 
         mockMvc.perform(post("/api/users/" + personId + "/talents/add")
@@ -375,25 +376,25 @@ public class ApiControllerTest {
     }
 
     @Test
-    public void deleteTalentFromUserNonExistentUser() throws Exception{
+    public void deleteTalentFromUserNonExistentUser() throws Exception {
         mockMvc.perform(delete("/api/users/" + 0 + "/talents/" + talentId + "/delete"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    public void deleteTalentFromUserNonExistentTalent() throws Exception{
+    public void deleteTalentFromUserNonExistentTalent() throws Exception {
         mockMvc.perform(delete("/api/users/" + personId + "/talents/" + 0 + "/delete"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    public void deleteTalentFromUser() throws Exception{
+    public void deleteTalentFromUser() throws Exception {
         mockMvc.perform(delete("/api/users/" + personId + "/talents/" + talentId + "/delete"))
                 .andExpect(status().isOk());
     }
 
     @Test
-    public void getAllTalentsOfUserWithEndorsements() throws Exception{
+    public void getAllTalentsOfUserWithEndorsements() throws Exception {
         mockMvc.perform(get("/api/users/" + personId2 + "/talentEndorsements"))
                 .andExpect(content().contentType(contentType))
                 .andExpect(status().isOk())
@@ -408,7 +409,7 @@ public class ApiControllerTest {
     ============================================================================*/
 
     @Test
-    public void getSuggestionsForUser() throws Exception{
+    public void getSuggestionsForUser() throws Exception {
         mockMvc.perform(get("/api/users/" + this.personId + "/suggestions"))
                 .andExpect(content().contentType(contentType))
                 .andExpect(status().isOk())
@@ -416,7 +417,7 @@ public class ApiControllerTest {
     }
 
     @Test
-    public void addSuggestion() throws Exception{
+    public void addSuggestion() throws Exception {
         Votes vote = new Votes();
         vote.setText("Dat is inderdaad waar");
         vote.setPerson_id(personId);
@@ -432,7 +433,7 @@ public class ApiControllerTest {
     }
 
     @Test
-    public void acceptSuggestion() throws Exception{
+    public void acceptSuggestion() throws Exception {
 
         String jsonReaction = TestHelper.reactionToSuggestionToJson(voteId, true, false);
 
@@ -443,7 +444,7 @@ public class ApiControllerTest {
     }
 
     @Test
-    public void refuseSuggestion() throws Exception{
+    public void refuseSuggestion() throws Exception {
         String jsonReaction = TestHelper.reactionToSuggestionToJson(voteId, false);
 
         mockMvc.perform(post("/api/users/processSugestion")
@@ -457,7 +458,7 @@ public class ApiControllerTest {
     ============================================================================*/
 
     @Test
-    public void addEndorsement() throws Exception{
+    public void addEndorsement() throws Exception {
         Endorsements endorsement = new Endorsements();
         endorsement.setDescription("Dit talent past inderdaad bij deze persoon");
         endorsement.setPersons_id(personId2);
@@ -473,7 +474,7 @@ public class ApiControllerTest {
     }
 
     @Test
-    public void addIncompleteEndorsement() throws Exception{
+    public void addIncompleteEndorsement() throws Exception {
         Endorsements endorsement = new Endorsements();
         endorsement.setDescription("Dit talent past inderdaad bij deze persoon");
         endorsement.setPersons_id(personId2);
@@ -488,32 +489,32 @@ public class ApiControllerTest {
     }
 
     @Test
-    public void getAllEndorsementsOfUserTalent() throws Exception{
-        mockMvc.perform(get( "/api/users/" + this.personId2 + "/talents/" + this.talentId + "/endorsements/"))
+    public void getAllEndorsementsOfUserTalent() throws Exception {
+        mockMvc.perform(get("/api/users/" + this.personId2 + "/talents/" + this.talentId + "/endorsements/"))
                 .andExpect(content().contentType(contentType))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)));
     }
 
     @Test
-    public void getAllEndorsementsOfUserTalentEmpty() throws Exception{
-        mockMvc.perform(get( "/api/users/" + 0 + "/talents/" + 0 + "/endorsements/"))
+    public void getAllEndorsementsOfUserTalentEmpty() throws Exception {
+        mockMvc.perform(get("/api/users/" + 0 + "/talents/" + 0 + "/endorsements/"))
                 .andExpect(content().contentType(contentType))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(0)));
     }
 
     @Test
-    public void getNumberOfEndorsementsOfUserTalent() throws Exception{
-        mockMvc.perform(get( "/api/users/" + this.personId2 + "/talents/" + this.talentId + "/endorsements/count"))
+    public void getNumberOfEndorsementsOfUserTalent() throws Exception {
+        mockMvc.perform(get("/api/users/" + this.personId2 + "/talents/" + this.talentId + "/endorsements/count"))
                 .andExpect(content().contentType(contentType))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", is(1)));
     }
 
     @Test
-    public void getNumberOfEndorsementsOfUserTalentEmpty() throws Exception{
-        mockMvc.perform(get( "/api/users/" + 0 + "/talents/" + 0 + "/endorsements/count"))
+    public void getNumberOfEndorsementsOfUserTalentEmpty() throws Exception {
+        mockMvc.perform(get("/api/users/" + 0 + "/talents/" + 0 + "/endorsements/count"))
                 .andExpect(content().contentType(contentType))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", is(0)));

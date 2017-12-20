@@ -82,14 +82,14 @@ public class Users {
         Users storedUser = users.findByPerson_id(person.getId());
         setPerson_id(person.getId());
         person.setEmail(storedUser.person.getEmail());
-        if(getPassword()==null){
+        if (getPassword() == null) {
             setPassword(storedUser.getPassword());
-        }else{
+        } else {
             setPassword(BCrypt.hashpw(getPassword(), BCrypt.gensalt()));
         }
-        if(getBirthday()==null)setBirthday(storedUser.getBirthday());
-        if(person.getFirstname()==null)person.setFirstname(storedUser.person.getFirstname());
-        if(person.getLastname()==null)person.setLastname(storedUser.person.getLastname());
+        if (getBirthday() == null) setBirthday(storedUser.getBirthday());
+        if (person.getFirstname() == null) person.setFirstname(storedUser.person.getFirstname());
+        if (person.getLastname() == null) person.setLastname(storedUser.person.getLastname());
         users.save(this);
         persons.save(person);
     }

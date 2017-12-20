@@ -124,7 +124,7 @@ public class ApiController {
             throw new UserNotFoundException(user.person.getId());
         } else {
             try {
-                user.updateUser(users,persons);
+                user.updateUser(users, persons);
                 return user;
             } catch (NullPointerException e) {
                 throw new NullPointerException("User details not filled in");
