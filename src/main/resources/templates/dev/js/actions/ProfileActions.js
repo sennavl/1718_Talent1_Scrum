@@ -1,7 +1,7 @@
 import fetch from 'cross-fetch'
 
-const loggedinUseridtemp = '1090'
-const profileuseridtemp = '1089'
+const loggedinUseridtemp = '1177'
+const profileuseridtemp = '1177'
 const API = 'http://localhost:8080/api/';
 
 export const EditClicked = () => {
