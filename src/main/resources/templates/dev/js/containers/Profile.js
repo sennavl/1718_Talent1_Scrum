@@ -77,10 +77,16 @@ class Profile extends Component {
                                         inputRef={ref => { this.newPassword = ref; }}
                                         type='password'
                                         placeholder='Enter new password'
+
                                     />
                                     <FormControl.Feedback />
                                 </FormGroup>
-                                    <Button className='pull-right' bsStyle='primary' onClick={() => this.props.onSaveClick(this.newFirstname.value, this.newLastname.value, this.newDate.value, this.newPassword.value, this.props.loggedInuserId)}>Save</Button>
+                                    <Button className='pull-right' bsStyle='primary' onClick={() => this.props.onSaveClick(
+                                        this.newFirstname.value == '' ? this.props.userFirstname : this.newFirstname.value,
+                                        this.newLastname.value == '' ? this.props.userLastname : this.newLastname.value,
+                                        this.newDate.value == '' ? this.props.userBirthday : this.newDate.value,
+                                        this.newPassword.value,
+                                        this.props.loggedInuserId)}>Save</Button>
                             </form>
                         </div>
                         :

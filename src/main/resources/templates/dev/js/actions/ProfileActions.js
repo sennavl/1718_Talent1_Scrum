@@ -199,11 +199,11 @@ export const SaveClicked = (firstname, lastname, date, password, personId) => {
             body: JSON.stringify({
                 'person': {
                     'id': personId,
-            		'firstname': firstname,
-            		'lastname': lastname
+                    'firstname': firstname !=='' ? firstname : '',
+            		'lastname': lastname !=='' ? lastname : '',
             	},
-            	'birthday': date,
-            	'password': password
+            	'birthday': date !=='' ? date : '',
+            	'password': password !=='' ? password : '',
             }),
             headers: {
                 'Content-Type': 'application/json'
