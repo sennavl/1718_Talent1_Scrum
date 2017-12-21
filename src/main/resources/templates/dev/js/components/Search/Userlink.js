@@ -8,7 +8,7 @@ export const Userlink = (props) => (
         {
             props.foundUsers.map((user, i) => {
                 return (
-                    <ListGroupItem key={i} href="/talentsregistration">{user.person.firstname}</ListGroupItem>
+                    <ListGroupItem key={i} onClick={() => props.history.push("/profile/"+user.person.id)} >{user.person.firstname}</ListGroupItem>
                 )
             })
         }

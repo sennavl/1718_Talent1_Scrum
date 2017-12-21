@@ -1,7 +1,5 @@
 import fetch from 'cross-fetch'
 
-const loggedinUseridtemp = '1177'
-const profileuseridtemp = '1177'
 const API = 'http://localhost:8080/api/';
 
 export const EditClicked = () => {
@@ -10,7 +8,7 @@ export const EditClicked = () => {
     }
 };
 //logged in user gebruiken
-export const Profile = (profileUserId=profileuseridtemp) => {
+export const Profile = (profileUserId) => {
     return dispatch => {
         dispatch(FetchingUser());
         return fetch(API+'users/' + profileUserId, {

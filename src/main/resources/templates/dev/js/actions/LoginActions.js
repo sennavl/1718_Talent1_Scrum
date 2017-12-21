@@ -32,3 +32,9 @@ const LoggedIn = (json) => {
         json
     }
 };
+
+const Logout = () => {
+    return {
+        type: 'NOT_LOGGED_IN',
+    }
+};

@@ -3,19 +3,22 @@ import {connect} from 'react-redux';
 import {Button, ListGroup, ListGroupItem, Panel, Modal, FormGroup, ControlLabel, FormControl, DropdownButton, MenuItem, Alert} from  'react-bootstrap';
 import {Navigation} from '../components/Navigation';
 import {Profile as Profilegetter, EditClicked, EndorseClicked, ShowEndorseClicked, ShowEndorsementsClicked, CancelEditClicked, DeleteTalentClicked, FetchPerson, SaveClicked, SuggestTalentClicked, AlertDismissClicked, SuggestionsClicked, AcceptSuggestionClicked, DeclineSuggestionClicked} from '../actions/ProfileActions';
+import { searchClicked } from '../actions/SearchActions'
+
 import {FetchTalents} from '../actions/TalentRegisterActions';
 import style from '../../scss/style.scss'
 
 
 class Profile extends Component {
     componentDidMount() {
-        this.props.FetchingUser(this.props.profileUserId)
+        this.props.FetchingUser(this.props.match.params.id);
+            this.props.logStatus !== "LOGGED_IN" ? this.props.history.push("/login") : ''
     }
 
     render() {
         return (
             <div>
-                <Navigation props={this.props.history} status={this.props.logStatus} />
+                <Navigation id={this.props.id} parent={this} searchstring={this.props.string} onSearchClick={this.props.onSearchClick} history={this.props.history} status={this.props.logStatus} />
                 {this.props.alertVisible &&
                     <Alert bsStyle={this.props.alertStyle}>
                         <Button bsStyle='default' className='pull-right close' type='button' aria-label='Close'onClick={() => this.props.onAlertDismissClick()}>X</Button>
@@ -147,6 +150,7 @@ class Profile extends Component {
                                         <Button bsStyle='success' onClick={() => this.props.onSuggestClick(this.suggestionReason.value, this.props.loggedInuserId, this.suggestionTalentId.value, this.props.profileUserId)}>Suggest</Button>
                                     </Modal.Footer>
                                 </Panel>
+                                <Button onClick={() => this.props.history.push("/talentregistration")}>Add talents</Button>
                             </div>
                         }
                         {this.props.modalStatus === 'ADD' &&
@@ -236,6 +240,9 @@ class Profile extends Component {
                         }
                     </div>
                 </div>
+                {
+                    this.props.match.path === '/profile' ? this.props.history.push("/profile"+this.props.profileUserId):''
+                }
             </div>
         );
     }
@@ -269,12 +276,17 @@ const mapStateToProps = (state) => ({
     suggestions: state.Profile.suggestions,
 
     allTalents: state.TalentRegister.talents,
+    string: state.Search.searchstring,
+    logStatus: state.Auth.status,
+    id: state.Auth.id
+
+
 });
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        FetchingUser: () => {
-            dispatch(Profilegetter());
+        FetchingUser: (id) => {
+            dispatch(Profilegetter(id));
         },
         onEditClick: () => {
             dispatch(EditClicked());
@@ -315,6 +327,9 @@ const mapDispatchToProps = (dispatch) => {
         onDeclineSuggestionClick: (suggestionId) => {
                 dispatch(DeclineSuggestionClicked(suggestionId))
         },
+        onSearchClick: (searchstring) => {
+            dispatch(searchClicked(searchstring))
+        }
     }
 };
 

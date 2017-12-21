@@ -6,12 +6,17 @@ import { Navigation } from '../components/Navigation';
 
 class Login extends Component {
     componentWillMount(){
-        this.props.logStatus === "LOGGED_IN" ? this.props.history.push("/talentregistration") : ''
+        console.log('will'),
+        this.props.logStatus === "LOGGED_IN" ? this.props.history.push("/profile/"+this.props.loggedInId) : ''
+    }
+    componentDidMount() {
+        console.log('did')
+        this.props.logStatus === "LOGGED_IN" ? this.props.history.push("/profile/"+this.props.loggedInId) : ''
     }
     render() {
         return (
             <div className="static-modal">
-                <Navigation history={this.props.history} status={this.props.logStatus} />
+                <Navigation parent={this} searchstring={this.props.string} history={this.props.history} status={this.props.logStatus} />
                 <Modal.Dialog>
                     <Modal.Header>
                         <Modal.Title>Login</Modal.Title>
@@ -47,18 +52,20 @@ class Login extends Component {
                         <Button>Cancel</Button>
                         <Button onClick={() => this.props.history.push("/register")}>Register</Button>
                         <Button bsStyle="primary" onClick={() => this.props.onLoginClick(this.email.value, this.password.value)}>Login</Button>
-                        {
-                            this.props.logStatus === "LOGGED_IN" ? this.props.history.push("/talentregistration") : ''
-                        }
                     </Modal.Footer>
                 </Modal.Dialog>
+                {
+                    this.props.logStatus === "LOGGED_IN" ? this.props.history.push("/profile/"+this.props.loggedInId) : ''
+                }
             </div>
         );
     }
 }
 
 const mapStateToProps = (state) => ({
-    logStatus: state.Auth.status
+    logStatus: state.Auth.status,
+    loggedInId: state.Auth.id,
+    string: state.Search.searchstring,
 });
 
 const mapDispatchToProps = (dispatch) => {

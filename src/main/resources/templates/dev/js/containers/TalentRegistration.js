@@ -20,7 +20,7 @@ class TalentRegister extends Component {
         }
         return (
             <div>
-                <Navigation parent={this} searchstring={this.props.string} onSearchClick={this.props.onSearchClick} history={this.props.history} status={this.props.logStatus} />
+                <Navigation id={this.props.id} parent={this} searchstring={this.props.string} onSearchClick={this.props.onSearchClick} history={this.props.history} status={this.props.logStatus} />
                 <div className="col-md-6 col-md-offset-3" >
                     <Panel header="Wat zijn uw talenten?" bsStyle="primary">
                         {list}
@@ -61,7 +61,8 @@ const mapStateToProps = (state) => ({
     userId: state.Auth.id,
     submitTalent: state.TalentRegister.submitTalent,
     talentRegStatus: state.TalentRegister.status,
-    string: state.Search.searchstring
+    string: state.Search.searchstring,
+    id: state.Auth.id
 });
 
 const mapDispatchToProps = (dispatch) => {
