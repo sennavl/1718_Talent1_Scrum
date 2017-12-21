@@ -48,7 +48,8 @@ export const postAllTalents = (talents, userId) => {
   return dispatch => {
       dispatch(postingTalent());
       talents.map((talent, index) => {
-          if (index != 0) { dispatch(doPostTalent(talent, userId))};
+          console.log(talent);
+          if (index != 0) { console.log('in if'); dispatch(doPostTalent(talent, userId))};
       })
   }
 };
@@ -65,11 +66,11 @@ const doPostTalent = (talent, userId) => {
         return fetch(API+'users/' + userId + '/talents/add', {
             method: "POST",
             body: JSON.stringify({
-                userTalent: {
+
                     "talentId": talent.id,
                     "description":"Ik vind dit bij me passen",
                     "hide":"0"
-                },
+
             }),
             headers: {
                 "Content-Type": "application/json"
