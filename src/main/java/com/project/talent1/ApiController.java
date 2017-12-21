@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.StreamSupport;
@@ -45,10 +44,12 @@ public class ApiController {
     ============================================================================*/
     @GetMapping(path = "/users")
     public @ResponseBody
-    Iterable<Users> getAllUsers() { return users.findAll(); }
+    Iterable<Users> getAllUsers() {
+        return users.findAll();
+    }
 
     @GetMapping(path = "/users/search/")
-    Iterable<Users> searchUserDefault(){
+    Iterable<Users> searchUserDefault() {
         return searchUser("");
     }
 
@@ -170,13 +171,11 @@ public class ApiController {
     }
 
     @RequestMapping(path = "/users/{user_id}/talents/{talent_id}/delete", method = RequestMethod.DELETE)
-    public void deleteTalent(@PathVariable int user_id, @PathVariable int talent_id) {
-        Users user = users.findByPerson_id(user_id);
-        if (user == null) {
+    public void deleteUserTalent(@PathVariable int user_id, @PathVariable int talent_id) {
+        if (users.findByPerson_id(user_id) == null) {
             throw new UserNotFoundException(user_id);
         }
-        Talents talent = talents.findById(talent_id);
-        if (talent == null) {
+        if (talents.findById(talent_id) == null) {
             throw new TalentNotFoundException(talent_id);
         }
         endorsements.delete(endorsements.findEndorsementsForUserTalent(user_id, talent_id));
@@ -187,23 +186,23 @@ public class ApiController {
     @GetMapping(path = "/users/{id}/talents")
     public Iterable<Talents> getAllTalentsOfUser(@PathVariable long id) {
         Iterable<Users_has_talents> items = usersHasTalentsRepository.findAllByPersonId(id);
-        List<Talents> ouput = StreamSupport.stream(items.spliterator(), false)
+        List<Talents> output = StreamSupport.stream(items.spliterator(), false)
                 .filter(userTalent -> userTalent.getHide() == 0)
                 .map(usertalent -> (talents.findById(usertalent.getTalentId())))
                 .collect(toList());
 
-        return ouput;
+        return output;
     }
 
     @GetMapping(path = "/users/{id}/talentEndorsements")
     public Iterable<TalentAndEndorsement> getAllTalentsOfUserWithEndorsements(@PathVariable long id) {
         Iterable<Users_has_talents> items = usersHasTalentsRepository.findAllByPersonId(id);
-        List<TalentAndEndorsement> ouput = StreamSupport.stream(items.spliterator(), false)
+        List<TalentAndEndorsement> output = StreamSupport.stream(items.spliterator(), false)
                 .filter(userTalent -> userTalent.getHide() == 0)
                 .map(usertalent -> (new TalentAndEndorsement(talents.findById(usertalent.getTalentId()), getNumberOfEndorsementsOfUserTalent(usertalent.getPersonId(), usertalent.getTalentId()))))
                 .collect(toList());
 
-        return ouput;
+        return output;
     }
 
     @RequestMapping(path = "/users/{id}/talents/add")

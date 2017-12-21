@@ -117,6 +117,13 @@ public class ApiControllerTest {
     }
 
     @Test
+    public void searchDefault() throws Exception {
+        mockMvc.perform(get("/api/users/search/"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)));
+    }
+
+    @Test
     public void searchUserByFirstname() throws Exception {
         mockMvc.perform(get("/api/users/search/Peter"))
                 .andExpect(status().isOk())

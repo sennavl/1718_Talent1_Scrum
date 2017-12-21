@@ -25,7 +25,7 @@ public class Users {
     private java.sql.Date birthday;
     private String password;
 
-    public Users(String password){
+    public Users(String password) {
         this.password = password;
     }
 
