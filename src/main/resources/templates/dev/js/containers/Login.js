@@ -7,12 +7,9 @@ import { Navigation } from '../components/Navigation';
 class Login extends Component {
     componentWillMount(){
         console.log('will'),
-        this.props.logStatus === "LOGGED_IN" ? this.props.history.push("/profile/"+this.props.loggedInId) : ''
+        this.props.session != null ? this.props.history.push("/profile/"+this.props.session.session.id) : ''
     }
-    componentDidMount() {
-        console.log('did')
-        this.props.logStatus === "LOGGED_IN" ? this.props.history.push("/profile/"+this.props.loggedInId) : ''
-    }
+
     render() {
         return (
             <div className="static-modal">
@@ -66,6 +63,7 @@ const mapStateToProps = (state) => ({
     logStatus: state.Auth.status,
     loggedInId: state.Auth.id,
     string: state.Search.searchstring,
+    session: state.Session
 });
 
 const mapDispatchToProps = (dispatch) => {

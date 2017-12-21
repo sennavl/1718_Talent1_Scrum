@@ -11,6 +11,7 @@ import { BrowserRouter } from 'react-router-dom'
 
 import { searchClicked } from './actions/SearchActions';
 import { FetchTalents } from './actions/TalentRegisterActions';
+import { FetchSession } from './actions/SessionActions';
 
 
 const store = createStore(
@@ -21,9 +22,10 @@ const store = createStore(
     )
 );
 
+store.dispatch(FetchSession());
+
 store.dispatch(FetchTalents());
 store.dispatch(searchClicked(''));
-
 
 
 ReactDOM.render(

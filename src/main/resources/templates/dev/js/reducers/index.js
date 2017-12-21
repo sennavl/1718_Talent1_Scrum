@@ -4,6 +4,7 @@ import RegisterReducer from './RegisterReducer';
 import TalentRegistrationReducer from './TalentRegistrationReducer';
 import SearchReducer from './SearchReducer';
 import ProfileReducer from './ProfileReducer';
+import SessionReducer from './SessionReducer';
 
 /*
  * We combine all reducers into a single object before updated data is dispatched (sent) to store
@@ -15,7 +16,8 @@ const allReducers = combineReducers({
     Register: RegisterReducer,
     TalentRegister: TalentRegistrationReducer,
     Search: SearchReducer,
-    Profile: ProfileReducer
+    Profile: ProfileReducer,
+    Session: SessionReducer
 });
 
 export default allReducers

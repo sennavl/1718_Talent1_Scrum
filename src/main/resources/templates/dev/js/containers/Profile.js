@@ -10,10 +10,10 @@ import style from '../../scss/style.scss'
 
 
 class Profile extends Component {
-    componentDidMount() {
-        this.props.FetchingUser(this.props.match.params.id);
-            this.props.logStatus !== "LOGGED_IN" ? this.props.history.push("/login") : ''
+    componentWillMount(){
+        this.props.session === null ? this.props.history.push("/login") : ''
     }
+
 
     render() {
         return (
@@ -280,9 +280,9 @@ const mapStateToProps = (state) => ({
     allTalents: state.TalentRegister.talents,
     string: state.Search.searchstring,
     logStatus: state.Auth.status,
-    id: state.Auth.id
+    id: state.Auth.id,
 
-
+    session: state.Session
 });
 
 const mapDispatchToProps = (dispatch) => {
