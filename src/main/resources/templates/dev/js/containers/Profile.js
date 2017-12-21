@@ -26,7 +26,7 @@ class Profile extends Component {
                     </Alert>
                 }
                 <div className='col-md-6 col-md-offset-3' >
-                    {this.props.ownProfile &&
+                    {this.props.ownProfile || this.props.loggedInuserId == this.props.profileUserId &&
                         <div className='pull-right'>
                         {!this.props.editStatus ?
                             <div>
@@ -105,7 +105,8 @@ class Profile extends Component {
                                                     <Button bsStyle='info' onClick={() => this.props.showEndorsementsClick(this.props.profileUserId, talentInfo.talent.id, talentInfo.talent.name)}>View {talentInfo.endorsementCounter} endorsements</Button>
                                                     : ''
                                                 }
-                                                {!this.props.ownProfile &&
+                                                {/*!this.props.ownProfile &&*/}
+                                                {this.props.loggedInuserId != this.props.profileUserId &&
                                                     <Button bsStyle='success' onClick={() => this.props.showEndorseClick(talentInfo.talent.name, talentInfo.talent.id)}>+</Button>
                                                 }
                                                 {this.props.editStatus &&
@@ -117,10 +118,10 @@ class Profile extends Component {
                                 )}
                             </ListGroup>
                             {this.props.editStatus &&
-                                <Button bsStyle='default' className= 'pull-right'>Add more talents</Button>
+                                <Button bsStyle='default' className= 'pull-right' onClick={() => this.props.history.push("/talentregistration")}>Add more talents</Button>
                             }
                         </Panel>
-                        {!this.props.ownProfile &&
+                        {this.props.loggedInuserId != this.props.profileUserId &&
                             <div>
                                 <Panel header='Recommend a talent' bsStyle='primary'>
                                     <Modal.Body>
@@ -150,6 +151,7 @@ class Profile extends Component {
                                         <Button bsStyle='success' onClick={() => this.props.onSuggestClick(this.suggestionReason.value, this.props.loggedInuserId, this.suggestionTalentId.value, this.props.profileUserId)}>Suggest</Button>
                                     </Modal.Footer>
                                 </Panel>
+
                                 <Button onClick={() => this.props.history.push("/talentregistration")}>Add talents</Button>
                             </div>
                         }
@@ -321,11 +323,11 @@ const mapDispatchToProps = (dispatch) => {
         onSuggestionsClick: (loggedInuserId) => {
             dispatch(SuggestionsClicked(loggedInuserId))
         },
-        onAcceptSuggestionClick: (suggestionId) => {
-                dispatch(AcceptSuggestionClicked(suggestionId))
+        onAcceptSuggestionClick: (suggestionId, loggedInuserId) => {
+                dispatch(AcceptSuggestionClicked(suggestionId, loggedInuserId))
         },
-        onDeclineSuggestionClick: (suggestionId) => {
-                dispatch(DeclineSuggestionClicked(suggestionId))
+        onDeclineSuggestionClick: (suggestionId, loggedInuserId) => {
+                dispatch(DeclineSuggestionClicked(suggestionId, loggedInuserId))
         },
         onSearchClick: (searchstring) => {
             dispatch(searchClicked(searchstring))

@@ -104,7 +104,7 @@ export const ShowEndorseClicked = (talentName, talentId) => {
 
 
 
-export const ShowEndorsementsClicked = (profileUserId=profileuseridtemp, talentId, talentName) =>{
+export const ShowEndorsementsClicked = (profileUserId, talentId, talentName) =>{
     return dispatch => {
         dispatch(FetchingEndorsementsTalent());
         return fetch(API+'users/' + profileUserId + '/talents/' + talentId.toString() + '/endorsements', {
@@ -169,7 +169,7 @@ export const CancelEditClicked = () => {
 
 
 
-export const DeleteTalentClicked = (talentId, profileUserId=profileuseridtemp) => {
+export const DeleteTalentClicked = (talentId, profileUserId) => {
     return dispatch => {
         return fetch(API+'users/' + profileUserId + '/talents/' + talentId + '/delete', {
             method: 'DELETE',
@@ -191,7 +191,7 @@ const DeletedUserTalent = (talentId) => {
 
 
 
-export const SaveClicked = (firstname, lastname, date, password, personId=profileuseridtemp) => {
+export const SaveClicked = (firstname, lastname, date, password, personId) => {
     return dispatch => {
         dispatch(UpdatingUser());
         return fetch(API+'users/update', {
@@ -226,7 +226,7 @@ const UpdatedUser = () => {
 
 
 
-export const SuggestTalentClicked = (reason, personId=loggedinUseridtemp, talentId, profileUserId=profileuseridtemp) => {
+export const SuggestTalentClicked = (reason, personId, talentId, profileUserId) => {
     return dispatch => {
         return fetch(API+'users/suggest', {
             method: 'POST',
@@ -258,7 +258,7 @@ export const AlertDismissClicked = () => {
 };
 
 
-export const SuggestionsClicked = (personId=profileuseridtemp) => {
+export const SuggestionsClicked = (personId) => {
     return dispatch => {
         dispatch(FetchingSuggestions());
         return fetch(API+'users/' + personId + '/suggestions', {
@@ -286,7 +286,7 @@ const FetchedSuggestions = (json) => {
 
 
 
-export const AcceptSuggestionClicked = (suggestionId, personId=profileuseridtemp) => {
+export const AcceptSuggestionClicked = (suggestionId, personId) => {
     return dispatch => {
         return fetch(API+'users/processSugestion', {
             method: 'POST',
@@ -312,7 +312,7 @@ const AcceptedSuggestion = () => {
 
 
 
-export const DeclineSuggestionClicked = (suggestionId, personId=profileuseridtemp) => {
+export const DeclineSuggestionClicked = (suggestionId, personId) => {
     return dispatch => {
         return fetch(API+'users/processSugestion', {
             method: 'POST',
