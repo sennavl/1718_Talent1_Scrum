@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.StreamSupport;
@@ -37,6 +38,8 @@ public class ApiController {
     VotesRepository votes;
     @Autowired
     EndorsementRepository endorsements;
+
+    HttpSession session;
 
 
     /*============================================================================
@@ -112,17 +115,23 @@ public class ApiController {
         try {
             Users user = users.findByPerson_id(persons.findByEmail(email).getId());
             user.login(response, password);
+            session = request.getSession();
+            session.setAttribute("person", user.person);
+            session.setMaxInactiveInterval(30*60);
             return user.getPerson_id();
         } catch (NullPointerException e) {
             throw new UserNotFoundException(email);
         }
     }
 
-    @RequestMapping(path = "/users/logout", method = RequestMethod.POST)
-    public void logOut(HttpServletResponse response) throws InterruptedException {
+    @RequestMapping(path = "/users/logout", method = RequestMethod.GET)
+    public Object logOut(HttpServletRequest request, HttpServletResponse response) throws InterruptedException {
         Cookie userCookie = new Cookie("user", null);
         userCookie.setMaxAge(0);
         response.addCookie(userCookie);
+        session.setAttribute("person", null);
+        session = request.getSession(false);
+        return session;
     }
 
     @RequestMapping(path = "/users/update")
@@ -280,5 +289,18 @@ public class ApiController {
     @GetMapping(path = "/users/{person_id}/talents/{talent_id}/endorsements/count")
     public int getNumberOfEndorsementsOfUserTalent(@PathVariable long person_id, @PathVariable long talent_id) {
         return endorsements.findAmountOfEndorsementsForUserTalent((int) person_id, (int) talent_id);
+    }
+
+
+     /*============================================================================
+        Session
+    ============================================================================*/
+
+    @RequestMapping(path = "/session")
+    public Object getSession() {
+        if (session != null) {
+            return session.getAttribute("person");
+        }
+        return session;
     }
 }
