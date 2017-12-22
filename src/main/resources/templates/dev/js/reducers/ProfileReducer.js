@@ -1,4 +1,4 @@
-import {FETCHED_USER, FETCHED_TALENTS_USER, EDIT_CLICKED, SHOW_ENDORSE_CLICKED, FETCHED_ENDORSEMENTS_TALENT, CANCEL_EDIT_CLICKED, DELETED_USER_TALENT, FETCHED_PERSON, UPDATED_PERSON, SUGGESTIONS_CLICKED, FETCHED_SUGGESTIONS, FETCHED_ALL_TALENTS, ACCEPTED_SUGGESTION, DECLINED_SUGGESTION} from '../actions/ProfileActions';
+import {FETCHED_USER, FETCHED_TALENTS_USER, EDIT_CLICKED, SHOW_ENDORSE_CLICKED, FETCHED_ENDORSEMENTS_TALENT, CANCEL_EDIT_CLICKED, DELETED_USER_TALENT, FETCHED_PERSON, UPDATED_PERSON, SUGGESTIONS_CLICKED, FETCHED_SUGGESTIONS, FETCHED_ALL_TALENTS, ACCEPTED_SUGGESTION, DECLINED_SUGGESTION, GIVING_NOT_LOGGED_IN_ALERT} from '../actions/ProfileActions';
 
 const initialState = {
     firstname: '',
@@ -120,6 +120,13 @@ export default function (state = initialState, action) {
                 alertStyle: 'success',
                 alertMessage: 'Suggestion declined and talent not added!',
                 status: 'SUGGESTIONS_DECLINED'
+            });
+        case 'GIVING_NOT_LOGGED_IN_ALERT':
+            return Object.assign({}, state, {
+                alertVisible: true,
+                alertStyle: 'danger',
+                alertMessage: 'You need to login to suggest a talent!',
+                status: 'NOT_LOGGED_IN_ALERT_GIVEN'
             });
         default:
             return state

@@ -260,6 +260,11 @@ export const AlertDismissClicked = () => {
         type: 'DISMISS_ALERT',
     }
 };
+export const GiveAlert = (alertInfo) => {
+    return {
+        type: 'GIVING_NOT_LOGGED_IN_ALERT',
+    }
+};
 
 
 export const SuggestionsClicked = (personId) => {

@@ -6,14 +6,13 @@ import { Navigation } from '../components/Navigation';
 
 class Login extends Component {
     componentWillMount(){
-        console.log('will'),
-        this.props.session != null ? this.props.history.push("/profile/"+this.props.session.session.id) : ''
+        this.props.session.session.id > 0 && this.props.history.push("/profile/"+this.props.session.session.id)
     }
 
     render() {
         return (
             <div className="static-modal">
-                <Navigation parent={this} searchstring={this.props.string} history={this.props.history} status={this.props.logStatus} />
+                <Navigation parent={this} searchstring={this.props.string} history={this.props.history} status={this.props.session} />
                 <Modal.Dialog>
                     <Modal.Header>
                         <Modal.Title>Login</Modal.Title>

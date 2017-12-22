@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {Button, ListGroup, ListGroupItem, Panel, Modal, FormGroup, ControlLabel, FormControl, DropdownButton, MenuItem, Alert} from  'react-bootstrap';
 import {Navigation} from '../components/Navigation';
-import {Profile as Profilegetter, EditClicked, EndorseClicked, ShowEndorseClicked, ShowEndorsementsClicked, CancelEditClicked, DeleteTalentClicked, FetchPerson, SaveClicked, SuggestTalentClicked, AlertDismissClicked, SuggestionsClicked, AcceptSuggestionClicked, DeclineSuggestionClicked} from '../actions/ProfileActions';
+import {Profile as Profilegetter, EditClicked, EndorseClicked, ShowEndorseClicked, ShowEndorsementsClicked, CancelEditClicked, DeleteTalentClicked, FetchPerson, SaveClicked, SuggestTalentClicked, AlertDismissClicked, SuggestionsClicked, AcceptSuggestionClicked, DeclineSuggestionClicked, GiveAlert} from '../actions/ProfileActions';
 import { searchClicked } from '../actions/SearchActions'
 
 import {FetchTalents} from '../actions/TalentRegisterActions';
@@ -11,14 +11,13 @@ import style from '../../scss/style.scss'
 
 class Profile extends Component {
     componentWillMount(){
-        this.props.session === null ? this.props.history.push("/login") : ''
+        this.props.FetchingUser(this.props.match.params.id);
     }
-
 
     render() {
         return (
             <div>
-                <Navigation id={this.props.id} parent={this} searchstring={this.props.string} onSearchClick={this.props.onSearchClick} history={this.props.history} status={this.props.logStatus} />
+                <Navigation id={this.props.id} parent={this} searchstring={this.props.string} onSearchClick={this.props.onSearchClick} history={this.props.history} session={this.props.session} />
                 {this.props.alertVisible &&
                     <Alert bsStyle={this.props.alertStyle}>
                         <Button bsStyle='default' className='pull-right close' type='button' aria-label='Close'onClick={() => this.props.onAlertDismissClick()}>X</Button>
@@ -26,11 +25,11 @@ class Profile extends Component {
                     </Alert>
                 }
                 <div className='col-md-6 col-md-offset-3' >
-                    {this.props.ownProfile || this.props.loggedInuserId == this.props.profileUserId &&
+                    {this.props.session.session.id == this.props.profileUserId &&
                         <div className='pull-right'>
                         {!this.props.editStatus ?
                             <div>
-                                <Button bsStyle='default' onClick={() => this.props.onSuggestionsClick(this.props.loggedInuserId)}>Suggestions</Button>
+                                <Button bsStyle='default' onClick={() => this.props.onSuggestionsClick(this.props.session.session.id)}>Suggestions</Button>
                                 <Button bsStyle='default' disabled={this.props.editStatus} onClick={() => this.props.onEditClick()}>Edit profile</Button>
                             </div>
                             :
@@ -40,7 +39,7 @@ class Profile extends Component {
                         }
                         </div>
                     }
-                    {this.props.editStatus ?
+                    {this.props.editStatus && this.props.session.session.id == this.props.profileUserId ?
                         <div>
                             <h2>Edit Profile</h2>
                             <form>
@@ -105,8 +104,7 @@ class Profile extends Component {
                                                     <Button bsStyle='info' onClick={() => this.props.showEndorsementsClick(this.props.profileUserId, talentInfo.talent.id, talentInfo.talent.name)}>View {talentInfo.endorsementCounter} endorsements</Button>
                                                     : ''
                                                 }
-                                                {/*!this.props.ownProfile &&*/}
-                                                {this.props.loggedInuserId != this.props.profileUserId &&
+                                                {this.props.session.session.id != this.props.profileUserId &&
                                                     <Button bsStyle='success' onClick={() => this.props.showEndorseClick(talentInfo.talent.name, talentInfo.talent.id)}>+</Button>
                                                 }
                                                 {this.props.editStatus &&
@@ -148,7 +146,7 @@ class Profile extends Component {
                                           </form>
                                     </Modal.Body>
                                     <Modal.Footer>
-                                        <Button bsStyle='success' onClick={() => this.props.onSuggestClick(this.suggestionReason.value, this.props.loggedInuserId, this.suggestionTalentId.value, this.props.profileUserId)}>Suggest</Button>
+                                        <Button bsStyle='success' onClick={() => this.props.session.session.id != 0 ? this.props.onSuggestClick(this.suggestionReason.value, this.props.session.session.id, this.suggestionTalentId.value, this.props.profileUserId) : this.props.alertNotlLoggedIn()}>Suggest</Button>
                                     </Modal.Footer>
                                 </Panel>
 
@@ -331,7 +329,10 @@ const mapDispatchToProps = (dispatch) => {
         },
         onSearchClick: (searchstring) => {
             dispatch(searchClicked(searchstring))
-        }
+        },
+        alertNotlLoggedIn: () => {
+            dispatch(GiveAlert())
+        },
     }
 };
 
