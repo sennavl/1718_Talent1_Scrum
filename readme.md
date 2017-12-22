@@ -13,7 +13,7 @@ npm i
 npm start
 ```
 Tenslotte moet je nog volgende chrome extensie toevoegen: https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=en
-Als dit lukt zou je op localhost:3000 de homepagina moeten zien.
+Als dit lukt zou je op localhost:3000/login moeten kunnen inloggen.
 
 ## Prerequisites
 
