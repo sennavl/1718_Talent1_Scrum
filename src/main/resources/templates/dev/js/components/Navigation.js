@@ -32,7 +32,7 @@ export const Navigation = (props) => (
                             </Form>
                             <Nav pullRight className="col-md-2">
                                 <NavItem onClick={() => props.history.push("/profile/"+ props.session.session.id)}>Profiel</NavItem>
-                                <NavItem onClick={() => props.history.push("/logout/"+ props.session.session.id)}>Profiel</NavItem>                                
+                                
                             </Nav>
                         </div>
             }

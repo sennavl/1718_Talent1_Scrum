@@ -6,11 +6,14 @@ import {Profile as Profilegetter, EditClicked, EndorseClicked, ShowEndorseClicke
 import { searchClicked } from '../actions/SearchActions'
 
 import {FetchTalents} from '../actions/TalentRegisterActions';
+import {FetchSession} from '../actions/SessionActions';
+
 import style from '../../scss/style.scss'
 
 
 class Profile extends Component {
     componentWillMount(){
+        this.props.FetchSession();
         this.props.FetchingUser(this.props.match.params.id);
     }
 
@@ -79,7 +82,7 @@ class Profile extends Component {
                                     />
                                     <FormControl.Feedback />
                                 </FormGroup>
-                                    <Button className='pull-right' bsStyle='primary' onClick={() => this.props.onSaveClick(this.newFirstname.value, this.newLastname.value, this.newDate.value, this.newPassword.value, this.props.loggedInuserId)}>Save</Button>
+                                    <Button className='pull-right' bsStyle='primary' onClick={() => this.props.onSaveClick(this.newFirstname.value, this.newLastname.value, this.newDate.value, this.newPassword.value, this.props.session.session.id)}>Save</Button>
                             </form>
                         </div>
                         :
@@ -108,7 +111,7 @@ class Profile extends Component {
                                                     <Button bsStyle='success' onClick={() => this.props.showEndorseClick(talentInfo.talent.name, talentInfo.talent.id)}>+</Button>
                                                 }
                                                 {this.props.editStatus &&
-                                                    <Button bsStyle='danger' onClick={() => this.props.deleteTalentClick(talentInfo.talent.id, this.props.loggedInuserId)}>X</Button>
+                                                    <Button bsStyle='danger' onClick={() => this.props.deleteTalentClick(talentInfo.talent.id, this.props.session.session.id)}>X</Button>
                                                 }
                                             </div>
                                         </div>
@@ -119,7 +122,7 @@ class Profile extends Component {
                                 <Button bsStyle='default' className= 'pull-right' onClick={() => this.props.history.push("/talentregistration")}>Add more talents</Button>
                             }
                         </Panel>
-                        {this.props.loggedInuserId != this.props.profileUserId &&
+                        {this.props.session.session.id != this.props.profileUserId &&
                             <div>
                                 <Panel header='Recommend a talent' bsStyle='primary'>
                                     <Modal.Body>
@@ -149,7 +152,6 @@ class Profile extends Component {
                                         <Button bsStyle='success' onClick={() => this.props.session.session.id != 0 ? this.props.onSuggestClick(this.suggestionReason.value, this.props.session.session.id, this.suggestionTalentId.value, this.props.profileUserId) : this.props.alertNotlLoggedIn()}>Suggest</Button>
                                     </Modal.Footer>
                                 </Panel>
-
                                 <Button onClick={() => this.props.history.push("/talentregistration")}>Add talents</Button>
                             </div>
                         }
@@ -171,7 +173,7 @@ class Profile extends Component {
                                   </Modal.Body>
                                   <Modal.Footer>
                                       <Button bsStyle='danger' onClick={() => this.props.showEndorseClick()}>Cancel</Button>
-                                      <Button bsStyle='success' onClick={() => this.props.onEndorseClick(this.textarea.value, this.props.loggedInuserId, this.props.profileUserId, this.props.endorsingTalent.id)}>Endorse</Button>
+                                      <Button bsStyle='success' onClick={() => this.props.session.session.id != 0 ? this.props.onEndorseClick(this.textarea.value, this.props.session.session.id, this.props.profileUserId, this.props.endorsingTalent.id) : this.props.alertNotlLoggedIn()}>Endorse</Button>
                                   </Modal.Footer>
                                 </Modal>
                             </div>
@@ -221,8 +223,8 @@ class Profile extends Component {
                                                                   <p>Reason:</p>
                                                                   <p>{suggestion.text}</p>
                                                                   <div className='pull-right'>
-                                                                      <Button bsStyle='success' onClick={() => this.props.onAcceptSuggestionClick(suggestion.id, this.props.loggedInuserId)}>+</Button>
-                                                                      <Button bsStyle='danger' onClick={() => this.props.onDeclineSuggestionClick(suggestion.id, this.props.loggedInuserId)}>X {this.props.counter}</Button>
+                                                                      <Button bsStyle='success' onClick={() => this.props.onAcceptSuggestionClick(suggestion.id, this.props.session.session.id)}>+</Button>
+                                                                      <Button bsStyle='danger' onClick={() => this.props.onDeclineSuggestionClick(suggestion.id, this.props.session.session.id)}>X {this.props.counter}</Button>
                                                                   </div>
                                                               </div>
                                                           )}
@@ -333,6 +335,9 @@ const mapDispatchToProps = (dispatch) => {
         alertNotlLoggedIn: () => {
             dispatch(GiveAlert())
         },
+        FetchSession:() => {
+            dispatch(FetchSession())
+        }
     }
 };
 

@@ -61,15 +61,14 @@ const postingTalent = () => {
 
 const doPostTalent = (talent, userId) => {
     return dispatch => {
-        //dispatch(LogingIn());
         return fetch(API+'users/' + userId + '/talents/add', {
             method: "POST",
             body: JSON.stringify({
-                userTalent: {
+
                     "talentId": talent.id,
                     "description":"Ik vind dit bij me passen",
                     "hide":"0"
-                },
+
             }),
             headers: {
                 "Content-Type": "application/json"
@@ -77,7 +76,6 @@ const doPostTalent = (talent, userId) => {
             credentials: "same-origin"
         })
             .then(response => response.json())
-            //.then(json => dispatch(LoggedIn(json)))
     }
 };
 

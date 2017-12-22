@@ -4,7 +4,7 @@ import { Logout as LA } from '../actions/LoginActions';
 
 class Logout extends Component {
     componentWillMount(){
-        this.props.onLogout
+        this.props.session.session.id > 0 && this.props.onLogout
     }
     render() {
         return (

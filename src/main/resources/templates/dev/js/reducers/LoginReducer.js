@@ -1,4 +1,4 @@
-import {LOGGED_IN} from '../actions/LoginActions';
+import {LOGGED_IN, LOGGED_OUT} from '../actions/LoginActions';
 
 const initialState = {
     status: 'NOT_LOGGED_IN',
@@ -15,6 +15,11 @@ export default function (state = initialState, action) {
         case 'NOT_LOGGED_IN':
             return Object.assign({}, state, {
                 status: 'NOT_LOGGED_IN',
+                id: '',
+            });
+        case 'LOGGED_OUT':
+            return Object.assign({}, state, {
+                status: 'LOGGED_OUT',
                 id: '',
             });
 

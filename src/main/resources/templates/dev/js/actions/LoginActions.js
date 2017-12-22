@@ -33,8 +33,23 @@ const LoggedIn = (json) => {
     }
 };
 
-const Logout = () => {
+
+export const LogOut = () => {
+    return dispatch => {
+        dispatch(LogingIn());
+        return fetch(API+'users/logout', {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "same-origin"
+        })
+            .then(json => dispatch(LoggedOut(json)))
+    }
+};
+
+const LoggedOut = (json) => {
     return {
-        type: 'NOT_LOGGED_IN',
+        type: 'LOGGED_OUT',
     }
 };

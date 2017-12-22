@@ -125,7 +125,8 @@ export default function (state = initialState, action) {
             return Object.assign({}, state, {
                 alertVisible: true,
                 alertStyle: 'danger',
-                alertMessage: 'You need to login to suggest a talent!',
+                modalShow: false,
+                alertMessage: 'You need to login to do that!',
                 status: 'NOT_LOGGED_IN_ALERT_GIVEN'
             });
         default:
