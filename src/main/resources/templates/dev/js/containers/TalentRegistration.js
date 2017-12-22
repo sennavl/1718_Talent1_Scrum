@@ -43,7 +43,9 @@ class TalentRegister extends Component {
                     <div className="pull-right">
                         <Button bsStyle="default" onClick={() => this.props.onSubmitTalentClick()}>Voeg toe</Button>
                         <Button bsStyle="primary" onClick={() => this.props.onAddTalentClick(this.props.talentCount)} style={{marginLeft: '5px', marginRight: '5px'}}>+ Talent</Button>
-                        <Button bsStyle="success" onClick={() => this.props.onPostAllTalents(this.props.chosenTalents, this.props.userId)}>Bevestig</Button>
+                        {this.props.session.session.id > 0 &&
+                        <Button bsStyle="success" onClick={() => this.props.onPostAllTalents(this.props.chosenTalents, this.props.session.session.id)}>Bevestig</Button>
+                        }
                     </div>
                 </div>
             </div>
@@ -62,7 +64,9 @@ const mapStateToProps = (state) => ({
     submitTalent: state.TalentRegister.submitTalent,
     talentRegStatus: state.TalentRegister.status,
     string: state.Search.searchstring,
-    id: state.Auth.id
+    id: state.Auth.id,
+    session: state.Session
+
 });
 
 const mapDispatchToProps = (dispatch) => {
