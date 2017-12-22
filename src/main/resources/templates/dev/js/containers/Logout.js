@@ -1,10 +1,13 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import { Logout as LA } from '../actions/LoginActions';
+import {Modal, Button, FormGroup, form, ControlLabel, FormControl} from  'react-bootstrap';
+import {LogOut} from '../actions/LoginActions';
+import { Navigation } from '../components/Navigation';
 
 class Logout extends Component {
     componentWillMount(){
-        this.props.onLogout
+        LogOut();
+        this.props.history.push("/login/");
     }
     render() {
         return (
@@ -16,14 +19,10 @@ class Logout extends Component {
 }
 
 const mapStateToProps = (state) => ({
-
 });
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onLogout: () => {
-            dispatch(LA())
-        }
     }
 };
 
