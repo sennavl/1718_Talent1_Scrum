@@ -13,6 +13,11 @@ public class Persons {
     private String lastname;
     private String email;
 
+    public Persons(long id, String firstname) {
+        this.id = id;
+        this.firstname = firstname;
+    }
+
     public Persons(String firstname, String email) {
         this.firstname = firstname;
         this.email = email;

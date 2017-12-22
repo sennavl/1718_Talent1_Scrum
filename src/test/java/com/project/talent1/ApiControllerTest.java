@@ -15,6 +15,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
+import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.Charset;
 import java.time.LocalDate;
 import java.sql.Date;
@@ -209,6 +210,7 @@ public class ApiControllerTest {
                 .andExpect(content().contentType(contentType))
                 .andExpect(status().isOk())
                 .andExpect(cookie().exists("user"));
+                //.andExpect(request.getSession(false), is(null));
     }
 
     @Test
@@ -252,12 +254,12 @@ public class ApiControllerTest {
                 .contentType(contentType))
                 .andExpect(status().isNotFound());
     }
-
+    
     @Test
     public void logoutUser() throws Exception {
         this.logUserIn();
 
-        mockMvc.perform(post("/api/users/logout"))
+        mockMvc.perform(get("/api/users/logout"))
                 .andExpect(cookie().maxAge("user", 0));
     }
 
@@ -281,6 +283,18 @@ public class ApiControllerTest {
                 .content(jsonUpdate)
                 .contentType(contentType))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void updateUserOnlyFirstname() throws Exception {
+        String jsonUpdate = TestHelper.userUpdateToJson(null, new Persons(personId, "Newname"));
+
+        mockMvc.perform(post("/api/users/update")
+                .content(jsonUpdate)
+                .contentType(contentType))
+                .andExpect(content().contentType(contentType))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.person.firstname", is("Newname")));
     }
 
     /*============================================================================

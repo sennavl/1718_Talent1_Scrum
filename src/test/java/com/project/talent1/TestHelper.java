@@ -19,6 +19,7 @@ public class TestHelper {
 
     public static String personToJson(Persons person) {
         JSONObject json = new JSONObject();
+        if(person.getId() != null) json.put("id", person.getId());
         if(person.getEmail() != null) json.put("email", person.getEmail());
         if(person.getFirstname() != null) json.put("firstname", person.getFirstname());
         if(person.getLastname() != null) json.put("lastname", person.getLastname());
@@ -45,26 +46,26 @@ public class TestHelper {
 
         json.put("user", arrayUser);
 
-        String test = json.toString();
-
         return json.toString().replace("[", "").replace("]", "");
     }
 
-    public static String userUpdateToJson(Users u, Persons p) {
+    public static String userUpdateToJson(Users user, Persons person) {
         JSONObject json = new JSONObject();
 
         JSONArray arrayPerson = new JSONArray();
         JSONObject itemPerson = new JSONObject();
-        itemPerson.put("id", p.getId());
-        itemPerson.put("firstname", p.getFirstname());
-        itemPerson.put("lastname", p.getLastname());
+        if(person.getId() != null) itemPerson.put("id", person.getId());
+        if(person.getFirstname() != null) itemPerson.put("firstname", person.getFirstname());
+        if(person.getLastname() != null) itemPerson.put("lastname", person.getLastname());
 
         arrayPerson.add(itemPerson);
 
         json.put("person", arrayPerson);
 
-        json.put("birthday", u.getBirthday() + "");
-        json.put("password", u.getPassword());
+        if(user != null){
+            if(user.getBirthday() != null) json.put("birthday", user.getBirthday() + "");
+            if(user.getPassword() != null) json.put("password", user.getPassword());
+        }
 
         return json.toString().replace("[", "").replace("]", "");
     }
