@@ -8,7 +8,6 @@ import { searchClicked } from '../actions/SearchActions'
 
 class TalentRegister extends Component {
     componentWillMount(){
-        this.props.logStatus !== "LOGGED_IN" ? this.props.history.push("/login") : ''
     }
     render() {
         //total count dropdowns for talents

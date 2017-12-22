@@ -10,9 +10,6 @@ class Search extends Component {
             <div>
                 <Navigation id={this.props.id} parent={this} searchstring={this.props.string} onSearchClick={this.props.onSearchClick} history={this.props.history} status={this.props.logStatus} />
                 <Userlink foundUsers={this.props.foundUsers} history={this.props.history}/>
-                {
-                    this.props.logStatus !== "LOGGED_IN" ? this.props.history.push("/login") : ''
-                }
             </div>
         );
     }
