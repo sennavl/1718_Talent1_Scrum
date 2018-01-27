@@ -1,6 +1,7 @@
 # Talenten webapplicatie
 
 In dit project wordt de mogelijkheid geboden aan gebruikers om een talentenprofiel op te stellen.
+Presentatie hiervan staat onder Keynote-talenrgy.pdf
 
 ## Getting started
 
